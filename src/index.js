@@ -7,8 +7,9 @@ import * as serviceWorker from './serviceWorker';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, compose } from 'redux'
+import logger from 'redux-logger'
+import rootReducer from './reducers/index' 
 
-let store = createStore(rootReducer)
 
 let store = createStore(rootReducer,
   compose(
