@@ -1,6 +1,6 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Collapse from '@material-ui/core/Collapse';
 import IconButton from '@material-ui/core/IconButton';
@@ -19,6 +19,12 @@ import StrainCard from '../StrainCard'
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
+import { green } from '@material-ui/core/colors';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
+import Grid from '@material-ui/core/Grid';
+
 
 
 const useRowStyles = makeStyles({
@@ -27,6 +33,10 @@ const useRowStyles = makeStyles({
             borderBottom: 'unset',
         },
     },
+    search: {
+        margin: '2 in',
+
+    }
 });
 
 
@@ -48,16 +58,14 @@ function Row(props) {
                 </TableCell>
                 <TableCell align="right">{row.genus.toUpperCase()}</TableCell>
                 <TableCell align="right">{row.flavorList}</TableCell>
-                {/* <TableCell align="right">{row.carbs}</TableCell>
-        <TableCell align="right">{row.protein}</TableCell> */}
             </TableRow>
             <TableRow>
                 <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
                     <Collapse in={open} timeout="auto" unmountOnExit>
                         <Box margin={1}>
                             <Typography variant="h6" gutterBottom component="div">
-                                Strain Data
-              </Typography>
+                                {`${row.name}: Strain Details`}
+                            </Typography>
                             <StrainCard strain={row} />
                         </Box>
                     </Collapse>
@@ -69,9 +77,10 @@ function Row(props) {
 
 const renderStrains = (displayed, query, columnToQuery, setDisplay) => {
     let x
-    if(query){
-        x = displayed.filter(strain => strain[columnToQuery].includes(query))
-    } 
+    if (query) {
+        x = displayed.filter(strain => strain[columnToQuery].toLowerCase().includes(query.toLowerCase()))
+    }
+    
     return x.map((row) => (
         <Row key={row.name} row={row} />
     ))
@@ -79,55 +88,97 @@ const renderStrains = (displayed, query, columnToQuery, setDisplay) => {
 
 function CollapsibleTable(props) {
     const { strains } = props
-    const [ query, setQuery ] = useState('')
-    const [ columnToQuery, setColumnToQuery ] = useState('name')
-    const [ displayed, setDisplay ] = useState([])
+    const [query, setQuery] = useState('')
+    const [columnToQuery, setColumnToQuery] = useState('name')
+    const [showTable, setShowTable] = useState(false)
 
-    useEffect(()=> {
+    const [displayed, setDisplay] = useState([])
+    const classes = useRowStyles();
+
+    const GreenSwitch = withStyles({
+        switchBase: {
+            color: green[300],
+            '&$checked': {
+                color: green[500],
+            },
+            '&$checked + $track': {
+                backgroundColor: green[500],
+            },
+        },
+        checked: {},
+        track: {},
+    })(Switch);
+
+    const handleChange = (event) => {
+        setShowTable(!showTable);
+    };
+
+    const handleSearch = (e) => {
+        setShowTable(true)
+        setQuery(e.target.value)
+    }
+    
+
+    useEffect(() => {
         setDisplay(strains)
     })
 
     return (
         <div>
-            <TextField 
-                hintText="Query"
-                floatingLabelText="Query"
-                value={query}
-                onChange={e => setQuery(e.target.value)}
-                floatingLabelFixed
-            />
-        <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={columnToQuery}
-            onChange={(event, index, value) => setColumnToQuery(event.target.value)}
-        >
-            <MenuItem value="name">Name</MenuItem>
-            <MenuItem value="genus">Type</MenuItem>
-            <MenuItem value="flavorList">Flavor</MenuItem>
-            
-        </Select>
-        <TableContainer component={Paper}>
-            <Table aria-label="collapsible table">
-                <TableHead>
-                    <TableRow>
-                        <TableCell />
-                        <TableCell>Strain</TableCell>
-                        <TableCell align="right">Type</TableCell>
-                        <TableCell align="right">Flavors</TableCell>
+            <div className={classes.search}>
 
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {query ? renderStrains(strains, query, columnToQuery, setDisplay) :
-                    displayed && displayed.map((row) => (
-                        <Row key={row.name} row={row} />
-                    ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
+                <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={columnToQuery}
+                    onChange={(event, index, value) => setColumnToQuery(event.target.value)}
+                >
+                    <MenuItem value="name">Name</MenuItem>
+                    <MenuItem value="genus">Type</MenuItem>
+                    <MenuItem value="flavorList">Flavor</MenuItem>
+
+                </Select>
+                <TextField
+                    hintText="Query"
+                    floatingLabelText="Query"
+                    value={query}
+                    onChange={handleSearch}
+                    floatingLabelFixed
+                />
+                <FormGroup>
+                    <FormControlLabel
+                        control={<GreenSwitch checked={showTable} onChange={handleChange} name="table" />}
+                        label="Hide/Show Table"
+                    />
+                </FormGroup>
+            </div>
+            <div className={classes.table}>
+                {showTable &&
+                    <TableContainer component={Paper}>
+                        <Table aria-label="collapsible table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell />
+                                    <TableCell>Strain</TableCell>
+                                    <TableCell align="right">Type</TableCell>
+                                    <TableCell align="right">Flavors</TableCell>
+
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {query ? renderStrains(strains, query, columnToQuery, setDisplay, setShowTable) :
+                                    displayed && displayed.map((row) => (
+                                        <Row key={row.name} row={row} />
+                                    ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                }
+
+            </div>
+
         </div>
-  );
+    );
 }
 const mapStateToProps = (store) => {
     return {

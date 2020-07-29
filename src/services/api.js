@@ -1,4 +1,4 @@
-const API_ROOT = (path)=> `https://gig-economist-app-api.herokuapp.com${path}`
+const API_ROOT = (path)=> `https://localhost:3000${path}`
 
 const token = () => localStorage.getItem("token");
 

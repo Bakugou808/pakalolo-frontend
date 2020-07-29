@@ -1,14 +1,14 @@
-import SearchBar from 'material-ui-search-bar'
 import { connect } from "react-redux";
 
-import React, { Component } from 'react'
+import React, { Component, useState, useEffect } from 'react'
 import StrainTable from './StrainTable'
 import {fetchStrains} from '../../actions/strainActions'
 
 class MainPage extends Component {
 
+    
     state = {
-        dataSource: ['Hello', 'There']
+        showTable: false,
     }
 
     componentDidMount(){
@@ -20,17 +20,7 @@ class MainPage extends Component {
         
         return (
             <div>
-                {/* <SearchBar
-                    dataSource={this.state.dataSource}
-                    onChange={(value) => this.setState({ dataSource: [value, value + value, value + value + value] })}
-                    onRequestSearch={() => console.log('onRequestSearch')}
-                    style={{
-                        margin: '0 auto',
-                        maxWidth: 800
-                    }}
-                /> */}
                 {this.props.strains && <StrainTable strains={this.props.strains}/> }
-            I am a Main Page
             </div>
         )
     }

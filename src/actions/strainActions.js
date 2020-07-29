@@ -81,7 +81,7 @@ export const fetchStrains = (dispatch) => {
 
 // export const fetchService = (serviceId, dispatch) => {
 //     dispatch(fetchServiceRequest())
-//     fetch(`https://gig-economist-app-api.herokuapp.com/services/${serviceId}`)
+//     fetch(`https://localhost:3000/services/${serviceId}`)
 //         .then(res=>res.json())
 //         .then(data => {
 //             if (data.error){

@@ -117,11 +117,11 @@ function StrainCard(props) {
             {/* Tab 2: Lab Results */}
             <TabPanel value={value} index={1}>
                 {/* {strain.cannabinoidList} */}
-                <ChemChart data={strain.cannabinoidList}/>
+                <ChemChart data={strain.cannabinoidList} cannabinoids={true} />
             </TabPanel>
             {/* Strain entries for logged in user */}
             <TabPanel value={value} index={2}>
-                Item Three
+                <ChemChart data={strain.terpeneList} cannabinoids={false}/>
             </TabPanel>
         </div>
     );
