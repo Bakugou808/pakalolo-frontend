@@ -21,7 +21,7 @@ import {Redirect} from 'react-router-dom'
           return <WrappedComponent {...this.props} />
         } else {
           // return <Redirect to='/'/>
-          this.props.history.push('/')
+          this.props.history.push('/signin')
         }
       }
 
@@ -34,12 +34,10 @@ import {Redirect} from 'react-router-dom'
         if (!localStorage.getItem("token")) {
           this.setState({pending: false, authorized: false})
         } else {
-          // fetchCurrentUser()
           api.auth.getCurrentUser().then(resp => {
             if(resp.error){
               this.setState({pending: false, authorized: false})
             } else {
-              // debugger
               this.setState({authorized: true, pending: false}, ()=> this.props.onFetchCurrentUserSuccess(resp))
             }
           })

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { signUpUser } from '../actions/userActions'
+import { signUpUser } from '../../actions/userActions'
 import { connect } from 'react-redux';
 
 import Avatar from '@material-ui/core/Avatar';
@@ -53,27 +53,27 @@ function SignUp(props) {
     const classes = useStyles();
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
-    const [passwordConfirmation, setPasswordConfirmation] = useState('')
+    const [password_confirmation, setPasswordConfirmation] = useState('')
     const [error, setError] = useState(false)
 
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        let formData = { username, password }
+        let formData = { username, password, password_confirmation }
         // password === passwordConfirmation ? setError(false) : setError(true)
         // console.log(error)
         // !error && console.log(formData, "send api call")
-        if (password === passwordConfirmation) {
+        if (password === password_confirmation && username.length > 3) {
             setError(false)
             submitForm(formData)
-        } else {
-            setError(true)
-        }
+        } 
+        username.length < 4 && alert('Username must be at least 4 characters')
+        password != password_confirmation && setError(true)
     }
 
     const submitForm = (formData) => {
         console.log(formData, "send api call")
-        this.props.onSignUpUser(formData, props.history)
+        props.onSignUpUser(formData, props.history)
     }
 
     const handleOnChange = (e) => {
@@ -84,7 +84,7 @@ function SignUp(props) {
                 return setUsername(e.target.value)
             case 'password':
                 return setPassword(e.target.value)
-            case 'passwordConfirmation':
+            case 'password_confirmation':
                 return setPasswordConfirmation(e.target.value)
         }
     }
@@ -135,13 +135,13 @@ function SignUp(props) {
                                 variant="outlined"
                                 required
                                 fullWidth
-                                name="passwordConfirmation"
+                                name="password_confirmation"
                                 label="Confirm Password"
                                 type="password"
                                 id="confirm-password"
                                 // autoComplete="current-password"
                                 onChange={handleOnChange}
-                                value={passwordConfirmation}
+                                value={password_confirmation}
                             />
                         </Grid>
                         {error && <Grid item xs={12}>

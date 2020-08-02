@@ -41,7 +41,7 @@ export const fetchCurrentUserFailure = (error) => {
 
 export const fetchCurrentUser = (dispatch) => {
     dispatch(fetchCurrentUserRequest())
-    fetch(`https://localhost:3000/current_user`, {
+    fetch(`http://localhost:3000/current_user`, {
         headers: headers()
     }).then(res=>res.json())
     .then(data => {

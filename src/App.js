@@ -1,13 +1,19 @@
 import React from 'react';
+import { Route } from "react-router-dom";
+
 import logo from './logo.svg';
 import './App.css';
 import NavBar from './components/NavBar/NavBar'
 import MainPage from './components/MainPage/MainPage'
-import SignIn from './components/SignIn'
-import SignUp from './components/SignUp'
+import SignIn from './components/NavBar/SignIn'
+import SignUp from './components/NavBar/SignUp'
+import HomePage from './components/HomePage/HomePage'
 import LogRocket from 'logrocket'
+import Collection from './components/Collection/Collection'
+import Lists from './components/Lists/Lists'
+import Entries from './components/Entries/Entries'
+import Vendors from './components/Vendors/Vendors'
 
-import { Route } from "react-router-dom";
 
 LogRocket.init('cvf7db/pakalolo')
 
@@ -18,6 +24,14 @@ function App() {
       <Route exact path='/' render={props => <MainPage {...props} /> } />
       <Route path='/signup' render={props => <SignUp {...props} /> } />
       <Route path='/signin' render={props => <SignIn {...props} /> } />
+      <Route path='/home' render={props => <HomePage {...props} /> } />
+      {/* left drawer paths */}
+      <Route path='/collection' render={props => <Collection {...props} /> } />
+      <Route path='/lists' render={props => <Lists {...props} /> } />
+      <Route path='/entries' render={props => <Entries {...props} /> } />
+      <Route path='/vendors' render={props => <Vendors {...props} /> } />
+
+
 
     </div>
   );

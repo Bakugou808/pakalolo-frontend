@@ -80,7 +80,7 @@ export const signOutUser = (userId) => {
 
 export const signUpUser = (data, history, dispatch) => {
         dispatch(signUpUserRequest())
-        fetch(`https://localhost:3000/users`, {
+        fetch(`http://localhost:3000/users`, {
             method: "POST",
             headers: headers(),
             body: JSON.stringify(data)
@@ -102,14 +102,14 @@ export const signUpUser = (data, history, dispatch) => {
 
 export const fetchUser = (data, history, dispatch) => {
     dispatch(fetchUserRequest())
-    fetch(`https://localhost:3000/login`, {
+    fetch(`http://localhost:3000/login`, {
         method: "POST",
         headers: headers(),
         body: JSON.stringify(data)
       })
         .then(res=>res.json())
         .then(data => {
-            
+            console.log(data)
             if (data.error){
                 dispatch(fetchUserFailure(data.error))
             } else {

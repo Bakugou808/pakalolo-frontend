@@ -1,27 +1,34 @@
 import { connect } from "react-redux";
+import { fetchCurrentUser } from '../../actions/authActions'
 
-import React, { Component, useState, useEffect } from 'react'
+import React, { Component } from 'react'
 import StrainTable from './StrainTable'
-import {fetchStrains} from '../../actions/strainActions'
+import { fetchStrains } from '../../actions/strainActions'
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Typography from '@material-ui/core/Typography';
+import Container from '@material-ui/core/Container';
 
 class MainPage extends Component {
 
-    
+
     state = {
         showTable: false,
     }
 
-    componentDidMount(){
-        const {onFetchStrains} = this.props 
-
+    componentDidMount() {
+        const { onFetchStrains, onFetchCurrentUser } = this.props
+        onFetchCurrentUser()
         onFetchStrains()
     }
     render() {
-        
+
         return (
-            <div>
-                {this.props.strains && <StrainTable strains={this.props.strains}/> }
-            </div>
+            <React.Fragment>
+                <CssBaseline />
+                <Container maxWidth="md">
+                {this.props.strains && <StrainTable strains={this.props.strains} />}
+                </Container>
+            </React.Fragment>
         )
     }
 }
@@ -34,8 +41,9 @@ const mapStateToProps = (store) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onFetchStrains: () => {fetchStrains(dispatch)}
-        
+        onFetchStrains: () => { fetchStrains(dispatch) },
+        onFetchCurrentUser: () => fetchCurrentUser(dispatch)
+
     }
 }
 

@@ -1,5 +1,5 @@
-import React from 'react';
-import { fetchUser } from '../actions/userActions'
+import React, { useState, useEffect } from 'react';
+import { fetchUser } from '../../actions/userActions'
 import { connect } from 'react-redux';
 
 import Avatar from '@material-ui/core/Avatar';
@@ -49,11 +49,32 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignIn() {
+function SignIn(props) {
   const classes = useStyles();
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
 
+  const handleSubmit = (e) => {
+      e.preventDefault()
+      let data = {username, password}
+      props.onFetchUser(data, props.history)
+  }
+
+  const handleChange = (e) => {
+    e.preventDefault()
+
+        switch (e.target.name) {
+            case 'username':
+                return setUsername(e.target.value)
+            case 'password':
+                return setPassword(e.target.value)
+        }
+  }
+  
+  
   return (
     <Container component="main" maxWidth="xs">
+        {props.error ? alert(`Sorry, that Login didn't work, try again...`) : null}
       <CssBaseline />
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
@@ -68,11 +89,13 @@ export default function SignIn() {
             margin="normal"
             required
             fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
+            id="username"
+            label="Username"
+            name="username"
+            autoComplete="username"
             autoFocus
+            value={username}
+            onChange={handleChange}
           />
           <TextField
             variant="outlined"
@@ -84,17 +107,20 @@ export default function SignIn() {
             type="password"
             id="password"
             autoComplete="current-password"
+            value={password}
+            onChange={handleChange}
           />
-          <FormControlLabel
+          {/* <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
             label="Remember me"
-          />
+          /> */}
           <Button
             type="submit"
             fullWidth
             variant="contained"
             color="primary"
             className={classes.submit}
+            onClick={handleSubmit}
           >
             Sign In
           </Button>
@@ -118,3 +144,22 @@ export default function SignIn() {
     </Container>
   );
 }
+
+
+const mapStateToProps = (store) => {
+    return {
+      user: store.user.data,
+      error: store.user.error
+    }
+  }
+  
+  const mapDispatchToProps = (dispatch) => {
+    return {
+      onFetchUser: (userSignInData, history)=> fetchUser(userSignInData, history, dispatch), 
+      // the above is for api/async calls 
+      // onChangeData: (newData) => dispatch(dataChangeAction(newData))   ---> this is for normal state changes, dispatch the outcome of an action creator, just to modify state
+    }
+  }
+  
+  
+  export default connect(mapStateToProps, mapDispatchToProps)(SignIn)

@@ -88,7 +88,8 @@ export default class ChemChart extends PureComponent {
     render() {
         const {cannabinoids} = this.props
         return (
-            <PieChart width={900} height={400}>
+            <PieChart width={900} height={400} >
+                {/* className={} */}
                 <Pie
                     activeIndex={this.state.activeIndex}
                     activeShape={props => renderActiveShape(props, cannabinoids)}

@@ -25,7 +25,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import Grid from '@material-ui/core/Grid';
 
-
+// add pagination within the menu to only display the first 20-30 strains
 
 const useRowStyles = makeStyles({
     root: {
@@ -35,9 +35,14 @@ const useRowStyles = makeStyles({
     },
     search: {
         margin: '2 in',
-
+        display: 'inline'
+    },
+    divRoot: {
+        flexGrow: 1
     }
 });
+
+
 
 
 function Row(props) {
@@ -80,7 +85,7 @@ const renderStrains = (displayed, query, columnToQuery, setDisplay) => {
     if (query) {
         x = displayed.filter(strain => strain[columnToQuery].toLowerCase().includes(query.toLowerCase()))
     }
-    
+
     return x.map((row) => (
         <Row key={row.name} row={row} />
     ))
@@ -117,7 +122,6 @@ function CollapsibleTable(props) {
         setShowTable(true)
         setQuery(e.target.value)
     }
-    
 
     useEffect(() => {
         setDisplay(strains)
@@ -125,57 +129,72 @@ function CollapsibleTable(props) {
 
     return (
         <div>
-            <div className={classes.search}>
+            <Grid
+                container
+                spacing={3}
+                direction="column"
+                justify="space-between"
+                alignItems="stretch"
+            >
+                <Grid item xs={6} sm={3}>
+                    
+                </Grid>
+                <Grid item xs={12}>
+                    <div className={classes.search}>
+                        <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={columnToQuery}
+                            onChange={(event, index, value) => setColumnToQuery(event.target.value)}
+                        >
+                            <MenuItem value="name">Name</MenuItem>
+                            <MenuItem value="genus">Type</MenuItem>
+                            <MenuItem value="flavorList">Flavor</MenuItem>
 
-                <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={columnToQuery}
-                    onChange={(event, index, value) => setColumnToQuery(event.target.value)}
-                >
-                    <MenuItem value="name">Name</MenuItem>
-                    <MenuItem value="genus">Type</MenuItem>
-                    <MenuItem value="flavorList">Flavor</MenuItem>
+                        </Select>
+                        <TextField
+                            hintText="Query"
+                            floatingLabelText="Query"
+                            value={query}
+                            onChange={handleSearch}
+                            floatingLabelFixed
+                        />
+                        <FormGroup>
+                            <FormControlLabel
+                                control={<GreenSwitch checked={showTable} onChange={handleChange} name="table" />}
+                                label="Hide/Show Table"
+                            />
+                        </FormGroup>
+                    </div>
+                </Grid>
 
-                </Select>
-                <TextField
-                    hintText="Query"
-                    floatingLabelText="Query"
-                    value={query}
-                    onChange={handleSearch}
-                    floatingLabelFixed
-                />
-                <FormGroup>
-                    <FormControlLabel
-                        control={<GreenSwitch checked={showTable} onChange={handleChange} name="table" />}
-                        label="Hide/Show Table"
-                    />
-                </FormGroup>
-            </div>
-            <div className={classes.table}>
-                {showTable &&
-                    <TableContainer component={Paper}>
-                        <Table aria-label="collapsible table">
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell />
-                                    <TableCell>Strain</TableCell>
-                                    <TableCell align="right">Type</TableCell>
-                                    <TableCell align="right">Flavors</TableCell>
+                <Grid item xs={12}>
+                    <div className={classes.table}>
+                        {showTable &&
+                            <TableContainer component={Paper}>
+                                <Table aria-label="collapsible table">
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell />
+                                            <TableCell>Strain</TableCell>
+                                            <TableCell align="right">Type</TableCell>
+                                            <TableCell align="right">Flavors</TableCell>
 
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {query ? renderStrains(strains, query, columnToQuery, setDisplay, setShowTable) :
-                                    displayed && displayed.map((row) => (
-                                        <Row key={row.name} row={row} />
-                                    ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                }
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {query ? renderStrains(strains, query, columnToQuery, setDisplay, setShowTable) :
+                                            displayed && displayed.map((row) => (
+                                                <Row key={row.name} row={row} />
+                                            ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        }
+                    </div>
+                </Grid>
 
-            </div>
+            </Grid>
 
         </div>
     );
