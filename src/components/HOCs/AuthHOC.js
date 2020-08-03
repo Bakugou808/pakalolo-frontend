@@ -1,6 +1,7 @@
 import React, { Fragment } from "react";
 import { api } from "../../services/api";
 import { fetchCurrentUser, fetchCurrentUserSuccess } from '../../actions/authActions'
+import { fetchStrains } from '../../actions/strainActions'
 import {connect} from 'react-redux'
 import {Redirect} from 'react-router-dom'
 
@@ -26,8 +27,8 @@ import {Redirect} from 'react-router-dom'
       }
 
       componentDidMount() {
-          this.checkLogin()
-          
+          this.checkLogin() 
+          this.props.onFetchStrains()
       }
   
       checkLogin = () => {
@@ -64,7 +65,8 @@ import {Redirect} from 'react-router-dom'
   const mapDispatchToProps = (dispatch) => {
     return {
       onFetchCurrentUser: ()=> fetchCurrentUser(dispatch), 
-      onFetchCurrentUserSuccess: (user)=> dispatch(fetchCurrentUserSuccess(user))
+      onFetchCurrentUserSuccess: (user)=> dispatch(fetchCurrentUserSuccess(user)),
+      onFetchStrains: () => fetchStrains(dispatch),
     }
   }
 

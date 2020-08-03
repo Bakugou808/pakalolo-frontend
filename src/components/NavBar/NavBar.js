@@ -47,6 +47,9 @@ const useStyles = makeStyles((theme) => ({
     },
     fullList: {
       width: 'auto',
+    },
+    link: {
+      cursor: 'pointer'
     }
 
 }));
@@ -122,7 +125,7 @@ function NavBar(props) {
             </Link>
           </Typography>
           {props.auth ? <Typography variant="h9" className={classes.login}>
-            <Link onClick={onLogout} color='inherit'>
+            <Link className={classes.link} onClick={onLogout} color='inherit'>
               Sign Out
             </Link>
           </Typography>
