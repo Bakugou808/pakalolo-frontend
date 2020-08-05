@@ -36,6 +36,7 @@ const useRowStyles = makeStyles({
     root: {
         '& > *': {
             borderBottom: 'unset',
+            cursor: 'pointer'
         },
     },
     search: {
@@ -51,13 +52,18 @@ const useRowStyles = makeStyles({
 
 
 function Row(props) {
-    const { row, onSetStrain } = props;
+    const { row, onSetStrain, setShowTable } = props;
     const [open, setOpen] = React.useState(false);
     const classes = useRowStyles();
 
+    const handleClick = (row) => {
+        onSetStrain(row)
+        setShowTable(false)
+    }
+    
     return (
         <React.Fragment>
-            <TableRow className={classes.root} onClick={() => onSetStrain(row)}>
+            <TableRow className={classes.root} onClick={() => handleClick(row)}>
                 <TableCell component="th" scope="row">
                     {row.name}
                 </TableCell>
@@ -68,16 +74,18 @@ function Row(props) {
     );
 }
 
-const renderStrains = (displayed, query, columnToQuery, setDisplay, onSetStrain) => {
-    let x
-    if (query) {
-        x = displayed.filter(strain => strain[columnToQuery].toLowerCase().includes(query.toLowerCase()))
-    }
+// const renderStrains = (displayed, query, columnToQuery, onSetStrain, setShowTable) => {
+//     let x
+//     if (query) {
+//         x = displayed.filter(strain => strain[columnToQuery].toLowerCase().includes(query.toLowerCase()))
+//     } else {
+//         x = displayed
+//     }
 
-    return x.map((row) => (
-        <Row key={row.name} row={row} onSetStrain={onSetStrain} />
-    ))
-}
+//     return x.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+//         <Row key={row.name} row={row} onSetStrain={onSetStrain} setShowTable={setShowTable} />
+//     ))
+// }
 
 function CollectionTable(props) {
     const { strains, onSetStrain } = props
@@ -86,6 +94,9 @@ function CollectionTable(props) {
     const [showTable, setShowTable] = useState(false)
     const [page, setPage] = React.useState(1);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
+    const [selected, setSelected] = React.useState([]);
+    const [dense, setDense] = React.useState(false);
 
     const [displayed, setDisplay] = useState([])
     const classes = useRowStyles();
@@ -112,6 +123,20 @@ function CollectionTable(props) {
         setShowTable(true)
         setQuery(e.target.value)
     }
+
+    const renderStrains = () => {
+        let x
+        if (query) {
+            x = displayed.filter(strain => strain[columnToQuery].toLowerCase().includes(query.toLowerCase()))
+        } else {
+            x = displayed
+        }
+    
+        return x.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+            <Row key={row.name} row={row} onSetStrain={onSetStrain} setShowTable={setShowTable} />
+        ))
+    }
+
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -172,28 +197,27 @@ function CollectionTable(props) {
                         {showTable &&
                             <TableContainer component={Paper}>
                                 <TablePagination
+                                    rowsPerPageOptions={[5, 10, 25]}
                                     component="div"
-                                    count={100}
+                                    count={displayed.length}
+                                    rowsPerPage={rowsPerPage}
                                     page={page}
                                     onChangePage={handleChangePage}
-                                    rowsPerPage={rowsPerPage}
                                     onChangeRowsPerPage={handleChangeRowsPerPage}
                                 />
                                 <Table aria-label="collapsible table">
                                     <TableHead>
                                         <TableRow>
-                                            <TableCell />
+                                            {/* <TableCell /> */}
                                             <TableCell align="left">Strain</TableCell>
-                                            <TableCell align="left">Type</TableCell>
-                                            <TableCell align="left">Flavors</TableCell>
+                                            <TableCell align="right">Type</TableCell>
+                                            <TableCell align="right">Flavors</TableCell>
 
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {query ? renderStrains(strains, query, columnToQuery, setDisplay, setShowTable, onSetStrain) :
-                                            displayed && displayed.map((row) => (
-                                                <Row key={row.name} row={row} onSetStrain={onSetStrain} />
-                                            ))}
+                                        
+                                        {displayed && renderStrains()}
                                     </TableBody>
                                 </Table>
                             </TableContainer>

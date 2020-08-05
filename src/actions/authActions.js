@@ -50,5 +50,5 @@ export const fetchCurrentUser = (dispatch) => {
         } else {
             dispatch(fetchCurrentUserSuccess(data))
         }
-    })
+    }) 
 }

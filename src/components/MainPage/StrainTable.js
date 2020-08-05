@@ -24,6 +24,8 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import Grid from '@material-ui/core/Grid';
+import TablePagination from '@material-ui/core/TablePagination';
+
 
 // add pagination within the menu to only display the first 20-30 strains
 
@@ -80,16 +82,16 @@ function Row(props) {
     );
 }
 
-const renderStrains = (displayed, query, columnToQuery, setDisplay) => {
-    let x
-    if (query) {
-        x = displayed.filter(strain => strain[columnToQuery].toLowerCase().includes(query.toLowerCase()))
-    }
+// const renderStrains = (displayed, query, columnToQuery, setDisplay) => {
+//     let x
+//     if (query) {
+//         x = displayed.filter(strain => strain[columnToQuery].toLowerCase().includes(query.toLowerCase()))
+//     }
 
-    return x.map((row) => (
-        <Row key={row.name} row={row} />
-    ))
-}
+//     return x.map((row) => (
+//         <Row key={row.name} row={row} />
+//     ))
+// }
 
 function CollapsibleTable(props) {
     const { strains } = props
@@ -98,6 +100,9 @@ function CollapsibleTable(props) {
     const [showTable, setShowTable] = useState(false)
 
     const [displayed, setDisplay] = useState([])
+    const [page, setPage] = React.useState(0);
+    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
     const classes = useRowStyles();
 
     const GreenSwitch = withStyles({
@@ -114,6 +119,19 @@ function CollapsibleTable(props) {
         track: {},
     })(Switch);
 
+    const renderStrains = () => {
+        let x
+        if (query) {
+            x = displayed.filter(strain => strain[columnToQuery].toLowerCase().includes(query.toLowerCase()))
+        } else {
+            x = displayed
+        }
+    
+        return x.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+            <Row key={row.name} row={row} setShowTable={setShowTable} />
+        ))
+    }
+
     const handleChange = (event) => {
         setShowTable(!showTable);
     };
@@ -122,6 +140,15 @@ function CollapsibleTable(props) {
         setShowTable(true)
         setQuery(e.target.value)
     }
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
 
     useEffect(() => {
         setDisplay(strains)
@@ -137,7 +164,7 @@ function CollapsibleTable(props) {
                 alignItems="stretch"
             >
                 <Grid item xs={6} sm={3}>
-                    
+
                 </Grid>
                 <Grid item xs={12}>
                     <div className={classes.search}>
@@ -172,6 +199,15 @@ function CollapsibleTable(props) {
                     <div className={classes.table}>
                         {showTable &&
                             <TableContainer component={Paper}>
+                                <TablePagination
+                                        rowsPerPageOptions={[5, 10, 25]}
+                                        component="div"
+                                        count={displayed.length}
+                                        rowsPerPage={rowsPerPage}
+                                        page={page}
+                                        onChangePage={handleChangePage}
+                                        onChangeRowsPerPage={handleChangeRowsPerPage}
+                                    />
                                 <Table aria-label="collapsible table">
                                     <TableHead>
                                         <TableRow>
@@ -183,10 +219,7 @@ function CollapsibleTable(props) {
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {query ? renderStrains(strains, query, columnToQuery, setDisplay, setShowTable) :
-                                            displayed && displayed.map((row) => (
-                                                <Row key={row.name} row={row} />
-                                            ))}
+                                        {displayed && renderStrains()}
                                     </TableBody>
                                 </Table>
                             </TableContainer>
