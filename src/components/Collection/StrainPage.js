@@ -10,6 +10,7 @@ import Box from '@material-ui/core/Box';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import ChemChart from '../ChemChart'
+import Entries from '../Entries/Entries'
 
 
 function TabPanel(props) {
@@ -75,17 +76,30 @@ function StrainPage(props) {
 
     return (
         <div className={classes.root}>
+            <Typography variant="h6" gutterBottom component="div">
+                {`${strain.name}: Strain Details`}
+            </Typography>
             <AppBar position="static">
                 <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
                     <Tab label="Description" {...a11yProps(0)} />
-                    <Tab label="Cannabinoid Profile" {...a11yProps(1)} />
-                    <Tab label="Terpene Profile" {...a11yProps(2)} />
+                    <Tab label="Entries" {...a11yProps(1)} />
+                    {/* <Tab label="Terpene Profile" {...a11yProps(2)} /> */}
                 </Tabs>
             </AppBar>
             {/* Tab 1: Strain Description*/}
             <TabPanel value={value} index={0}>
                 <div className={classes2.root}>
                     {strain && <Grid container spacing={3}>
+                        <Grid item xs={12} sm={6}>
+                            <Paper className={classes2.paper}>
+                                <ChemChart data={strain.cannabinoidList} cannabinoids={true} />
+                            </Paper>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <Paper className={classes2.paper}>
+                                <ChemChart data={strain.terpeneList} cannabinoids={false} />
+                            </Paper>
+                        </Grid>
                         <Grid item xs={12}>
                             <Paper className={classes2.paper}>
                                 {strain.description}
@@ -116,13 +130,12 @@ function StrainPage(props) {
             </TabPanel>
             {/* Tab 2: Lab Results */}
             <TabPanel value={value} index={1}>
+                <Entries />
                 {/* {strain.cannabinoidList} */}
-                <ChemChart data={strain.cannabinoidList} cannabinoids={true} />
             </TabPanel>
             {/* Strain entries for logged in user */}
-            <TabPanel value={value} index={2}>
-                <ChemChart data={strain.terpeneList} cannabinoids={false}/>
-            </TabPanel>
+            {/* <TabPanel value={value} index={2}>
+            </TabPanel> */}
         </div>
     );
 }

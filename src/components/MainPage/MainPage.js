@@ -20,6 +20,8 @@ class MainPage extends Component {
         onFetchCurrentUser()
         onFetchStrains()
     }
+
+    
     render() {
 
         return (

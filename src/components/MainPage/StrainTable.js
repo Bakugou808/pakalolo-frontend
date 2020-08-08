@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Collapse from '@material-ui/core/Collapse';
-import IconButton from '@material-ui/core/IconButton';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -25,11 +24,22 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import Grid from '@material-ui/core/Grid';
 import TablePagination from '@material-ui/core/TablePagination';
+import AddIcon from '@material-ui/icons/Add';
+import Tooltip from '@material-ui/core/Tooltip';
+import Fab from '@material-ui/core/Fab';
+import IconButton from '@material-ui/core/IconButton';
+import Menu from '@material-ui/core/Menu';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
+
+import { postStrainToCollection, setStrainDisplay, closeSnackBarAddedToCollection } from '../../actions/collectionActions'
+
 
 
 // add pagination within the menu to only display the first 20-30 strains
 
-const useRowStyles = makeStyles({
+const useRowStyles = makeStyles((theme) => ({
     root: {
         '& > *': {
             borderBottom: 'unset',
@@ -41,16 +51,49 @@ const useRowStyles = makeStyles({
     },
     divRoot: {
         flexGrow: 1
-    }
-});
+    },
+    fab: {
+        margin: theme.spacing(2),
+        // width: '15px',
+        // height: '15px'
+    },
+}));
 
 
 
 
 function Row(props) {
-    const { row } = props;
+    const { row, addStrain, onPostStrainToCollection, user, auth } = props;
     const [open, setOpen] = React.useState(false);
     const classes = useRowStyles();
+    const options = ['Add to Collection', 'Add to Strain List']
+    const [anchorEl, setAnchorEl] = React.useState(null);
+
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    const handleAddStrainToCollection = () => {
+        console.log('adding strain')
+        handleClose()
+        let data = { strain_id: row.id, user_id: parseInt(localStorage.userId) }
+        onPostStrainToCollection(data)
+    }
+
+    const handleAddStrainToStrainList = () => {
+        console.log('adding strain')
+        handleClose()
+    }
+
+    function Alert(props) {
+        return <MuiAlert elevation={6} variant="filled" {...props} />;
+    }
+
+
 
     return (
         <React.Fragment>
@@ -71,7 +114,30 @@ function Row(props) {
                     <Collapse in={open} timeout="auto" unmountOnExit>
                         <Box margin={1}>
                             <Typography variant="h6" gutterBottom component="div">
-                                {`${row.name}: Strain Details`}
+                                <div>
+                                    {`${row.name}: Strain Details`}
+
+                                    {(user && auth) &&
+                                        <>
+                                            <Tooltip title="Add" aria-label="Add" interactive >
+                                                {/* <Fab color="primary" className={classes.fab}> */}
+                                                <IconButton aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick} >
+                                                    <MoreVertIcon style={{ display: 'align-right' }} />
+                                                </IconButton>
+                                                {/* </Fab> */}
+                                            </Tooltip>
+                                            <Menu
+                                                id="simple-menu"
+                                                anchorEl={anchorEl}
+                                                keepMounted
+                                                open={Boolean(anchorEl)}
+                                                onClose={handleClose}
+                                            >
+                                                <MenuItem onClick={handleAddStrainToCollection}>Add To Collection</MenuItem>
+                                                <MenuItem onClick={handleAddStrainToStrainList}>Add To Strain List</MenuItem>
+                                            </Menu>
+                                        </>}
+                                </div>
                             </Typography>
                             <StrainCard strain={row} />
                         </Box>
@@ -82,22 +148,12 @@ function Row(props) {
     );
 }
 
-// const renderStrains = (displayed, query, columnToQuery, setDisplay) => {
-//     let x
-//     if (query) {
-//         x = displayed.filter(strain => strain[columnToQuery].toLowerCase().includes(query.toLowerCase()))
-//     }
-
-//     return x.map((row) => (
-//         <Row key={row.name} row={row} />
-//     ))
-// }
 
 function CollapsibleTable(props) {
-    const { strains } = props
+    const { strains, onPostStrainToCollection, user, auth, onCloseSnackBarAddedToCollection, snackBarCollSuccessDisplay, selectedStrain } = props
     const [query, setQuery] = useState('')
     const [columnToQuery, setColumnToQuery] = useState('name')
-    const [showTable, setShowTable] = useState(false)
+    const [showTable, setShowTable] = useState(true)
 
     const [displayed, setDisplay] = useState([])
     const [page, setPage] = React.useState(0);
@@ -120,16 +176,20 @@ function CollapsibleTable(props) {
     })(Switch);
 
     const renderStrains = () => {
+
         let x
         if (query) {
             x = displayed.filter(strain => strain[columnToQuery].toLowerCase().includes(query.toLowerCase()))
         } else {
             x = displayed
         }
-    
+
         return x.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-            <Row key={row.name} row={row} setShowTable={setShowTable} />
+            <Row key={row.name} row={row} setShowTable={setShowTable} onPostStrainToCollection={onPostStrainToCollection} user={user} auth={auth} />
         ))
+    }
+    function Alert(props) {
+        return <MuiAlert elevation={6} variant="filled" {...props} />;
     }
 
     const handleChange = (event) => {
@@ -149,6 +209,15 @@ function CollapsibleTable(props) {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
     };
+
+    const handleCloseSB = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        onCloseSnackBarAddedToCollection();
+    };
+
 
     useEffect(() => {
         setDisplay(strains)
@@ -200,14 +269,14 @@ function CollapsibleTable(props) {
                         {showTable &&
                             <TableContainer component={Paper}>
                                 <TablePagination
-                                        rowsPerPageOptions={[5, 10, 25]}
-                                        component="div"
-                                        count={displayed.length}
-                                        rowsPerPage={rowsPerPage}
-                                        page={page}
-                                        onChangePage={handleChangePage}
-                                        onChangeRowsPerPage={handleChangeRowsPerPage}
-                                    />
+                                    rowsPerPageOptions={[5, 10, 25]}
+                                    component="div"
+                                    count={displayed.length}
+                                    rowsPerPage={rowsPerPage}
+                                    page={page}
+                                    onChangePage={handleChangePage}
+                                    onChangeRowsPerPage={handleChangeRowsPerPage}
+                                />
                                 <Table aria-label="collapsible table">
                                     <TableHead>
                                         <TableRow>
@@ -228,13 +297,28 @@ function CollapsibleTable(props) {
                 </Grid>
 
             </Grid>
+            <Snackbar open={snackBarCollSuccessDisplay} autoHideDuration={6000} onClose={handleCloseSB}>
+                <Alert onClose={handleCloseSB} severity="success">
+                    Strain number {selectedStrain && selectedStrain.id} was successfully added to your Collection
+                    </Alert>
+            </Snackbar>
 
         </div>
     );
 }
 const mapStateToProps = (store) => {
     return {
-        strains: store.strains.allStrains
+        strains: store.strains.allStrains,
+        user: store.user.data,
+        auth: store.authorized.data,
+        snackBarCollSuccessDisplay: store.collection.snackBarSuccessDisplay,
+        selectedStrain: store.collection.selectedStrain
     }
 }
-export default connect(mapStateToProps)(CollapsibleTable)
+
+const mapDispatchToProps = (dispatch) => ({
+    onPostStrainToCollection: (data) => postStrainToCollection(data, dispatch),
+    onCloseSnackBarAddedToCollection: () => dispatch(closeSnackBarAddedToCollection())
+
+})
+export default connect(mapStateToProps, mapDispatchToProps)(CollapsibleTable)

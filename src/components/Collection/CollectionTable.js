@@ -25,73 +25,81 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import Grid from '@material-ui/core/Grid';
 import TablePagination from '@material-ui/core/TablePagination';
+import Fab from '@material-ui/core/Fab';
+import Tooltip from '@material-ui/core/Tooltip';
+import AddIcon from '@material-ui/icons/Add';
 
 
 import { setStrainDisplay } from '../../actions/collectionActions'
+import {setSelectedStrainsEntries} from '../../actions/entriesActions'
 
 
 // add pagination within the menu to only display the first 20-30 strains
 
-const useRowStyles = makeStyles({
+const useRowStyles = makeStyles((theme) => ({
     root: {
         '& > *': {
             borderBottom: 'unset',
             cursor: 'pointer'
         },
     },
-    search: {
+    row: {
         margin: '2 in',
-        display: 'inline'
+        width: '100%',
+        textAlign: 'center'
+    },
+    block: {
+        // width: '100%',
+        display: 'inline-block',
+        margin: '30px'
     },
     divRoot: {
         flexGrow: 1
-    }
-});
+    },
+    fab: {
+        margin: theme.spacing(1),
+    },
+    absolute: {
+        position: 'absolute',
+        bottom: theme.spacing(2),
+        right: theme.spacing(3),
+    },
+}));
 
 
 
 
 function Row(props) {
-    const { row, onSetStrain, setShowTable } = props;
+    const { row, onSetStrain, setShowTable, onSetSelectedStrainsEntries } = props;
     const [open, setOpen] = React.useState(false);
     const classes = useRowStyles();
+    
 
     const handleClick = (row) => {
-        onSetStrain(row)
+        onSetStrain(row.strain)
+        onSetSelectedStrainsEntries(row.entries)
         setShowTable(false)
     }
-    
+
     return (
-        <React.Fragment>
+        <React.Fragment> 
             <TableRow className={classes.root} onClick={() => handleClick(row)}>
-                <TableCell component="th" scope="row">
-                    {row.name}
+                <TableCell component="th" scope="row.strain">
+                    {row.strain.name}
                 </TableCell>
-                <TableCell align="right">{row.genus.toUpperCase()}</TableCell>
-                <TableCell align="right">{row.flavorList}</TableCell>
+                <TableCell align="right">{row.strain.genus.toUpperCase()}</TableCell>
+                <TableCell align="right">{row.strain.flavorList}</TableCell>
             </TableRow>
         </React.Fragment>
     );
 }
 
-// const renderStrains = (displayed, query, columnToQuery, onSetStrain, setShowTable) => {
-//     let x
-//     if (query) {
-//         x = displayed.filter(strain => strain[columnToQuery].toLowerCase().includes(query.toLowerCase()))
-//     } else {
-//         x = displayed
-//     }
-
-//     return x.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-//         <Row key={row.name} row={row} onSetStrain={onSetStrain} setShowTable={setShowTable} />
-//     ))
-// }
 
 function CollectionTable(props) {
-    const { strains, onSetStrain } = props
+    const { collection, onSetStrain, onSetSelectedStrainsEntries } = props
     const [query, setQuery] = useState('')
     const [columnToQuery, setColumnToQuery] = useState('name')
-    const [showTable, setShowTable] = useState(false)
+    const [showTable, setShowTable] = useState(true)
     const [page, setPage] = React.useState(1);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -131,12 +139,11 @@ function CollectionTable(props) {
         } else {
             x = displayed
         }
-    
+        
         return x.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-            <Row key={row.name} row={row} onSetStrain={onSetStrain} setShowTable={setShowTable} />
+            <Row key={row.name} row={row} onSetStrain={onSetStrain} onSetSelectedStrainsEntries={onSetSelectedStrainsEntries} setShowTable={setShowTable} />
         ))
     }
-
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -148,11 +155,20 @@ function CollectionTable(props) {
     };
 
     useEffect(() => {
-        setDisplay(strains)
+        setDisplay(collection)
     })
+
+    const redirect = (path) => {
+        console.log(path)
+        props.history.push(`/${path}`)
+    }
+
+
+
 
     return (
         <div>
+            
             <Grid
                 container
                 spacing={3}
@@ -163,13 +179,14 @@ function CollectionTable(props) {
                 <Grid item xs={6} sm={3}>
 
                 </Grid>
-                <Grid item xs={12}>
-                    <div className={classes.search}>
+                <Grid item xs={16}>
+                    <div className={classes.row}>
                         <Select
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
                             value={columnToQuery}
                             onChange={(event, index, value) => setColumnToQuery(event.target.value)}
+                            className={classes.block}
                         >
                             <MenuItem value="name">Name</MenuItem>
                             <MenuItem value="genus">Type</MenuItem>
@@ -182,13 +199,21 @@ function CollectionTable(props) {
                             value={query}
                             onChange={handleSearch}
                             floatingLabelFixed
+                            className={classes.block}
                         />
-                        <FormGroup>
+                        <FormGroup className={classes.block}>
                             <FormControlLabel
                                 control={<GreenSwitch checked={showTable} onChange={handleChange} name="table" />}
                                 label="Hide/Show Table"
                             />
+
                         </FormGroup>
+                        <Tooltip title="Add Strain" aria-label="add" className={classes.block} onClick={()=>redirect('')}>
+                            <Fab color="primary" className={classes.fab}>
+                                <AddIcon />
+                            </Fab>
+                        </Tooltip>
+
                     </div>
                 </Grid>
 
@@ -216,7 +241,7 @@ function CollectionTable(props) {
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        
+
                                         {displayed && renderStrains()}
                                     </TableBody>
                                 </Table>
@@ -224,18 +249,18 @@ function CollectionTable(props) {
                         }
                     </div>
                 </Grid>
-
             </Grid>
-
         </div>
     );
 }
 const mapStateToProps = (store) => ({
-    strains: store.strains.allStrains
+    collection: store.collection.totalCollection,
+
 })
 
 const mapDispatchToProps = (dispatch) => ({
     onSetStrain: (strain) => dispatch(setStrainDisplay(strain)),
+    onSetSelectedStrainsEntries: (entries) => dispatch(setSelectedStrainsEntries(entries))
 })
 
 

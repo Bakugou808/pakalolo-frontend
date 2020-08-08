@@ -1,3 +1,5 @@
+import { fetchCollection } from './collectionActions'
+
 const token = () => localStorage.getItem("token");
 
 
