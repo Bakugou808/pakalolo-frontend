@@ -100,7 +100,7 @@ function CollectionTable(props) {
     const [query, setQuery] = useState('')
     const [columnToQuery, setColumnToQuery] = useState('name')
     const [showTable, setShowTable] = useState(true)
-    const [page, setPage] = React.useState(1);
+    const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
     const [selected, setSelected] = React.useState([]);
@@ -208,11 +208,11 @@ function CollectionTable(props) {
                             />
 
                         </FormGroup>
-                        <Tooltip title="Add Strain" aria-label="add" className={classes.block} onClick={()=>redirect('')}>
+                        {/* <Tooltip title="Add Strain" aria-label="add" className={classes.block} onClick={()=>redirect('')}>
                             <Fab color="primary" className={classes.fab}>
                                 <AddIcon />
                             </Fab>
-                        </Tooltip>
+                        </Tooltip> */}
 
                     </div>
                 </Grid>
