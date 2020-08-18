@@ -7,6 +7,7 @@ import Collapse from '@material-ui/core/Collapse';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import { setEntryDisplay } from '../../actions/entriesActions'
+import EntryForm from './EntryForm'
 
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
@@ -138,9 +139,8 @@ const EnhancedTableToolbar = (props) => {
     const classes = useToolbarStyles();
     const { numSelected, setForm } = props;
 
-    const setForm2 = (x)=> {
-        setForm(x)
-        console.log('setform')
+    const showForm = ()=> {
+        setForm(true)
     }
 
     return (
@@ -167,8 +167,8 @@ const EnhancedTableToolbar = (props) => {
                 </Tooltip>
             ) : (
                     <Tooltip title="Add Entry">
-                        <IconButton aria-label="add entry" >
-                            <AddIcon onCLick={setForm2(true)}/>
+                        <IconButton aria-label="add entry"  >
+                            <AddIcon onClick={showForm}/>
                         </IconButton>
                     </Tooltip>
                 )}
@@ -206,8 +206,8 @@ const useStyles = makeStyles((theme) => ({
 
 function EntriesTable(props) {
     const classes = useStyles();
-    const { onSetEntry, entriesForStrain } = props
-    const [open, setOpen] = React.useState(false);
+    const { onSetEntry, entriesForStrain, collection } = props
+    const [open, setOpen] = React.useState({0: false});
     const [form, setForm] = React.useState(false);
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('calories');
@@ -234,7 +234,7 @@ function EntriesTable(props) {
     const handleClick = (event, name) => {
         const selectedIndex = selected.indexOf(name);
         let newSelected = [];
-
+        // debugger
         if (selectedIndex === -1) {
             newSelected = newSelected.concat(selected, name);
         } else if (selectedIndex === 0) {
@@ -264,6 +264,20 @@ function EntriesTable(props) {
         setDense(event.target.checked);
     };
 
+    const setCollapse = (index) => {
+     
+        if (open[index]){
+            open[index] = false
+            setOpen((prev)=> ({...prev}))
+            
+        } else {
+            open[index] = true
+            setOpen((prev)=> ({...prev}))
+            
+        }
+    }
+    
+
     const isSelected = (name) => selected.indexOf(name) !== -1;
 
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, entriesForStrain.length - page * rowsPerPage);
@@ -292,41 +306,42 @@ function EntriesTable(props) {
                             {stableSort(entriesForStrain, getComparator(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row, index) => {
-                                    const isItemSelected = isSelected(row.name);
+                                    const isItemSelected = isSelected(index);
                                     const labelId = `enhanced-table-checkbox-${index}`;
 
                                     return (
                                         <>
                                             <TableRow
                                                 hover
-                                                // onClick={(event) => handleClick(event, row.name)}
+                                                // onClick={(event) => handleClick(event, index)}
                                                 role="checkbox"
                                                 aria-checked={isItemSelected}
                                                 tabIndex={-1}
                                                 key={row.name}
                                                 selected={isItemSelected}
                                             >
-                                                <TableCell padding="checkbox" onClick={(event) => handleClick(event, row.name)}>
+                                                <TableCell padding="checkbox" >
                                                     <Checkbox
                                                         checked={isItemSelected}
                                                         inputProps={{ 'aria-labelledby': labelId }}
+                                                        onClick={(event) => handleClick(event, index)}
                                                     />
                                                 </TableCell>
                                                 <TableCell>
-                                                    <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
-                                                        {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                                                    <IconButton aria-label="expand row" size="small" onClick={() => setCollapse(index)}>
+                                                        {open[index] ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                                                     </IconButton>
                                                 </TableCell>
-                                                {/* <TableCell component="th" id={labelId} scope="row" padding="none">
-                                                {row.name}
-                                            </TableCell> */}
+                                                <TableCell component="th" id={labelId} scope="row" padding="none">
+                                                {row.vendor.name}
+                                                </TableCell>
                                                 <TableCell align="left">{row.vendor.name}</TableCell>
                                                 <TableCell align="left">{row.rating}</TableCell>
                                                 <TableCell align="left">{new Date(row.created_at).toDateString()}</TableCell>
                                             </TableRow>
                                             <TableRow>
                                                 <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-                                                    <Collapse in={open} timeout="auto" unmountOnExit>
+                                                    <Collapse in={open[index]} timeout="auto" unmountOnExit>
                                                         <Box margin={1}>
                                                             <Typography variant="h6" gutterBottom component="div">
                                                                 Review
@@ -373,7 +388,9 @@ function EntriesTable(props) {
                             New Entry
                       </Modal.Title>
                     </Modal.Header>
-                    <Modal.Body>WILL ADD A FORM HERE...</Modal.Body>
+                    <Modal.Body>
+                        <EntryForm closeForm={setForm} collection={collection}/> 
+                    </Modal.Body>
                 </Modal>
             }
         </div>

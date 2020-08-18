@@ -56,7 +56,7 @@ export const postEntryRequest = () => {
 export const postEntrySuccess = (entry) => {
     return {
         type: 'POST_ENTRY_SUCCESS',
-        entry: entry,
+        entry: entry, 
     }
 }
 
@@ -88,6 +88,92 @@ export const postEntry = (data, dispatch) => {
 }
 
 
+// -------***** PATCH Actions *****------------------*******************-------------
+// -------***** PATCH Actions *****------------------*******************-------------
+
+export const patchEntryRequest = () => {
+    return {
+        type: 'PATCH_ENTRY_REQUEST'
+    }
+}
+
+export const patchEntrySuccess = (entry) => {
+    return {
+        type: 'PATCH_ENTRY_SUCCESS',
+        entry: entry,
+    }
+}
+
+export const patchEntryFailure = (error) => {
+    return {
+        type: 'PATCH_ENTRY_FAILURE',
+        error: error,
+    }
+}
+
+// -------***** PATCH FETCH REQUEST *****------------------*******************-------------
+
+export const patchEntry = (data, entryId, dispatch) => {
+    dispatch(patchEntryRequest())
+    fetch(`http://localhost:3000/entries/${entryId}`, {
+        method: "PATCH",
+        headers: headers(),
+        body: JSON.stringify(data)
+
+    }).then(res => res.json())
+        .then(data => {
+            if (data.error) {
+                dispatch(patchEntryFailure(data.error))
+            } else {
+                dispatch(patchEntrySuccess(data))
+                dispatch(openSnackBarEntryAdded())
+            }
+        })
+}
+
+// ----------DELETE ENTRY ACTIONS-------  *****************************
+// ----------DELETE ENTRY ACTIONS-------  *****************************
+
+export const deleteEntryRequest = () => {
+    return {
+        type: 'DELETE_ENTRY_REQUEST'
+    }
+}
+
+export const deleteEntrySuccess = (entryId) => {
+    return {
+        type: 'DELETE_ENTRY_SUCCESS',
+        entryId: entryId,
+    }
+}
+
+export const deleteEntryFailure = (error) => {
+    return {
+        type: 'DELETE_ENTRY_FAILURE',
+        error: error,
+    }
+}
+
+// --------DELETE ENTRY FETCH FUNCTION---------  ********************************
+
+export const deleteEntry = (entryId, dispatch) => {
+    dispatch(deleteEntryRequest())
+    console.log(entryId)
+    fetch(`http://localhost:3000/entries/${entryId}`, {
+        method: 'DELETE',
+        headers: headers(),
+    })
+        .then(res=>res.json())
+        .then(data => {
+            if (data.error){
+                dispatch(deleteEntryFailure(data.error))
+            } else {
+                console.log('indelete success')
+                dispatch(deleteEntrySuccess(data))
+            }
+        }) 
+}
+
 // -------***** ALL ENTRIES GET REQUEST ACTIONS *****------------------*******************-------------
 // -------***** ALL ENTRIES GET REQUEST ACTIONS *****------------------*******************-------------
 
@@ -97,10 +183,10 @@ export const fetchEntriesRequest = () => {
     }
 }
 
-export const fetchEntriesSuccess = (data) => {
+export const fetchEntriesSuccess = (entries) => {
     return {
         type: 'FETCH_ENTRIES_SUCCESS',
-        collection: data,
+        entries: entries,
     }
 }
 

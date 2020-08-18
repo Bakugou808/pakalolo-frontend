@@ -130,7 +130,7 @@ function StrainPage(props) {
             </TabPanel>
             {/* Tab 2: Lab Results */}
             <TabPanel value={value} index={1}>
-                <Entries />
+                <Entries collection={strain}/>
                 {/* {strain.cannabinoidList} */}
             </TabPanel>
             {/* Strain entries for logged in user */}

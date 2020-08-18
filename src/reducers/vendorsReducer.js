@@ -1,29 +1,29 @@
 const initialState = {
-    selectedStrainsEntries: [],
+    // selectedStrainsEntries: [],
     fetching: false,
     error: false,
-    selectedEntry: null,
-    snackBarSuccessDisplay: false,
-    allEntries: []
+    // selectedEntry: null,
+    // snackBarSuccessDisplay: false,
+    allVendors: []
 }
-
-const entriesReducer = (state = initialState, action) => {
+ 
+const vendorsReducer = (state = initialState, action) => {
 
 
     switch (action.type) {
 
         // ----------****** UI ACTIONS ******-----------
 
-        case 'SET_ENTRY_DISPLAY':
-            return {
-                ...state,
-                selectedEntry: action.entry
-            }
-        case 'SET_SELECTED_STRAINS_ENTRIES':
-            return {
-                ...state,
-                selectedStrainsEntries: action.entries
-            }
+        // case 'SET_ENTRY_DISPLAY':
+        //     return {
+        //         ...state,
+        //         selectedEntry: action.entry
+        //     }
+        // case 'SET_SELECTED_STRAINS_ENTRIES':
+        //     return {
+        //         ...state,
+        //         selectedStrainsEntries: action.entries
+        //     }
         // case 'SET_STRAIN_DISPLAY':
         //     return {
         //         ...state,
@@ -43,21 +43,21 @@ const entriesReducer = (state = initialState, action) => {
 
         // ----------****** ASYNC ACTIONS ******-----------
 
-        // ----------FETCH ENTRIES-------  *****************************
+        // ----------FETCH VENDORS-------  *****************************
 
-        case 'FETCH_ENTRIES_REQUEST':
+        case 'FETCH_VENDORS_REQUEST':
             return {
                 ...state,
                 fetching: true
             }
-        case 'FETCH_ENTRIES_SUCCESS':
+        case 'FETCH_VENDORS_SUCCESS':
 
             return {
                 ...state,
                 fetching: false,
-                allEntries: action.entries
+                allVendors: action.vendors
             }
-        case 'FETCH_ENTRIES_FAILURE':
+        case 'FETCH_VENDORS_FAILURE':
 
             return {
                 ...state,
@@ -65,75 +65,74 @@ const entriesReducer = (state = initialState, action) => {
                 error: action.error
             }
 
-        // ----------ADD ENTRY-------  *****************************
+        // ----------ADD VENDOR-------  *****************************
 
-        case 'POST_ENTRY_REQUEST':
+        case 'POST_VENDOR_REQUEST':
             return {
                 ...state,
                 fetching: true
             }
-        case 'POST_ENTRY_FAILURE':
+        case 'POST_VENDOR_FAILURE':
 
             return {
                 ...state,
                 fetching: false,
                 error: action.error
             }
-        case 'POST_ENTRY_SUCCESS':
+        case 'POST_VENDOR_SUCCESS':
 
             return {
                 ...state,
                 fetching: false,
-                allEntries: [...state.allEntries, action.entry],
-                selectedStrainsEntries: [...state.selectedStrainsEntries, action.entry]
+                allVendors: [...state.allVendors, action.vendor],
                 // selectedStrain: action.strain
             }
 
-        // ----------PATCH ENTRY-------  *****************************
+        // ----------PATCH VENDOR-------  *****************************
 
 
-        case 'PATCH_ENTRY_REQUEST':
+        case 'PATCH_VENDOR_REQUEST':
             return {
                 ...state,
                 fetching: true
             }
-        case 'PATCH_ENTRY_FAILURE':
+        case 'PATCH_VENDOR_FAILURE':
 
             return {
                 ...state,
                 fetching: false,
                 error: action.error
             }
-        case 'PATCH_ENTRY_SUCCESS':
+        case 'PATCH_VENDOR_SUCCESS':
 
             return {
                 ...state,
                 fetching: false,
-                allEntries: [...[...state.allEntries.filter(entry => entry.id != action.entry.id)], action.entry]
+                allVendors: [...[...state.allVendors.filter(vendor => vendor.id != action.vendor.id)], action.vendor]
                 // [...state.allEntries, action.entry],
                 // selectedStrain: action.strain
             }
 
         // ----------DELETE ENTRY-------  *****************************
 
-        case 'DELETE_ENTRY_REQUEST':
+        case 'DELETE_VENDOR_REQUEST':
             return {
                 ...state,
                 fetching: true
             }
-        case 'DELETE_ENTRY_FAILURE':
+        case 'DELETE_VENDOR_FAILURE':
 
             return {
                 ...state,
                 fetching: false,
                 error: action.error
             }
-        case 'DELETE_ENTRY_SUCCESS':
+        case 'DELETE_VENDOR_SUCCESS':
 
             return {
                 ...state,
                 fetching: false,
-                allEntries: state.allEntries.filter(entry => entry.id != action.entryId),
+                allVendors: state.allVendors.filter(vendor => vendor.id != action.vendorId),
                 // gigsForService: state.gigsForService.filter(gig => gig.id != action.gigId)
             }
 
@@ -143,4 +142,4 @@ const entriesReducer = (state = initialState, action) => {
     }
 }
 
-export default entriesReducer
+export default vendorsReducer

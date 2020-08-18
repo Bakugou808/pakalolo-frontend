@@ -3,6 +3,8 @@ import { api } from "../../services/api";
 import { fetchCurrentUser, fetchCurrentUserSuccess } from '../../actions/authActions'
 import { fetchStrains } from '../../actions/strainActions'
 import { fetchCollection } from '../../actions/collectionActions'
+import { fetchVendors } from '../../actions/vendorActions'
+
 import {connect} from 'react-redux'
 import {Redirect} from 'react-router-dom'
 
@@ -43,6 +45,8 @@ import {Redirect} from 'react-router-dom'
             } else {
               this.setState({authorized: true, pending: false}, ()=> this.props.onFetchCurrentUserSuccess(resp))
               this.props.onFetchCollection(localStorage.userId)
+              this.props.onFetchVendors(localStorage.userId)
+
             }
           })
         }
@@ -70,7 +74,9 @@ import {Redirect} from 'react-router-dom'
       onFetchCurrentUser: ()=> fetchCurrentUser(dispatch), 
       onFetchCurrentUserSuccess: (user)=> dispatch(fetchCurrentUserSuccess(user)),
       onFetchStrains: () => fetchStrains(dispatch),
-      onFetchCollection: (userId) => fetchCollection(userId, dispatch)
+      onFetchCollection: (userId) => fetchCollection(userId, dispatch),
+      onFetchVendors: (userId) => fetchVendors(userId, dispatch)
+
     }
   }
 

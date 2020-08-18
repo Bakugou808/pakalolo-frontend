@@ -69,8 +69,8 @@ const collectionReducer = (state = initialState, action) => {
             return {
                 ...state,
                 fetching: false,
-                totalCollection: [...state.totalCollection, action.strain],
-                selectedStrain: action.strain
+                // totalCollection: [...state.totalCollection, action.strain],
+                // selectedStrain: action.strain
             }
 
         default:
