@@ -66,7 +66,7 @@ const Collection = (props) => {
 const mapStateToProps = (store) => {
     return {
         collection: store.collection.totalCollection,
-        selectedStrain: store.collection.selectedStrain,
+        selectedStrain: store.collection.selectedStrain, 
         
 
     }

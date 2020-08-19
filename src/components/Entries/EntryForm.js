@@ -96,21 +96,6 @@ export const EntryForm = (props) => {
             <div>
                 {state.error ? <h1>Try again...</h1> : null}
                 <div className="form-group">
-                    {/* <label>Search Vendors</label>
-                    <label onClick={handleNewVendor} style={newVendorStyle}>/New Vendor</label>
-                    {(!this.state.newVendor && !this.state.edit) && <Autocomplete suggestions={this.suggestions()} setVendor={this.setVendor} />}
-                    {this.state.newVendor && <VendorForm handleClick={this.handleNewVendor} />}
-                    {this.state.edit && <Autocomplete vendor={this.entry.vendor} suggestions={this.suggestions()} setVendor={this.setVendor} />} */}
-                    {/* <Autocomplete
-                        {...defaultProps}
-                        id="auto-select"
-                        autoSelect
-                        onChange={(event, newValue) => {
-                            setValue(newValue)
-                            setState((prevState) => ({...prevState, fields: {...prevState.fields, collection_id: collection.id, vendor_id: newValue.id}}));
-                          }}
-                        renderInput={(params) => <TextField {...params} label="Select Vendor" margin="normal" required   />}
-                    /> */}
                     <Button onClick={handleNewVendor} style={newVendorStyle}>New Vendor</Button>
                     {state.newVendor ? <VendorForm setState={setState} /> : <Autocomplete
                         {...defaultProps}

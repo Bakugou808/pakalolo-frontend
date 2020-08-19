@@ -14,9 +14,11 @@ const collectionReducer = (state = initialState, action) => {
         // ----------****** UI ACTIONS ******-----------
 
         case 'SET_STRAIN_DISPLAY':
+            let strain = state.totalCollection.filter(collection => collection.strain.id === action.strain.id)
+
             return {
                 ...state,
-                selectedStrain: action.strain
+                selectedStrain: strain[0]
             }
 
         case 'DISPLAY_SNACKBAR_ADD_SUCCESS':

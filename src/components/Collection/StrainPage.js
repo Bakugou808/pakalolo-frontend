@@ -69,11 +69,12 @@ function StrainPage(props) {
     const classes = useStyles();
     const classes2 = useStyles2();
     const [value, setValue] = React.useState(0);
-    const { strain } = props
+    const { collection } = props
+    const { strain } = collection
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
-
+     
     return (
         <div className={classes.root}>
             <Typography variant="h6" gutterBottom component="div">
@@ -130,7 +131,7 @@ function StrainPage(props) {
             </TabPanel>
             {/* Tab 2: Lab Results */}
             <TabPanel value={value} index={1}>
-                <Entries collection={strain}/>
+                <Entries collection={collection}/>
                 {/* {strain.cannabinoidList} */}
             </TabPanel>
             {/* Strain entries for logged in user */}
@@ -143,7 +144,7 @@ function StrainPage(props) {
 
 const mapStateToProps = (store) => {
     return {
-        strain: store.collection.selectedStrain
+        collection: store.collection.selectedStrain
     }
 }
 const mapDispatchToProps = (store) => {
