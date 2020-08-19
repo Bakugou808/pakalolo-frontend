@@ -51,11 +51,13 @@ const entriesReducer = (state = initialState, action) => {
                 fetching: true
             }
         case 'FETCH_ENTRIES_SUCCESS':
-
+            const data0 = action.entries 
+            const sorted0 = data0.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
             return {
                 ...state,
                 fetching: false,
-                allEntries: action.entries
+                allEntries: action.entries,
+                selectedStrainsEntries: [...sorted0]
             }
         case 'FETCH_ENTRIES_FAILURE':
 
@@ -80,12 +82,14 @@ const entriesReducer = (state = initialState, action) => {
                 error: action.error
             }
         case 'POST_ENTRY_SUCCESS':
+            const data1 = [...state.selectedStrainsEntries, action.entry]
+            const sorted1 = data1.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
 
             return {
                 ...state,
                 fetching: false,
                 allEntries: [...state.allEntries, action.entry],
-                selectedStrainsEntries: [...state.selectedStrainsEntries, action.entry]
+                selectedStrainsEntries: [...sorted1]
                 // selectedStrain: action.strain
             }
 
@@ -105,11 +109,15 @@ const entriesReducer = (state = initialState, action) => {
                 error: action.error
             }
         case 'PATCH_ENTRY_SUCCESS':
-
+            const data = [...[...state.selectedStrainsEntries.filter(entry => entry.id != action.entry.id)], action.entry]
+            
+            const sorted = data.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
+            
             return {
                 ...state,
                 fetching: false,
-                allEntries: [...[...state.allEntries.filter(entry => entry.id != action.entry.id)], action.entry]
+                allEntries: [...[...state.allEntries.filter(entry => entry.id != action.entry.id)], action.entry],
+                selectedStrainsEntries: [...sorted]
                 // [...state.allEntries, action.entry],
                 // selectedStrain: action.strain
             }

@@ -29,7 +29,7 @@ function App() {
       {/* left drawer paths */}
       <Route path='/collection' render={props => <Collection {...props} /> } />
       <Route path='/lists' render={props => <Lists {...props} /> } />
-      <Route path='/entries' render={props => <Entries {...props} /> } />
+      <Route path='/entries' render={props => <Entries {...props} entriesPage={true} /> } />
       <Route path='/vendors' render={props => <Vendors {...props} /> } />
 
 

@@ -135,7 +135,7 @@ function CollectionTable(props) {
     const renderStrains = () => {
         let x
         if (query) {
-            x = displayed.filter(strain => strain[columnToQuery].toLowerCase().includes(query.toLowerCase()))
+            x = displayed.filter(object => object.strain[columnToQuery].toLowerCase().includes(query.toLowerCase()))
         } else {
             x = displayed
         }

@@ -4,17 +4,19 @@ import Modal from 'react-bootstrap/Modal';
 import { setEntryDisplay, postEntry, patchEntry } from '../../actions/entriesActions'
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import VendorForm from '../Vendors/VendorForm'
 
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
 
 export const EntryForm = (props) => {
-    const {collection} = props
+    const {collection, setSelected, onPatchEntry, onPostEntry, closeForm, entry, vendors} = props
 
     const [state, setState] = React.useState({
         edit: false,
         error: false,
         newEntry: false,
+        newVendor: false,
         fields: {
             vendor_id: '',
             collection_id: '',
@@ -26,72 +28,63 @@ export const EntryForm = (props) => {
 
 
     useEffect(() => {
-        if (props.entry) {
+        if (entry) {
             const { entry } = props
             setState({
                 edit: true, 
                 fields: {
                     vendor_id: entry.vendor_id,
-                    collection_id: entry.collection_id,
+                    collection_id: entry.collection.id,
                     rating: entry.rating,
                     review: entry.review,
                     smoke_list_id: entry.smoke_list_id,
                 }
             })
         }
-    })
+    }, [])
 
     const defaultProps = {
-        options: props.vendors,
+        options: vendors,
         getOptionLabel: (option) => option.name,
         // setVendor: (option) => setState((prevState) => ({...prevState, fields: {...prevState.fields, vendor_id: option.id}})),
 
     };
 
     const flatProps = {
-        options: props.vendors.map((option) => option.name),
+        options: vendors.map((option) => option.name),
     };
 
-    const [value, setValue] = React.useState(null);
+    // const [value, setValue] = React.useState(null);
 
     const handleChange = (e) => {
         const newFields = { ...state.fields, [e.target.name]: e.target.value };
-        setState({ fields: newFields })
+        setState((prev) => ({...prev, fields: newFields }))
     }
 
 
-    const handleSubmit = e => {
+    const handleSubmit = (e) => {
         e.preventDefault();
+        
         if (state.edit) {
-            props.onPatchEntry(state.fields, props.entry.id)
+            onPatchEntry(state.fields, entry.id)
+            setSelected([])
         } else {
-            props.onPostEntry(state.fields)
+            onPostEntry(state.fields)
         }
-        props.closeForm()
+        closeForm()
     };
 
 
-    // const setVendor = (vendorInfo) => {
-    //     const { vendors, service } = props
-    //     const vendorName = vendorInfo
-
-    //     const vendor = vendors.filter(vendor => vendor.name === vendorName)
-
-    //     if (vendor.id) {
-    //         setState(prev => ({ fields: { ...prev.fields, vendor_id: vendor.id } }))
-    //     }
-    // }
-
     const handleNewVendor = () => {
-        setState(prev => ({ newVendor: !prev.newVendor }))
-    }
+        setState(prev => ({ ...prev, newVendor: !prev.newVendor }))
 
-    const handleVendor = (e) => {
-        console.log(e.target)
     }
 
 
-    const { rating, review, vendor_id } = state.fields
+
+    const { rating, review, vendor_id } = state.fields  
+
+
     const newVendorStyle = {
         'cursor': 'pointer'
     }
@@ -107,8 +100,8 @@ export const EntryForm = (props) => {
                     <label onClick={handleNewVendor} style={newVendorStyle}>/New Vendor</label>
                     {(!this.state.newVendor && !this.state.edit) && <Autocomplete suggestions={this.suggestions()} setVendor={this.setVendor} />}
                     {this.state.newVendor && <VendorForm handleClick={this.handleNewVendor} />}
-                    {this.state.edit && <Autocomplete vendor={this.props.entry.vendor} suggestions={this.suggestions()} setVendor={this.setVendor} />} */}
-                    <Autocomplete
+                    {this.state.edit && <Autocomplete vendor={this.entry.vendor} suggestions={this.suggestions()} setVendor={this.setVendor} />} */}
+                    {/* <Autocomplete
                         {...defaultProps}
                         id="auto-select"
                         autoSelect
@@ -117,9 +110,18 @@ export const EntryForm = (props) => {
                             setState((prevState) => ({...prevState, fields: {...prevState.fields, collection_id: collection.id, vendor_id: newValue.id}}));
                           }}
                         renderInput={(params) => <TextField {...params} label="Select Vendor" margin="normal" required   />}
-                    />
+                    /> */}
                     <Button onClick={handleNewVendor} style={newVendorStyle}>New Vendor</Button>
-                    {/* {state.newVendor && <VendorForm handleClick={handleNewVendor} />} */}
+                    {state.newVendor ? <VendorForm setState={setState} /> : <Autocomplete
+                        {...defaultProps}
+                        id="auto-select"
+                        autoSelect
+                        onChange={(event, newValue) => {
+                            // setValue(newValue)
+                            setState((prevState) => ({...prevState, fields: {...prevState.fields, collection_id: collection.id, vendor_id: newValue.id}}));
+                          }}
+                        renderInput={(params) => <TextField {...params} label={entry ? entry.vendor.name : "Select Vendor"} margin="normal" required   />}
+                    />}
                 </div>
                 <form className="signup-form" onSubmit={handleSubmit}>
 
@@ -131,15 +133,10 @@ export const EntryForm = (props) => {
                         <label>Review</label>
                         <input className="form-control" type="name" name="review" value={review} required onChange={handleChange} />
                     </div>
-                    {/* <div className="form-group">
-                <label>Amount Due</label>
-                <input className="form-control" type="number" name="amount_due" value={amount_due} required onChange={handleChange}/>
-            </div> */}
+                    
                 </form>
 
-
                 <button className="btn btn-info" type="submit" onClick={handleSubmit}>Submit</button>
-                {/* </form> */}
             </div>
         )
     

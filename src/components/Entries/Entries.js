@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux'
 import { AuthHOC } from '../HOCs/AuthHOC'
+import {headers} from '../../actions/entriesActions'
 import Modal from 'react-bootstrap/Modal';
 import Box from '@material-ui/core/Box';
 import Collapse from '@material-ui/core/Collapse';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import { setEntryDisplay } from '../../actions/entriesActions'
+import { setEntryDisplay, patchEntry, deleteEntry, fetchEntries} from '../../actions/entriesActions'
 import EntryForm from './EntryForm'
 
 import PropTypes from 'prop-types';
@@ -31,6 +32,8 @@ import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import AddIcon from '@material-ui/icons/Add';
+import EditIcon from '@material-ui/icons/Edit';
+
 
 
 
@@ -65,7 +68,7 @@ const headCells = [
     { id: 'collapse', numeric: false, disablePadding: false, label: 'Expand' },
     { id: 'vendor', numeric: false, disablePadding: false, label: 'Vendor' },
     { id: 'rating', numeric: true, disablePadding: false, label: 'Rating (0-5)' },
-    { id: 'created', numeric: false, disablePadding: false, label: 'Created' },
+    { id: 'updated_at', numeric: false, disablePadding: false, label: 'Last Modified' },
 
 ];
 
@@ -137,9 +140,9 @@ const useToolbarStyles = makeStyles((theme) => ({
 
 const EnhancedTableToolbar = (props) => {
     const classes = useToolbarStyles();
-    const { numSelected, setForm } = props;
+    const { numSelected, setForm, handleDelete, handleEdit } = props;
 
-    const showForm = ()=> {
+    const showForm = () => {
         setForm(true)
     }
 
@@ -160,15 +163,43 @@ const EnhancedTableToolbar = (props) => {
                 )}
 
             {numSelected > 0 ? (
-                <Tooltip title="Delete">
-                    <IconButton aria-label="delete">
-                        <DeleteIcon />
-                    </IconButton>
-                </Tooltip>
+                numSelected > 1 ? (
+                    <>
+                        <Tooltip title="Delete">
+                            <IconButton aria-label="delete">
+                                <DeleteIcon onClick={handleDelete} />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Add To Smoke List">
+                            <IconButton aria-label="addToSmokeList">
+                                <AddIcon />
+                            </IconButton>
+                        </Tooltip>
+                    </>
+                ) : (
+                        <>
+                            <Tooltip title="Delete">
+                                <IconButton aria-label="delete">
+                                    <DeleteIcon onClick={handleDelete} />
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Edit">
+                                <IconButton aria-label="edit">
+                                    <EditIcon onClick={handleEdit} />
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Add To Smoke List">
+                                <IconButton aria-label="addToSmokeList">
+                                    <AddIcon />
+                                </IconButton>
+                            </Tooltip>
+                        </>
+                    )
+
             ) : (
                     <Tooltip title="Add Entry">
                         <IconButton aria-label="add entry"  >
-                            <AddIcon onClick={showForm}/>
+                            <AddIcon onClick={showForm} />
                         </IconButton>
                     </Tooltip>
                 )}
@@ -206,8 +237,8 @@ const useStyles = makeStyles((theme) => ({
 
 function EntriesTable(props) {
     const classes = useStyles();
-    const { onSetEntry, entriesForStrain, collection } = props
-    const [open, setOpen] = React.useState({0: false});
+    const { onSetEntry, entriesForStrain, collection, onEditEntry, onDeleteEntry, entriesPage, onFetchEntries } = props
+    const [open, setOpen] = React.useState({ 0: false });
     const [form, setForm] = React.useState(false);
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('calories');
@@ -215,6 +246,27 @@ function EntriesTable(props) {
     const [page, setPage] = React.useState(0);
     const [dense, setDense] = React.useState(false);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [edit, setEdit] = React.useState(false)
+    const [entries, setEntries] = React.useState([])
+
+    useEffect(() => {
+        const userId = localStorage.userId
+        if (entriesPage) {
+            // fetch(`http://localhost:3000/users_entries/${userId}`, {
+            //     headers: headers()
+            // }).then(res => res.json())
+            //     .then(data => {
+            //         if (data.error) {
+            //             // dispatch(fetchEntriesFailure(data.error))
+            //         } else {
+            //             console.log('in useEffect entries', data)
+            //             // dispatch(fetchEntriesSuccess(data))
+            //             setEntries(data)
+            //         }
+            //     })
+            onFetchEntries(userId)
+        } 
+    }, [])
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -265,19 +317,33 @@ function EntriesTable(props) {
     };
 
     const setCollapse = (index) => {
-     
-        if (open[index]){
+
+        if (open[index]) {
             open[index] = false
-            setOpen((prev)=> ({...prev}))
-            
+            setOpen((prev) => ({ ...prev }))
+
         } else {
             open[index] = true
-            setOpen((prev)=> ({...prev}))
-            
+            setOpen((prev) => ({ ...prev }))
+
         }
     }
-    
 
+    const handleEdit = () => {
+        setForm(true)
+        setEdit(true)
+    }
+
+    const handleDelete = () => {
+        console.log('in entry delete')
+        entriesForStrain.forEach((entry, index) => {
+            selected.forEach((ind) => {
+                if (index === ind) {
+                    onDeleteEntry(entry.id)
+                }
+            })
+        })
+    }
     const isSelected = (name) => selected.indexOf(name) !== -1;
 
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, entriesForStrain.length - page * rowsPerPage);
@@ -285,7 +351,7 @@ function EntriesTable(props) {
     return (
         <div className={classes.root}>
             <Paper className={classes.paper}>
-                <EnhancedTableToolbar numSelected={selected.length} setForm={setForm} />
+                <EnhancedTableToolbar numSelected={selected.length} handleDelete={handleDelete} handleEdit={handleEdit} setForm={setForm} />
                 <TableContainer>
                     <Table
                         className={classes.table}
@@ -308,7 +374,7 @@ function EntriesTable(props) {
                                 .map((row, index) => {
                                     const isItemSelected = isSelected(index);
                                     const labelId = `enhanced-table-checkbox-${index}`;
-
+                                    // debugger 
                                     return (
                                         <>
                                             <TableRow
@@ -332,12 +398,12 @@ function EntriesTable(props) {
                                                         {open[index] ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                                                     </IconButton>
                                                 </TableCell>
-                                                <TableCell component="th" id={labelId} scope="row" padding="none">
+                                                {/* <TableCell component="th" id={labelId} scope="row" padding="none">
                                                 {row.vendor.name}
-                                                </TableCell>
+                                                </TableCell> */}
                                                 <TableCell align="left">{row.vendor.name}</TableCell>
                                                 <TableCell align="left">{row.rating}</TableCell>
-                                                <TableCell align="left">{new Date(row.created_at).toDateString()}</TableCell>
+                                                <TableCell align="left">{new Date(row.updated_at).toDateString()}</TableCell>
                                             </TableRow>
                                             <TableRow>
                                                 <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -383,17 +449,32 @@ function EntriesTable(props) {
                     onHide={() => setForm(false)}
                     aria-labelledby="example-modal-sizes-title-lg"
                 >
-                    <Modal.Header closeButton>
-                        <Modal.Title id="example-modal-sizes-title-lg">
-                            New Entry
-                      </Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <EntryForm closeForm={setForm} collection={collection}/> 
-                    </Modal.Body>
+                    {edit ?
+                        <>
+                            <Modal.Header closeButton>
+                                <Modal.Title id="example-modal-sizes-title-lg">
+                                    Edit Entry
+                            </Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                <EntryForm closeForm={setForm} collection={collection} entry={entriesForStrain[selected[0]]} setSelected={setSelected} />
+                            </Modal.Body>
+                        </>
+                        :
+                        <>
+                            <Modal.Header closeButton>
+                                <Modal.Title id="example-modal-sizes-title-lg">
+                                    New Entry
+                            </Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                <EntryForm closeForm={setForm} collection={collection} />
+                            </Modal.Body>
+                        </>
+                    }
                 </Modal>
             }
-        </div>
+        </div >
     );
 }
 
@@ -401,10 +482,14 @@ function EntriesTable(props) {
 const mapStateToProps = (store) => ({
     selectedEntry: store.entries.selectedEntry,
     entriesForStrain: store.entries.selectedStrainsEntries,
+    allEntries: store.entries.allEntries
 })
 
 const mapDispatchToProps = (dispatch) => ({
     onSetEntry: (entry) => dispatch(setEntryDisplay(entry)),
+    onEditEntry: (entryData, entryId) => patchEntry(entryData, entryId, dispatch),
+    onDeleteEntry: (entryId) => deleteEntry(entryId, dispatch),
+    onFetchEntries: (userId) => fetchEntries(userId, dispatch)
 })
 
 
