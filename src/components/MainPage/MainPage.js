@@ -1,11 +1,52 @@
-import React from 'react'
+import { connect } from "react-redux";
+import { fetchCurrentUser } from '../../actions/authActions'
 
-const MainPage = () => {
-    return (
-        <div>
-            I am a Main Page
-        </div>
-    )
+import React, { Component } from 'react'
+import StrainTable from './StrainTable'
+import { fetchStrains } from '../../actions/strainActions'
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Typography from '@material-ui/core/Typography';
+import Container from '@material-ui/core/Container';
+
+class MainPage extends Component {
+
+
+    state = {
+        showTable: false,
+    }
+
+    componentDidMount() {
+        const { onFetchStrains, onFetchCurrentUser } = this.props
+        onFetchCurrentUser()
+        onFetchStrains()
+    }
+
+    
+    render() {
+
+        return (
+            <React.Fragment>
+                <CssBaseline />
+                <Container maxWidth="md">
+                {this.props.strains && <StrainTable strains={this.props.strains} />}
+                </Container>
+            </React.Fragment>
+        )
+    }
 }
 
-export default MainPage
+const mapStateToProps = (store) => {
+    return {
+        strains: store.strains.allStrains
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onFetchStrains: () => { fetchStrains(dispatch) },
+        onFetchCurrentUser: () => fetchCurrentUser(dispatch)
+
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(MainPage)

@@ -1,6 +1,10 @@
 import React, { Fragment } from "react";
 import { api } from "../../services/api";
 import { fetchCurrentUser, fetchCurrentUserSuccess } from '../../actions/authActions'
+import { fetchStrains } from '../../actions/strainActions'
+import { fetchCollection } from '../../actions/collectionActions'
+import { fetchVendors } from '../../actions/vendorActions'
+
 import {connect} from 'react-redux'
 import {Redirect} from 'react-router-dom'
 
@@ -21,12 +25,13 @@ import {Redirect} from 'react-router-dom'
           return <WrappedComponent {...this.props} />
         } else {
           // return <Redirect to='/'/>
-          this.props.history.push('/')
+          this.props.history.push('/signin')
         }
       }
 
       componentDidMount() {
-          this.checkLogin()
+          this.checkLogin() 
+          this.props.onFetchStrains()
           
       }
   
@@ -34,13 +39,14 @@ import {Redirect} from 'react-router-dom'
         if (!localStorage.getItem("token")) {
           this.setState({pending: false, authorized: false})
         } else {
-          // fetchCurrentUser()
           api.auth.getCurrentUser().then(resp => {
             if(resp.error){
               this.setState({pending: false, authorized: false})
             } else {
-              // debugger
               this.setState({authorized: true, pending: false}, ()=> this.props.onFetchCurrentUserSuccess(resp))
+              this.props.onFetchCollection(localStorage.userId)
+              this.props.onFetchVendors(localStorage.userId)
+
             }
           })
         }
@@ -66,7 +72,11 @@ import {Redirect} from 'react-router-dom'
   const mapDispatchToProps = (dispatch) => {
     return {
       onFetchCurrentUser: ()=> fetchCurrentUser(dispatch), 
-      onFetchCurrentUserSuccess: (user)=> dispatch(fetchCurrentUserSuccess(user))
+      onFetchCurrentUserSuccess: (user)=> dispatch(fetchCurrentUserSuccess(user)),
+      onFetchStrains: () => fetchStrains(dispatch),
+      onFetchCollection: (userId) => fetchCollection(userId, dispatch),
+      onFetchVendors: (userId) => fetchVendors(userId, dispatch)
+
     }
   }
 
