@@ -54,7 +54,6 @@ export const EntryForm = (props) => {
         options: vendors.map((option) => option.name),
     };
 
-    // const [value, setValue] = React.useState(null);
 
     const handleChange = (e) => {
         const newFields = { ...state.fields, [e.target.name]: e.target.value };
@@ -69,7 +68,13 @@ export const EntryForm = (props) => {
             onPatchEntry(state.fields, entry.id)
             setSelected([])
         } else {
-            onPostEntry(state.fields)
+            
+            const newFields = {...state.fields, collection_id: collection.id,}
+            setState((prev)=> ({...prev, fields: newFields}))
+            
+            // onPostEntry(state.fields) this isn't updating for somereason?
+            onPostEntry(newFields)            
+            // setSelected([])
         }
         closeForm()
     };
@@ -89,7 +94,7 @@ export const EntryForm = (props) => {
         'cursor': 'pointer'
     }
 
-
+ 
  
 
         return (
@@ -103,7 +108,8 @@ export const EntryForm = (props) => {
                         autoSelect
                         onChange={(event, newValue) => {
                             // setValue(newValue)
-                            setState((prevState) => ({...prevState, fields: {...prevState.fields, collection_id: collection.id, vendor_id: newValue.id}}));
+                            
+                            setState((prevState) => ({...prevState, fields: {...prevState.fields, vendor_id: newValue.id}}));
                           }}
                         renderInput={(params) => <TextField {...params} label={entry ? entry.vendor.name : "Select Vendor"} margin="normal" required   />}
                     />}

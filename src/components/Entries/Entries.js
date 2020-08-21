@@ -140,7 +140,7 @@ const useToolbarStyles = makeStyles((theme) => ({
 
 const EnhancedTableToolbar = (props) => {
     const classes = useToolbarStyles();
-    const { numSelected, setForm, handleDelete, handleEdit } = props;
+    const { numSelected, setForm, handleDelete, handleEdit, entriesPage } = props;
 
     const showForm = () => {
         setForm(true)
@@ -176,7 +176,7 @@ const EnhancedTableToolbar = (props) => {
                             </IconButton>
                         </Tooltip>
                     </>
-                ) : (
+                ) : ( 
                         <>
                             <Tooltip title="Delete">
                                 <IconButton aria-label="delete">
@@ -197,6 +197,7 @@ const EnhancedTableToolbar = (props) => {
                     )
 
             ) : (
+                    !entriesPage && 
                     <Tooltip title="Add Entry">
                         <IconButton aria-label="add entry"  >
                             <AddIcon onClick={showForm} />
@@ -343,6 +344,7 @@ function EntriesTable(props) {
                 }
             })
         })
+        setSelected([])
     }
     const isSelected = (name) => selected.indexOf(name) !== -1;
 
@@ -351,7 +353,7 @@ function EntriesTable(props) {
     return (
         <div className={classes.root}>
             <Paper className={classes.paper}>
-                <EnhancedTableToolbar numSelected={selected.length} handleDelete={handleDelete} handleEdit={handleEdit} setForm={setForm} />
+                <EnhancedTableToolbar entriesPage={entriesPage} numSelected={selected.length} handleDelete={handleDelete} handleEdit={handleEdit} setForm={setForm} />
                 <TableContainer>
                     <Table
                         className={classes.table}
@@ -374,7 +376,7 @@ function EntriesTable(props) {
                                 .map((row, index) => {
                                     const isItemSelected = isSelected(index);
                                     const labelId = `enhanced-table-checkbox-${index}`;
-                                    debugger 
+                                     
                                     return (
                                         <>
                                             <TableRow
@@ -410,7 +412,7 @@ function EntriesTable(props) {
                                                     <Collapse in={open[index]} timeout="auto" unmountOnExit>
                                                         <Box margin={1}>
                                                             <Typography variant="h6" gutterBottom component="div">
-                                                                Review
+                                                                {row.strain.name} by {row.vendor.name} - Review
                                                         </Typography>
                                                             {row.review}
                                                         </Box>
@@ -444,7 +446,7 @@ function EntriesTable(props) {
             />
             {form &&
                 <Modal
-                    size="lg"
+                    size="lg" 
                     show={form}
                     onHide={() => setForm(false)}
                     aria-labelledby="example-modal-sizes-title-lg"
@@ -468,7 +470,7 @@ function EntriesTable(props) {
                             </Modal.Title>
                             </Modal.Header>
                             <Modal.Body>
-                                <EntryForm closeForm={setForm} collection={collection} />
+                                <EntryForm closeForm={setForm} setSelected={setSelected} collection={collection} />
                             </Modal.Body>
                         </>
                     }

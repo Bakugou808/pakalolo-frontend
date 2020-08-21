@@ -1,33 +1,33 @@
 const initialState = {
-    selectedStrainsEntries: [],
+    selectedEntriesForSmokeList: [],
     fetching: false,
     error: false,
-    selectedEntry: null,
+    selectedSmokeList: null,
     snackBarSuccessDisplay: false,
-    allEntries: []
+    allSmokeLists: []
 }
 
-const entriesReducer = (state = initialState, action) => {
+const smokeListReducer = (state = initialState, action) => {
 
 
     switch (action.type) {
 
         // ----------****** UI ACTIONS ******-----------
 
-        case 'SET_ENTRY_DISPLAY':
+        case 'SET_SMOKELIST_DISPLAY':
             return {
                 ...state,
-                selectedEntry: action.entry
+                selectedSmokeList: action.entry
             }
-        case 'SET_SELECTED_STRAINS_ENTRIES':
+        case 'SET_SELECTED_STRAINS_SMOKELISTS':
             return {
                 ...state,
-                selectedStrainsEntries: action.entries
+                selectedEntriesForSmokeList: action.entries
             }
         // case 'SET_STRAIN_DISPLAY':
         //     return {
         //         ...state,
-        //         selectedStrainsEntries: action.strain.entries
+        //         selectedEntriesForSmokeList: action.strain.entries
         //     }
 
         // case 'DISPLAY_SNACKBAR_ADD_SUCCESS':
@@ -45,21 +45,21 @@ const entriesReducer = (state = initialState, action) => {
 
         // ----------FETCH ENTRIES-------  *****************************
 
-        case 'FETCH_ENTRIES_REQUEST':
+        case 'FETCH_SMOKELISTS_REQUEST':
             return {
                 ...state,
                 fetching: true
             }
-        case 'FETCH_ENTRIES_SUCCESS':
-            const data0 = action.entries 
+        case 'FETCH_SMOKELISTS_SUCCESS':
+            const data0 = action.smokeLists 
             const sorted0 = data0.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
             return {
                 ...state,
                 fetching: false,
-                allEntries: action.entries,
-                selectedStrainsEntries: [...sorted0]
+                allSmokeLists: action.entries,
+                selectedEntriesForSmokeList: [...sorted0]
             }
-        case 'FETCH_ENTRIES_FAILURE':
+        case 'FETCH_SMOKELISTS_FAILURE':
 
             return {
                 ...state,
@@ -69,80 +69,79 @@ const entriesReducer = (state = initialState, action) => {
 
         // ----------ADD ENTRY-------  *****************************
 
-        case 'POST_ENTRY_REQUEST':
+        case 'POST_SMOKELIST_REQUEST':
             return {
                 ...state,
                 fetching: true
             }
-        case 'POST_ENTRY_FAILURE':
+        case 'POST_SMOKELIST_FAILURE':
 
             return {
                 ...state,
                 fetching: false,
                 error: action.error
             }
-        case 'POST_ENTRY_SUCCESS':
-            const data1 = [...state.selectedStrainsEntries, action.entry]
+        case 'POST_SMOKELIST_SUCCESS':
+            const data1 = [...state.selectedEntriesForSmokeList, action.smokeList]
             const sorted1 = data1.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
 
             return {
                 ...state,
                 fetching: false,
-                allEntries: [...state.allEntries, action.entry],
-                selectedStrainsEntries: [...sorted1]
+                allSmokeLists: [...state.allSmokeLists, action.smokeList],
+                selectedEntriesForSmokeList: [...sorted1]
                 // selectedStrain: action.strain
             }
 
         // ----------PATCH ENTRY-------  *****************************
 
 
-        case 'PATCH_ENTRY_REQUEST':
+        case 'PATCH_SMOKELIST_REQUEST':
             return {
                 ...state,
                 fetching: true
             }
-        case 'PATCH_ENTRY_FAILURE':
+        case 'PATCH_SMOKELIST_FAILURE':
 
             return {
                 ...state,
                 fetching: false,
                 error: action.error
             }
-        case 'PATCH_ENTRY_SUCCESS':
-            const data = [...[...state.selectedStrainsEntries.filter(entry => entry.id != action.entry.id)], action.entry]
+        case 'PATCH_SMOKELIST_SUCCESS':
+            const data = [...[...state.selectedEntriesForSmokeList.filter(entry => entry.id != action.entry.id)], action.entry]
             
             const sorted = data.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
             
             return {
                 ...state,
                 fetching: false,
-                allEntries: [...[...state.allEntries.filter(entry => entry.id != action.entry.id)], action.entry],
-                selectedStrainsEntries: [...sorted]
-                // [...state.allEntries, action.entry],
+                allSmokeLists: [...[...state.allSmokeLists.filter(entry => entry.id != action.entry.id)], action.entry],
+                selectedEntriesForSmokeList: [...sorted]
+                // [...state.allSmokeLists, action.entry],
                 // selectedStrain: action.strain
             }
 
         // ----------DELETE ENTRY-------  *****************************
 
-        case 'DELETE_ENTRY_REQUEST':
+        case 'DELETE_SMOKELIST_REQUEST':
             return {
                 ...state,
                 fetching: true
             }
-        case 'DELETE_ENTRY_FAILURE':
+        case 'DELETE_SMOKELIST_FAILURE':
 
             return {
                 ...state,
                 fetching: false,
                 error: action.error
             }
-        case 'DELETE_ENTRY_SUCCESS':
+        case 'DELETE_SMOKELIST_SUCCESS':
 
             return {
                 ...state,
                 fetching: false,
-                allEntries: state.allEntries.filter(entry => entry.id != action.entryId.id),
-                selectedStrainsEntries: state.selectedStrainsEntries.filter(entry => entry.id != action.entryId.id)
+                allSmokeLists: state.allSmokeLists.filter(entry => entry.id != action.entryId),
                 // gigsForService: state.gigsForService.filter(gig => gig.id != action.gigId)
             }
 
@@ -152,4 +151,4 @@ const entriesReducer = (state = initialState, action) => {
     }
 }
 
-export default entriesReducer
+export default smokeListReducer

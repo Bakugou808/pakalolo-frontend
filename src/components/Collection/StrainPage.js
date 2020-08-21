@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
@@ -9,8 +9,10 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
+import Chip from '@material-ui/core/Chip';
 import ChemChart from '../ChemChart'
 import Entries from '../Entries/Entries'
+import CommentComponent from '../Comments/CommentComponent'
 
 
 function TabPanel(props) {
@@ -65,20 +67,30 @@ const useStyles2 = makeStyles((theme) => ({
 }));
 
 
+
+
+
 function StrainPage(props) {
     const classes = useStyles();
     const classes2 = useStyles2();
     const [value, setValue] = React.useState(0);
-    const { collection } = props
+    const [comments, setComments] = useState(false)
+    const { collection, allComments } = props
+    const [renderedComments, setRenderedComments] = useState([{user: {username: 'jim mojnes'}, comment: {comment: `testing the comments ui`, rating: 5}}])
     const { strain } = collection
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
-     
+
+    
+
     return (
         <div className={classes.root}>
-            <Typography variant="h6" gutterBottom component="div">
-                {`${strain.name}: Strain Details`}
+            <Typography variant="h3" gutterBottom component="div">
+                <Paper className={classes2.root}>
+                    {`${strain.name}: Strain Details`}
+                </Paper>
+
             </Typography>
             <AppBar position="static">
                 <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
@@ -90,48 +102,85 @@ function StrainPage(props) {
             {/* Tab 1: Strain Description*/}
             <TabPanel value={value} index={0}>
                 <div className={classes2.root}>
-                    {strain && <Grid container spacing={3}>
-                        <Grid item xs={12} sm={6}>
-                            <Paper className={classes2.paper}>
-                                <ChemChart data={strain.cannabinoidList} cannabinoids={true} />
-                            </Paper>
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <Paper className={classes2.paper}>
-                                <ChemChart data={strain.terpeneList} cannabinoids={false} />
-                            </Paper>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Paper className={classes2.paper}>
-                                {strain.description}
-                            </Paper>
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <Paper className={classes2.paper}>
-                                Flavors: {strain.flavorList}
-                            </Paper>
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <Paper className={classes2.paper}>
-                                Positive: {strain.effects.positive.join(', ')}
-                            </Paper>
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <Paper className={classes2.paper}>
-                                Negative: {strain.effects.negative.join(', ')}
-                            </Paper>
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <Paper className={classes2.paper}>
-                                Medical/Treats: {strain.effects.medical.join(', ')}
-                            </Paper>
-                        </Grid>
-                    </Grid>}
+                    {strain &&
+                        <Grid container spacing={3}>
+                            <Grid item xs={12} >    
+                                <Paper className={classes2.root}>
+                                    {`${strain.name}: Strain Details`}
+                                </Paper>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <Paper className={classes2.paper}>
+                                    <ChemChart data={strain.cannabinoidList} cannabinoids={true} />
+                                </Paper>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <Paper className={classes2.paper}>
+                                    <ChemChart data={strain.terpeneList} cannabinoids={false} />
+                                </Paper>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Paper className={classes2.paper}>
+                                    {strain.description}
+                                </Paper>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <Paper className={classes2.paper}>
+                                    Flavors: {strain.flavorList}
+                                </Paper>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <Paper className={classes2.paper}>
+                                    Positive: {strain.effects.positive.join(', ')}
+                                </Paper>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <Paper className={classes2.paper}>
+                                    Negative: {strain.effects.negative.join(', ')}
+                                </Paper>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <Paper className={classes2.paper}>
+                                    Medical/Treats: {strain.effects.medical.join(', ')}
+                                </Paper>
+                            </Grid>
+                            <Grid item xs={12} >
+                                <Paper className={classes2.paper} onClick={()=>setComments(!comments)}>
+                                    
+                                    {comments ? 'Hide Comments' : "View Comments"}
+                                
+                                </Paper>
+                                {comments && 
+                                // <Paper className={classes2.paper}>
+                                //     {renderComments()}
+                                // </Paper>
+                                <CommentComponent renderedComments={renderedComments} />
+                                
+                                }
+                            </Grid>
+                            {/* <Grid item xs={12} >
+                                <Paper className={classes2.paper}>
+                                    Medical/Treats: {strain.effects.medical.join(', ')}
+                                </Paper>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <Paper className={classes2.paper}>
+                                    Negative: {strain.effects.negative.join(', ')}
+                                </Paper>
+                            </Grid> */}
+                            
+                        </Grid>}
                 </div>
             </TabPanel>
+            {/* Tab 2: Lab Results */}            {/* Tab 2: Lab Results */}
             {/* Tab 2: Lab Results */}
+            {/* Tab 2: Lab Results */}
+            {/* Tab 2: Lab Results */}
+            {/* Tab 2: Lab Results */}
+            {/* Tab 2: Lab Results */}
+
             <TabPanel value={value} index={1}>
-                <Entries collection={collection}/>
+                <Entries collection={collection} />
                 {/* {strain.cannabinoidList} */}
             </TabPanel>
             {/* Strain entries for logged in user */}
