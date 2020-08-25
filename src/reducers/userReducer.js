@@ -36,9 +36,6 @@ const userReducer = (state=initialState, action) => {
                 data: action.user
             } 
         case 'SIGN_OUT_USER':
-            // doesn't work in case
-            // localStorage.removeItem("token");
-            // localStorage.removeItem("userId");
             return {
                 ...state,
                 data: [],

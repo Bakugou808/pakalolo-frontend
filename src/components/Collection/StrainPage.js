@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
@@ -76,13 +76,13 @@ function StrainPage(props) {
     const [value, setValue] = React.useState(0);
     const [comments, setComments] = useState(false)
     const { collection, allComments } = props
-    const [renderedComments, setRenderedComments] = useState([{user: {username: 'jim mojnes'}, comment: {comment: `testing the comments ui`, rating: 5}}])
+    const [renderedComments, setRenderedComments] = useState([])
     const { strain } = collection
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
 
-    
+  
 
     return (
         <div className={classes.root}>
@@ -154,7 +154,7 @@ function StrainPage(props) {
                                 // <Paper className={classes2.paper}>
                                 //     {renderComments()}
                                 // </Paper>
-                                <CommentComponent renderedComments={renderedComments} />
+                                <CommentComponent type='Strain' commentable_id={strain.id}/>
                                 
                                 }
                             </Grid>

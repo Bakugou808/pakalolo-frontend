@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
+import { fetchComments } from '../../actions/commentActions'
 import Box from '@material-ui/core/Box';
 import Collapse from '@material-ui/core/Collapse';
 import IconButton from '@material-ui/core/IconButton';
@@ -70,7 +71,7 @@ const useRowStyles = makeStyles((theme) => ({
 
 
 function Row(props) {
-    const { row, onSetStrain, setShowTable, onSetSelectedStrainsEntries } = props;
+    const { row, onSetStrain, setShowTable, onSetSelectedStrainsEntries, onFetchComments } = props;
     const [open, setOpen] = React.useState(false);
     const classes = useRowStyles();
     
@@ -78,6 +79,7 @@ function Row(props) {
     const handleClick = (row) => {
         onSetStrain(row.strain)
         onSetSelectedStrainsEntries(row.entries)
+        onFetchComments(row.id, 'Strain')
         setShowTable(false)
     }
 
@@ -96,7 +98,7 @@ function Row(props) {
 
 
 function CollectionTable(props) {
-    const { collection, onSetStrain, onSetSelectedStrainsEntries } = props
+    const { collection, onSetStrain, onSetSelectedStrainsEntries, onFetchComments } = props
     const [query, setQuery] = useState('')
     const [columnToQuery, setColumnToQuery] = useState('name')
     const [showTable, setShowTable] = useState(true)
@@ -141,7 +143,7 @@ function CollectionTable(props) {
         }
         
         return x.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-            <Row key={row.name} row={row} onSetStrain={onSetStrain} onSetSelectedStrainsEntries={onSetSelectedStrainsEntries} setShowTable={setShowTable} />
+            <Row key={row.name} row={row} onSetStrain={onSetStrain} onFetchComments={onFetchComments} onSetSelectedStrainsEntries={onSetSelectedStrainsEntries} setShowTable={setShowTable} />
         ))
     }
 
@@ -260,7 +262,8 @@ const mapStateToProps = (store) => ({
 
 const mapDispatchToProps = (dispatch) => ({
     onSetStrain: (strain) => dispatch(setStrainDisplay(strain)),
-    onSetSelectedStrainsEntries: (entries) => dispatch(setSelectedStrainsEntries(entries))
+    onSetSelectedStrainsEntries: (entries) => dispatch(setSelectedStrainsEntries(entries)),
+    onFetchComments: (strainId, type) => fetchComments(strainId, type, dispatch),
 })
 
 

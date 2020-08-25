@@ -93,6 +93,7 @@ export const signUpUser = (data, history, dispatch) => {
                     dispatch(signUpUserSuccess(data))
                     localStorage.setItem("token", data.jwt)
                     localStorage.setItem("userId", data.id)
+                    localStorage.setItem("userName", data.username)
                     history.push('/home')
 
                     // return <Redirect to='/home'/>
@@ -116,6 +117,8 @@ export const fetchUser = (data, history, dispatch) => {
                 dispatch(fetchUserSuccess(data))
                 localStorage.setItem("token", data.jwt)
                 localStorage.setItem("userId", data.id)
+                localStorage.setItem("userName", data.username)
+
                 history.push('/home')
                 // return <Redirect to='/home'/> 
             }
