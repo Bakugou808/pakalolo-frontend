@@ -65,7 +65,7 @@ const commentsReducer = (state = initialState, action) => {
                 error: action.error
             }
 
-        // ----------ADD ENTRY-------  *****************************
+        // ----------ADD COMMENT-------  *****************************
 
         case 'POST_COMMENT_REQUEST':
             return {
@@ -82,14 +82,28 @@ const commentsReducer = (state = initialState, action) => {
         case 'POST_COMMENT_SUCCESS':
             const data1 = [...state.selectedStrainsComments, action.comment]
             const sorted1 = data1.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+            let type = action.comment.commentable_type
+            
+            if (type === "Strain"){
+                return {
+                    ...state,
+                    fetching: false,
+                    allComments: [...state.allComments, action.comment],
+                    selectedStrainsComments: [...sorted1]
+                    // selectedStrain: action.strain
+                }
+            } else if (type === "Comment"){
+                
+                const subComments = () => {
+                    let comment = state.selectedStrainsComments.filter(comment => comment.id === action.comment.commentable_id)
+                    
+                    let newSubComments = {...comment.comments, ...action.comment}
+                    debugger
+                }
 
-            return {
-                ...state,
-                fetching: false,
-                allComments: [...state.allComments, action.comment],
-                selectedStrainsComments: [...sorted1]
-                // selectedStrain: action.strain
+                return subComments()
             }
+            
 
         // ----------PATCH ENTRY-------  *****************************
 

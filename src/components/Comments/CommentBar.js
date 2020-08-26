@@ -28,10 +28,10 @@ const CommentBar = (props) => {
     }
 
     const handleSubmit = () => {
-        debugger
-        let data = {user_id: localStorage.userId, commentable_type: type, commentable_id: commentable_id, rating: rating, comment: comment}
+        
+        let data = {user_id: localStorage.userId, username: localStorage.userName, commentable_type: type, commentable_id: commentable_id, rating: rating, comment: comment}
         console.log('submitting comment', data)
-
+        
         onPostComment(data)
         setLeaveComment(false)
     }
@@ -63,8 +63,12 @@ const CommentBar = (props) => {
                         <Chip label='Leave Comment' onClick={handleSubmit} />
                     </>
                     :
+                    <>
                     <Chip label='Add Comment' icon={AddCommentIcon} color='green' variant='outlined' clickable onClick={() => setLeaveComment(!leaveComment)} >
-                    </Chip>}
+                    </Chip>
+                    <Chip label='Cancel' icon={AddCommentIcon} color='green' variant='outlined' clickable onClick={() => setLeaveComment(!leaveComment)} >
+                    </Chip>
+                    </>}
             </Paper>
         </div>
     )

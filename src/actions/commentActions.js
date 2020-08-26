@@ -71,6 +71,7 @@ export const postCommentFailure = (error) => {
 
 export const postComment = (data, dispatch) => {
     dispatch(postCommentRequest())
+    
     fetch(`http://localhost:3000/comments`, {
         method: "POST",
         headers: headers(),
@@ -81,6 +82,7 @@ export const postComment = (data, dispatch) => {
             if (data.error) {
                 dispatch(postCommentFailure(data.error))
             } else {
+                
                 dispatch(postCommentSuccess(data))
                 // dispatch(openSnackBarEntryAdded())
             }
