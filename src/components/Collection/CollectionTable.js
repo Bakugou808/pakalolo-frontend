@@ -51,8 +51,9 @@ const useRowStyles = makeStyles((theme) => ({
     },
     block: {
         // width: '100%',
-        display: 'inline-block',
-        margin: '30px'
+        display: 'inline',
+        margin: '2 in',
+
     },
     divRoot: {
         flexGrow: 1
@@ -79,7 +80,7 @@ function Row(props) {
     const handleClick = (row) => {
         onSetStrain(row.strain)
         onSetSelectedStrainsEntries(row.entries)
-        onFetchComments(row.id, 'Strain')
+        onFetchComments(row.strain.id, 'Strain')
         setShowTable(false)
     }
 
@@ -182,13 +183,13 @@ function CollectionTable(props) {
 
                 </Grid>
                 <Grid item xs={16}>
-                    <div className={classes.row}>
+                    <div className={classes.block}>
                         <Select
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
                             value={columnToQuery}
                             onChange={(event, index, value) => setColumnToQuery(event.target.value)}
-                            className={classes.block}
+                            // className={classes.block}
                         >
                             <MenuItem value="name">Name</MenuItem>
                             <MenuItem value="genus">Type</MenuItem>
@@ -201,20 +202,14 @@ function CollectionTable(props) {
                             value={query}
                             onChange={handleSearch}
                             floatingLabelFixed
-                            className={classes.block}
+                            // className={classes.block}
                         />
-                        <FormGroup className={classes.block}>
+                        <FormGroup >
                             <FormControlLabel
                                 control={<GreenSwitch checked={showTable} onChange={handleChange} name="table" />}
                                 label="Hide/Show Table"
                             />
-
                         </FormGroup>
-                        {/* <Tooltip title="Add Strain" aria-label="add" className={classes.block} onClick={()=>redirect('')}>
-                            <Fab color="primary" className={classes.fab}>
-                                <AddIcon />
-                            </Fab>
-                        </Tooltip> */}
 
                     </div>
                 </Grid>

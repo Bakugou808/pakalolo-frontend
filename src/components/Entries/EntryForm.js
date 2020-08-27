@@ -101,15 +101,13 @@ export const EntryForm = (props) => {
             <div>
                 {state.error ? <h1>Try again...</h1> : null}
                 <div className="form-group">
-                    <Button onClick={handleNewVendor} style={newVendorStyle}>New Vendor</Button>
+                    <Button onClick={handleNewVendor} style={newVendorStyle}>{state.newVendor ? 'Cancel' : "New Vendor" }</Button>
                     {state.newVendor ? <VendorForm setState={setState} /> : <Autocomplete
                         {...defaultProps}
                         id="auto-select"
                         autoSelect
                         onChange={(event, newValue) => {
-                            // setValue(newValue)
-                            
-                            setState((prevState) => ({...prevState, fields: {...prevState.fields, vendor_id: newValue.id}}));
+                            newValue != null && setState((prevState) => ({...prevState, fields: {...prevState.fields, vendor_id: newValue.id}}));
                           }}
                         renderInput={(params) => <TextField {...params} label={entry ? entry.vendor.name : "Select Vendor"} margin="normal" required   />}
                     />}

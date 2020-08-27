@@ -97,8 +97,21 @@ const commentsReducer = (state = initialState, action) => {
                 const subComments = () => {
                     let comment = state.selectedStrainsComments.filter(comment => comment.id === action.comment.commentable_id)
                     
-                    let newSubComments = {...comment.comments, ...action.comment}
-                    debugger
+                    let newSubComments = [...comment[0].comments, action.comment]
+                    comment[0].comments = newSubComments
+                    
+                    let newComments = state.selectedStrainsComments.filter(comment => comment.id != action.comment.commentable_id)
+                    
+                    let dataSub = [...newComments, ...comment]
+                    
+                    let sortedData = dataSub.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+                    
+                    return {
+                        ...state,
+                        fetching: false,
+                        allComments: [...sortedData],
+                        selectedStrainsComments: [...sortedData]
+                    }
                 }
 
                 return subComments()

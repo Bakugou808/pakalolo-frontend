@@ -12,7 +12,7 @@ const CommentBar = (props) => {
 
     const [comment, setComment] = useState('')
     const [rating, setRating] = useState('')
-    const {type, commentable_id, onPostComment} = props
+    const { type, commentable_id, onPostComment } = props
 
 
     const handleChange = (e) => {
@@ -21,17 +21,17 @@ const CommentBar = (props) => {
             handleSubmit()
             setLeaveComment(false)
         } else {
-            
+
             e.target.id === 'comment' ? setComment(e.target.value) : setRating(e.target.value)
             console.log(comment, rating)
         }
     }
 
     const handleSubmit = () => {
-        
-        let data = {user_id: localStorage.userId, username: localStorage.userName, commentable_type: type, commentable_id: commentable_id, rating: rating, comment: comment}
+
+        let data = { user_id: localStorage.userId, username: localStorage.userName, commentable_type: type, commentable_id: commentable_id, rating: rating, comment: comment }
         console.log('submitting comment', data)
-        
+
         onPostComment(data)
         setLeaveComment(false)
     }
@@ -61,13 +61,13 @@ const CommentBar = (props) => {
                         />
 
                         <Chip label='Leave Comment' onClick={handleSubmit} />
+                        <Chip label='Cancel' icon={AddCommentIcon} color='green' variant='outlined' clickable onClick={() => setLeaveComment(false)} >
+                        </Chip>
                     </>
                     :
                     <>
-                    <Chip label='Add Comment' icon={AddCommentIcon} color='green' variant='outlined' clickable onClick={() => setLeaveComment(!leaveComment)} >
-                    </Chip>
-                    <Chip label='Cancel' icon={AddCommentIcon} color='green' variant='outlined' clickable onClick={() => setLeaveComment(!leaveComment)} >
-                    </Chip>
+                        <Chip label='Add Comment' icon={AddCommentIcon} color='green' variant='outlined' clickable onClick={() => setLeaveComment(true)} >
+                        </Chip>
                     </>}
             </Paper>
         </div>

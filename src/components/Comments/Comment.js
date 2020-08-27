@@ -60,7 +60,7 @@ const Comment = ({ comment }) => {
     };
 
     const handleReply = () => {
-        setOpen(true)
+        setOpen(!open)
         handleClose()
     }
     const renderSubComments = (comments) => {
@@ -82,6 +82,7 @@ const Comment = ({ comment }) => {
     }
 
     return (
+    
         <Paper className={classes.paper} elevation={2}>
             <Container>
                 <Row>
@@ -113,8 +114,7 @@ const Comment = ({ comment }) => {
                                 <MenuItem onClick={() => console.log('i liked this comment')}>UpVote This Comment</MenuItem>
                             </Menu>
                             {comment.likes.length > 0 && <Chip label={`${comment.likes.length} Votes`} />}
-                            {comment.comments.length > 0 &&
-                                <Chip label={`${comment.comments.length} Replies`} />
+                            {comment.comments.length > 0 && <Chip label={`${comment.comments.length} Replies`} clickable onClick={handleReply}/>
                             }
                         </>
                     </Col>

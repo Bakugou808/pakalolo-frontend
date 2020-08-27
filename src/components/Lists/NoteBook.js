@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
 export const NoteBook = () => {
 
     const classes = useStyles();
-    const [checked, setChecked] = React.useState(false);
+    const [checked, setChecked] = React.useState(true);
 
     const handleChange = () => {
         setChecked((prev) => !prev);
@@ -61,7 +61,7 @@ export const NoteBook = () => {
                             <Grid item xs={8}> I am an item</Grid>
                         </Grid>
                         </Typography>
-                    </Container>
+                    </Container> 
                 </Grow>
                 {/* Conditionally applies the timeout prop to change the entry speed. */}
                 <Grow

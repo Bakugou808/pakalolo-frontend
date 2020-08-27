@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux'
 import { AuthHOC } from '../HOCs/AuthHOC'
-import {headers} from '../../actions/entriesActions'
+import { headers } from '../../actions/entriesActions'
 import Modal from 'react-bootstrap/Modal';
 import Box from '@material-ui/core/Box';
 import Collapse from '@material-ui/core/Collapse';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import { setEntryDisplay, patchEntry, deleteEntry, fetchEntries} from '../../actions/entriesActions'
+import { setEntryDisplay, patchEntry, deleteEntry, fetchEntries } from '../../actions/entriesActions'
 import EntryForm from './EntryForm'
 
 import PropTypes from 'prop-types';
@@ -33,6 +33,9 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
+import Container from '@material-ui/core/Container';
+import CssBaseline from '@material-ui/core/CssBaseline';
+
 
 
 
@@ -66,6 +69,7 @@ function stableSort(array, comparator) {
 const headCells = [
     { id: 'checkbox', numeric: false, disablePadding: false, label: 'Select' },
     { id: 'collapse', numeric: false, disablePadding: false, label: 'Expand' },
+    { id: 'strain', numeric: false, disablePadding: false, label: 'Strain' },
     { id: 'vendor', numeric: false, disablePadding: false, label: 'Vendor' },
     { id: 'rating', numeric: true, disablePadding: false, label: 'Rating (0-5)' },
     { id: 'updated_at', numeric: false, disablePadding: false, label: 'Last Modified' },
@@ -176,7 +180,7 @@ const EnhancedTableToolbar = (props) => {
                             </IconButton>
                         </Tooltip>
                     </>
-                ) : ( 
+                ) : (
                         <>
                             <Tooltip title="Delete">
                                 <IconButton aria-label="delete">
@@ -197,7 +201,7 @@ const EnhancedTableToolbar = (props) => {
                     )
 
             ) : (
-                    !entriesPage && 
+                    !entriesPage &&
                     <Tooltip title="Add Entry">
                         <IconButton aria-label="add entry"  >
                             <AddIcon onClick={showForm} />
@@ -234,6 +238,11 @@ const useStyles = makeStyles((theme) => ({
         top: 20,
         width: 1,
     },
+    container: {
+        // margin: '200 px',
+        // padding: 60
+
+    }
 }));
 
 function EntriesTable(props) {
@@ -253,20 +262,8 @@ function EntriesTable(props) {
     useEffect(() => {
         const userId = localStorage.userId
         if (entriesPage) {
-            // fetch(`http://localhost:3000/users_entries/${userId}`, {
-            //     headers: headers()
-            // }).then(res => res.json())
-            //     .then(data => {
-            //         if (data.error) {
-            //             // dispatch(fetchEntriesFailure(data.error))
-            //         } else {
-            //             console.log('in useEffect entries', data)
-            //             // dispatch(fetchEntriesSuccess(data))
-            //             setEntries(data)
-            //         }
-            //     })
             onFetchEntries(userId)
-        } 
+        }
     }, [])
 
     const handleRequestSort = (event, property) => {
@@ -351,6 +348,7 @@ function EntriesTable(props) {
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, entriesForStrain.length - page * rowsPerPage);
 
     return (
+
         <div className={classes.root}>
             <Paper className={classes.paper}>
                 <EnhancedTableToolbar entriesPage={entriesPage} numSelected={selected.length} handleDelete={handleDelete} handleEdit={handleEdit} setForm={setForm} />
@@ -376,7 +374,7 @@ function EntriesTable(props) {
                                 .map((row, index) => {
                                     const isItemSelected = isSelected(index);
                                     const labelId = `enhanced-table-checkbox-${index}`;
-                                     
+
                                     return (
                                         <>
                                             <TableRow
@@ -403,6 +401,8 @@ function EntriesTable(props) {
                                                 {/* <TableCell component="th" id={labelId} scope="row" padding="none">
                                                 {row.vendor.name}
                                                 </TableCell> */}
+                                                <TableCell align="left">{row.strain.name}</TableCell>
+
                                                 <TableCell align="left">{row.vendor.name}</TableCell>
                                                 <TableCell align="left">{row.rating}</TableCell>
                                                 <TableCell align="left">{new Date(row.updated_at).toDateString()}</TableCell>
@@ -446,7 +446,7 @@ function EntriesTable(props) {
             />
             {form &&
                 <Modal
-                    size="lg" 
+                    size="lg"
                     show={form}
                     onHide={() => setForm(false)}
                     aria-labelledby="example-modal-sizes-title-lg"

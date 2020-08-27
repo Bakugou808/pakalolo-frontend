@@ -203,6 +203,7 @@ export const fetchCommentsFailure = (error) => {
 
 export const fetchComments = (referenceId, type, dispatch) => {
     dispatch(fetchCommentsRequest())
+    
     fetch(`http://localhost:3000/all_comments/${type}/${referenceId}`, {
         headers: headers()
     }).then(res => res.json())

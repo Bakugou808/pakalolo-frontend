@@ -63,6 +63,13 @@ const useStyles2 = makeStyles((theme) => ({
         padding: theme.spacing(2),
         textAlign: 'center',
         color: theme.palette.text.secondary,
+        width: '100%'
+    },
+    paper2: {
+        padding: theme.spacing(2),
+        textAlign: 'center',
+        color: theme.palette.text.secondary,
+        cursor: 'pointer'
     },
 }));
 
@@ -103,7 +110,7 @@ function StrainPage(props) {
             <TabPanel value={value} index={0}>
                 <div className={classes2.root}>
                     {strain &&
-                        <Grid container spacing={3}>
+                        <Grid container spacing={3} >
                             <Grid item xs={12} >    
                                 <Paper className={classes2.root}>
                                     {`${strain.name}: Strain Details`}
@@ -145,7 +152,7 @@ function StrainPage(props) {
                                 </Paper>
                             </Grid>
                             <Grid item xs={12} >
-                                <Paper className={classes2.paper} onClick={()=>setComments(!comments)}>
+                                <Paper className={classes2.paper2} onClick={()=>setComments(!comments)}>
                                     
                                     {comments ? 'Hide Comments' : "View Comments"}
                                 
@@ -157,35 +164,13 @@ function StrainPage(props) {
                                 <CommentComponent type='Strain' commentable_id={strain.id}/>
                                 
                                 }
-                            </Grid>
-                            {/* <Grid item xs={12} >
-                                <Paper className={classes2.paper}>
-                                    Medical/Treats: {strain.effects.medical.join(', ')}
-                                </Paper>
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <Paper className={classes2.paper}>
-                                    Negative: {strain.effects.negative.join(', ')}
-                                </Paper>
-                            </Grid> */}
-                            
+                            </Grid>                           
                         </Grid>}
                 </div>
             </TabPanel>
-            {/* Tab 2: Lab Results */}            {/* Tab 2: Lab Results */}
-            {/* Tab 2: Lab Results */}
-            {/* Tab 2: Lab Results */}
-            {/* Tab 2: Lab Results */}
-            {/* Tab 2: Lab Results */}
-            {/* Tab 2: Lab Results */}
-
             <TabPanel value={value} index={1}>
                 <Entries collection={collection} />
-                {/* {strain.cannabinoidList} */}
             </TabPanel>
-            {/* Strain entries for logged in user */}
-            {/* <TabPanel value={value} index={2}>
-            </TabPanel> */}
         </div>
     );
 }
