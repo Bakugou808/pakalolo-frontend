@@ -144,7 +144,7 @@ function CollectionTable(props) {
         }
         
         return x.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-            <Row key={row.name} row={row} onSetStrain={onSetStrain} onFetchComments={onFetchComments} onSetSelectedStrainsEntries={onSetSelectedStrainsEntries} setShowTable={setShowTable} />
+            <Row key={row.id} row={row} onSetStrain={onSetStrain} onFetchComments={onFetchComments} onSetSelectedStrainsEntries={onSetSelectedStrainsEntries} setShowTable={setShowTable} />
         ))
     }
 
@@ -197,8 +197,8 @@ function CollectionTable(props) {
 
                         </Select>
                         <TextField
-                            hintText="Query"
-                            floatingLabelText="Query"
+                            // hintText="Query"
+                            // floatingLabelText="Query"
                             value={query}
                             onChange={handleSearch}
                             floatingLabelFixed

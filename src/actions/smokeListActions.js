@@ -32,9 +32,9 @@ export const closeSnackBarSmokeListAdded = () => {
     }
 }
 
-export const setSelectedStrainsEntries = (smokeLists) => {
+export const setSelectedStrainsSmokeLists = (smokeLists) => {
     return {
-        type: 'SET_SELECTED_STRAINS_ENTRIES',
+        type: 'SET_SELECTED_STRAINS_SMOKELISTS',
         smokeLists: smokeLists
     }
 }
@@ -174,42 +174,42 @@ export const deleteSmokeList = (smokeListId, dispatch) => {
         }) 
 }
 
-// -------***** ALL ENTRIES GET REQUEST ACTIONS *****------------------*******************-------------
-// -------***** ALL ENTRIES GET REQUEST ACTIONS *****------------------*******************-------------
+// -------***** ALL SMOKELISTS GET REQUEST ACTIONS *****------------------*******************-------------
+// -------***** ALL SMOKELISTS GET REQUEST ACTIONS *****------------------*******************-------------
 
-export const fetchEntriesRequest = () => {
+export const fetchSmokeListsRequest = () => {
     return {
-        type: 'FETCH_ENTRIES_REQUEST'
+        type: 'FETCH_SMOKELISTS_REQUEST'
     }
 }
 
-export const fetchEntriesSuccess = (smokeLists) => {
+export const fetchSmokeListsSuccess = (smokeLists) => {
     return {
-        type: 'FETCH_ENTRIES_SUCCESS',
+        type: 'FETCH_SMOKELISTS_SUCCESS',
         smokeLists: smokeLists,
     }
 }
 
-export const fetchEntriesFailure = (error) => {
+export const fetchSmokeListsFailure = (error) => {
     return {
-        type: 'FETCH_ENTRIES_FAILURE',
+        type: 'FETCH_SMOKELISTS_FAILURE',
         error: error,
     }
 }
 
-// -------***** GET ALL ENTRIES FETCH REQUEST FUNCTION *****------------------*******************-------------
+// -------***** GET ALL SMOKELISTS FETCH REQUEST FUNCTION *****------------------*******************-------------
 
-export const fetchEntries = (userId, dispatch) => {
-    dispatch(fetchEntriesRequest())
+export const fetchSmokeLists = (userId, dispatch) => {
+    dispatch(fetchSmokeListsRequest())
     fetch(`http://localhost:3000/users_smokeLists/${userId}`, {
         headers: headers()
     }).then(res => res.json())
         .then(data => {
             if (data.error) {
-                dispatch(fetchEntriesFailure(data.error))
+                dispatch(fetchSmokeListsFailure(data.error))
             } else {
                 console.log(data)
-                dispatch(fetchEntriesSuccess(data))
+                dispatch(fetchSmokeListsSuccess(data))
             }
         })
 }

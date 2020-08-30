@@ -33,8 +33,10 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 
-import { postStrainToCollection, setStrainDisplay, closeSnackBarAddedToCollection } from '../../actions/collectionActions'
 
+import Entries from '../Entries/Entries'
+import { postStrainToCollection, setStrainDisplay, closeSnackBarAddedToCollection } from '../../actions/collectionActions'
+import { setSelectedStrainsEntries } from '../../actions/entriesActions'
 
 
 // add pagination within the menu to only display the first 20-30 strains
@@ -63,7 +65,7 @@ const useRowStyles = makeStyles((theme) => ({
 
 
 function Row(props) {
-    const { row, addStrain, onPostStrainToCollection, user, auth } = props;
+    const { row, addStrain, onPostStrainToCollection, user, auth, collection, onSetSelectedStrainsEntries } = props;
     const [open, setOpen] = React.useState(false);
     const classes = useRowStyles();
     const options = ['Add to Collection', 'Add to Strain List']
@@ -95,6 +97,7 @@ function Row(props) {
 
 
 
+
     return (
         <React.Fragment>
             <TableRow className={classes.root}>
@@ -104,10 +107,10 @@ function Row(props) {
                     </IconButton>
                 </TableCell>
                 <TableCell component="th" scope="row">
-                    {row.name}
+                    {collection ? row.strain.name : row.name}
                 </TableCell>
-                <TableCell align="right">{row.genus.toUpperCase()}</TableCell>
-                <TableCell align="right">{row.flavorList}</TableCell>
+                <TableCell align="right">{collection ? row.strain.genus.toUpperCase() : row.genus.toUpperCase()}</TableCell>
+                <TableCell align="right">{collection ? row.strain.flavorList : row.flavorList}</TableCell>
             </TableRow>
             <TableRow>
                 <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -115,7 +118,8 @@ function Row(props) {
                         <Box margin={1}>
                             <Typography variant="h6" gutterBottom component="div">
                                 <div>
-                                    {`${row.name}: Strain Details`}
+                                    {collection ? `${row.strain.name}: Entries` : `${row.name}: Strain Details`}
+                                    {/* {`${row.name}: Strain Details`} */}
 
                                     {(user && auth) &&
                                         <>
@@ -139,7 +143,8 @@ function Row(props) {
                                         </>}
                                 </div>
                             </Typography>
-                            <StrainCard strain={row} />
+                            {collection ? <Entries collectionEntries={row.entries} /> : <StrainCard strain={row} />}
+                            {/* <StrainCard strain={row} /> */}
                         </Box>
                     </Collapse>
                 </TableCell>
@@ -150,7 +155,7 @@ function Row(props) {
 
 
 function CollapsibleTable(props) {
-    const { strains, onPostStrainToCollection, user, auth, onCloseSnackBarAddedToCollection, snackBarCollSuccessDisplay, selectedStrain } = props
+    const { strains, onPostStrainToCollection, user, auth, onCloseSnackBarAddedToCollection, snackBarCollSuccessDisplay, selectedStrain, collection, onSetSelectedStrainsEntries } = props
     const [query, setQuery] = useState('')
     const [columnToQuery, setColumnToQuery] = useState('name')
     const [showTable, setShowTable] = useState(true)
@@ -185,7 +190,7 @@ function CollapsibleTable(props) {
         }
 
         return x.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-            <Row key={row.name} row={row} setShowTable={setShowTable} onPostStrainToCollection={onPostStrainToCollection} user={user} auth={auth} />
+            <Row key={row.name} row={row} setShowTable={setShowTable} collection={collection} onSetSelectedStrainsEntries={onSetSelectedStrainsEntries} onPostStrainToCollection={onPostStrainToCollection} user={user} auth={auth} />
         ))
     }
     function Alert(props) {
@@ -220,7 +225,7 @@ function CollapsibleTable(props) {
 
 
     useEffect(() => {
-        setDisplay(strains)
+        collection ? setDisplay(collection) : setDisplay(strains)
     })
 
     return (
@@ -249,8 +254,8 @@ function CollapsibleTable(props) {
 
                         </Select>
                         <TextField
-                            hintText="Query"
-                            floatingLabelText="Query"
+                            // hintText="Query"
+                            // floatingLabelText="Query"
                             value={query}
                             onChange={handleSearch}
                             floatingLabelFixed
@@ -318,7 +323,9 @@ const mapStateToProps = (store) => {
 
 const mapDispatchToProps = (dispatch) => ({
     onPostStrainToCollection: (data) => postStrainToCollection(data, dispatch),
-    onCloseSnackBarAddedToCollection: () => dispatch(closeSnackBarAddedToCollection())
+    onCloseSnackBarAddedToCollection: () => dispatch(closeSnackBarAddedToCollection()),
+    onSetSelectedStrainsEntries: (entries) => dispatch(setSelectedStrainsEntries)
+
 
 })
 export default connect(mapStateToProps, mapDispatchToProps)(CollapsibleTable)

@@ -9,6 +9,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
+import Entries from '../Entries/Entries'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -20,6 +21,9 @@ const useStyles = makeStyles((theme) => ({
     },
     paper: {
         margin: theme.spacing(1),
+        height: '2 in',
+        width: 'auto',
+
     },
     svg: {
         width: 100,
@@ -30,12 +34,16 @@ const useStyles = makeStyles((theme) => ({
         stroke: theme.palette.divider,
         strokeWidth: 1,
     },
+    grid: {
+        padding: "30 px",
+    }
 }));
 
-export const NoteBook = () => {
+export const NoteBook = (props) => {
 
     const classes = useStyles();
     const [checked, setChecked] = React.useState(true);
+    const {selectedSmokeList} = props
 
     const handleChange = () => {
         setChecked((prev) => !prev);
@@ -43,50 +51,57 @@ export const NoteBook = () => {
 
     return (
         <div className={classes.root}>
-            <FormControlLabel
+            {/* <FormControlLabel
                 control={<Switch checked={checked} onChange={handleChange} />}
                 label="Show"
-            />
+            /> */}
+            {selectedSmokeList &&
+            
             <div className={classes.container}>
                 <Grow in={checked}>
                     {/* <CssBaseline /> */}
                     <Container maxWidth="md">
-                        <Typography component="div" style={{ backgroundColor: '#cfe8fc', height: '80vh', width: 'auto', overflow: 'hidden' }} >
+                        <Typography component="div" style={{ backgroundColor: '#cfe8fc', height: '120vh', width: 'auto', overflow: 'hidden' }} >
                         <Grid
                             container
                             direction="column"
                             justify="flex-start"
                             alignItems="center"
+                            className={classes.grid}
                         >
-                            <Grid item xs={8}> I am an item</Grid>
+                            <Grid item xs={24}>
+                                <Paper className={classes.paper}>
+                                    {selectedSmokeList.title}
+                                    <br></br>
+                                    {selectedSmokeList.description}
+                                </Paper>
+                            </Grid>
+                            <Grid item xs={24} md={20}> 
+                            <Entries smokeListPage={true} />
+                            </Grid>
                         </Grid>
                         </Typography>
                     </Container> 
                 </Grow>
                 {/* Conditionally applies the timeout prop to change the entry speed. */}
-                <Grow
+                {/* <Grow
                     in={checked}
                     style={{ transformOrigin: '0 0 0' }}
                     {...(checked ? { timeout: 1000 } : {})}
                 >
                     <Container maxWidth="md">
                         <Typography component="div" style={{ backgroundColor: '#cfe8fc', height: '100vh', width: 'auto' }} >
-
+                            {selectedSmokeList.title}
                         </Typography>
                     </Container>
-                    {/* <Paper elevation={4} className={classes.paper}>
-                        <svg className={classes.svg}>
-                            <polygon points="0,100 50,00, 100,100" className={classes.polygon} />
-                        </svg>
-                    </Paper> */}
-                </Grow>
-            </div>
+                </Grow> */}
+            </div>}
         </div>
     );
 }
 
-const mapStateToProps = (state) => ({
-
+const mapStateToProps = (store) => ({
+    selectedSmokeList: store.smokeLists.selectedSmokeList,
 })
 
 const mapDispatchToProps = (dispatch) => ({
