@@ -22,7 +22,46 @@ const smokeListReducer = (state = initialState, action) => {
         case 'SET_SELECTED_SMOKELISTS_ENTRIES':
             return {
                 ...state,
-                selectedEntriesForSmokeList: action.smokeLists
+                selectedEntriesForSmokeList: action.entries
+            }
+        case 'POST_SMOKELISTENTRY_SUCCESS':
+            const dataSLE = [...state.selectedEntriesForSmokeList, action.smokeListEntry] 
+            const sortedSLE = dataSLE.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
+            return {
+                ...state,
+                selectedEntriesForSmokeList: [...sortedSLE]
+            }
+        case 'POST_SMOKELISTENTRY_REQUEST':
+            return {
+                ...state,
+                fetching: true
+            }
+        case 'POST_SMOKELISTENTRY_FAILURE':
+            return {
+                ...state,
+                fetching: false, 
+                error: action.error
+            }
+
+            // DELETE SMOKE LIST ENTRY 
+        case 'DELETE_SMOKELISTENTRY_SUCCESS':
+            const newDataSLE = state.selectedEntriesForSmokeList.filter(sle => sle.id != action.sleId)
+            const newSortedSLE = newDataSLE.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
+            // state.allSmokeLists.filter(smokeList => smokeList.id != action.smokeListId),
+            return {
+                ...state,
+                selectedEntriesForSmokeList: [...newSortedSLE]
+            }
+        case 'DELETE_SMOKELISTENTRY_REQUEST':
+            return {
+                ...state,
+                fetching: true
+            }
+        case 'DELETE_SMOKELISTENTRY_FAILURE':
+            return {
+                ...state,
+                fetching: false, 
+                error: action.error
             }
         // case 'SET_STRAIN_DISPLAY':
         //     return {

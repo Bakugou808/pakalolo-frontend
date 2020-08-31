@@ -39,6 +39,14 @@ export const setSelectedStrainsSmokeLists = (smokeLists) => {
     }
 }
 
+export const setEntriesForSmokeList = (entries) => {
+    return {
+        type: 'SET_SELECTED_SMOKELISTS_ENTRIES',
+        entries: entries
+    }
+}
+
+
 
 
 
@@ -212,4 +220,89 @@ export const fetchSmokeLists = (userId, dispatch) => {
                 dispatch(fetchSmokeListsSuccess(data))
             }
         })
+}
+
+// -------***** POST SmokeListEntry Actions *****------------------*******************-------------
+// -------***** POST SmokeListEntry Actions *****------------------*******************-------------
+
+export const postSmokeListEntryRequest = () => {
+    return {
+        type: 'POST_SMOKELISTENTRY_REQUEST'
+    }
+}
+
+export const postSmokeListEntrySuccess = (smokeListEntry) => {
+    return {
+        type: 'POST_SMOKELISTENTRY_SUCCESS',
+        smokeListEntry: smokeListEntry, 
+    }
+}
+
+export const postSmokeListEntryFailure = (error) => {
+    return {
+        type: 'POST_SMOKELISTENTRY_FAILURE',
+        error: error,
+    }
+}
+
+// -------***** POST SmokeListEntry FETCH REQUEST *****------------------*******************-------------
+
+export const postSmokeListEntry = (data, dispatch) => {
+    dispatch(postSmokeListEntryRequest())
+    fetch(`http://localhost:3000/smoke_lists/new_entry`, {
+        method: "POST",
+        headers: headers(),
+        body: JSON.stringify(data)
+
+    }).then(res => res.json())
+        .then(data => {
+            if (data.error) {
+                dispatch(postSmokeListEntryFailure(data.error))
+            } else {
+                dispatch(postSmokeListEntrySuccess(data))
+                // dispatch(openSnackBarSmokeListEntryAdded())
+            }
+        })
+}
+// ----------DELETE SMOKELISTENTRY ACTIONS-------  *****************************
+// ----------DELETE SMOKELISTENTRY ACTIONS-------  *****************************
+
+export const deleteSmokeListEntryRequest = () => {
+    return {
+        type: 'DELETE_SMOKELISTENTRY_REQUEST'
+    }
+}
+
+export const deleteSmokeListEntrySuccess = (sleId) => {
+    return {
+        type: 'DELETE_SMOKELISTENTRY_SUCCESS',
+        sleId: sleId,
+    }
+}
+
+export const deleteSmokeListEntryFailure = (error) => {
+    return {
+        type: 'DELETE_SMOKELISTENTRY_FAILURE',
+        error: error,
+    }
+}
+
+// --------DELETE SMOKELISTENTRY FETCH FUNCTION---------  ********************************
+
+export const deleteSmokeListEntry = (sleId, dispatch) => {
+    dispatch(deleteSmokeListEntryRequest())
+    console.log(sleId)
+    fetch(`http://localhost:3000/smoke_lists/delete/${sleId}`, {
+        method: 'DELETE',
+        headers: headers(),
+    })
+        .then(res=>res.json())
+        .then(data => {
+            if (data.error){
+                dispatch(deleteSmokeListEntryFailure(data.error))
+            } else {
+                console.log('indelete success')
+                dispatch(deleteSmokeListEntrySuccess(data))
+            }
+        }) 
 }

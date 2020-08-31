@@ -197,9 +197,16 @@ export const fetchEntriesFailure = (error) => {
     }
 }
 
+export const setEntriesForSmokeList = (entries) => {
+    return {
+        type: 'SET_SELECTED_SMOKELISTS_ENTRIES',
+        entries: entries
+    }
+}
+
 // -------***** GET ALL ENTRIES FETCH REQUEST FUNCTION *****------------------*******************-------------
 
-export const fetchEntries = (userId, dispatch) => {
+export const fetchEntries = (userId, dispatch, smokeListPage) => {
     dispatch(fetchEntriesRequest())
     fetch(`http://localhost:3000/users_entries/${userId}`, {
         headers: headers()
@@ -207,8 +214,9 @@ export const fetchEntries = (userId, dispatch) => {
         .then(data => {
             if (data.error) {
                 dispatch(fetchEntriesFailure(data.error))
+            } else if (smokeListPage) {
+                dispatch(setEntriesForSmokeList(data))
             } else {
-                console.log(data)
                 dispatch(fetchEntriesSuccess(data))
             }
         })

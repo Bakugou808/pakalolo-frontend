@@ -9,6 +9,7 @@ import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import { setEntryDisplay, patchEntry, deleteEntry, fetchEntries } from '../../actions/entriesActions'
 import { fetchCollection } from '../../actions/collectionActions'
+import { postSmokeListEntry, deleteSmokeListEntry, setEntriesForSmokeList } from '../../actions/smokeListActions'
 import EntryForm from './EntryForm'
 
 import PropTypes from 'prop-types';
@@ -61,7 +62,6 @@ function getComparator(order, orderBy) {
 }
 
 function stableSort(array, comparator) {
-    
     const stabilizedThis = array.map((el, index) => [el, index]);
     stabilizedThis.sort((a, b) => {
         const order = comparator(a[0], b[0]);
@@ -149,11 +149,13 @@ const useToolbarStyles = makeStyles((theme) => ({
 
 const EnhancedTableToolbar = (props) => {
     const classes = useToolbarStyles();
-    const { numSelected, setForm, handleDelete, handleEdit, entriesPage, smokeListPage, onFetchCollection } = props;
+    const { numSelected, setForm, handleDelete, handleEdit, entriesPage, smokeListPage, onFetchCollection, handleAddEntryToSmokeList, onSetEntriesForSmokeList, onFetchEntries } = props;
 
     const showForm = () => {
         setForm(true)
         smokeListPage && onFetchCollection(localStorage.userId)
+        onSetEntriesForSmokeList([])
+        onFetchEntries(localStorage.userId)
     }
 
     return (
@@ -181,8 +183,8 @@ const EnhancedTableToolbar = (props) => {
                             </IconButton>
                         </Tooltip>
                         <Tooltip title="Add To Smoke List">
-                            <IconButton aria-label="addToSmokeList">
-                                <AddIcon />
+                            <IconButton aria-label="addToSmokeList" >
+                                <AddIcon onClick={handleAddEntryToSmokeList} />
                             </IconButton>
                         </Tooltip>
                     </>
@@ -200,7 +202,7 @@ const EnhancedTableToolbar = (props) => {
                             </Tooltip>
                             <Tooltip title="Add To Smoke List">
                                 <IconButton aria-label="addToSmokeList">
-                                    <AddIcon />
+                                    <AddIcon onClick={handleAddEntryToSmokeList} />
                                 </IconButton>
                             </Tooltip>
                         </>
@@ -253,7 +255,7 @@ const useStyles = makeStyles((theme) => ({
 
 function EntriesTable(props) {
     const classes = useStyles();
-    const { onSetEntry, entriesForStrain, collection, onEditEntry, onDeleteEntry, entriesPage, onFetchEntries, smokeListPage, onFetchCollection, collectionEntries } = props
+    const { onSetEntry, entriesForStrain, collection, onEditEntry, onDeleteEntry, entriesPage, onFetchEntries, smokeListPage, onFetchCollection, collectionEntries, selectedSmokeList, onPostSmokeListEntry, onSetEntriesForSmokeList, selectedEntriesForSmokeList, onDeleteSmokeListEntry, totalCollection, subEntryTable } = props
     const [open, setOpen] = React.useState({ 0: false });
     const [form, setForm] = React.useState(false);
     const [order, setOrder] = React.useState('asc');
@@ -271,7 +273,10 @@ function EntriesTable(props) {
         const userId = localStorage.userId
         if (entriesPage) {
             onFetchEntries(userId)
-        } 
+        } else if (smokeListPage) {
+            // onSetEntriesForSmokeList(selectedSmokeList.entries)
+            onFetchEntries(userId, smokeListPage)
+        }
     }, [])
 
     const handleRequestSort = (event, property) => {
@@ -342,25 +347,52 @@ function EntriesTable(props) {
 
     const handleDelete = () => {
         console.log('in entry delete')
-        entriesForStrain.forEach((entry, index) => {
-            selected.forEach((ind) => {
-                if (index === ind) {
-                    onDeleteEntry(entry.id)
-                }
+        if (smokeListPage) {
+            selectedEntriesForSmokeList.forEach((entry, index) => {
+                selected.forEach((ind) => {
+                    if (index === ind) {
+                        let data = { smoke_list_id: selectedSmokeList.id, entry_id: entry.id }
+
+                        onDeleteSmokeListEntry(data)
+                    }
+                })
             })
-        })
+
+        } else {
+            entriesForStrain.forEach((entry, index) => {
+                selected.forEach((ind) => {
+                    if (index === ind) {
+                        onDeleteEntry(entry.id)
+                    }
+                })
+            })
+        }
         setSelected([])
     }
     const isSelected = (name) => selected.indexOf(name) !== -1;
 
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, entriesForStrain.length - page * rowsPerPage);
 
+    const handleAddEntryToSmokeList = () => {
+        collectionEntries.forEach((entry, index) => {
+            selected.forEach((ind) => {
+                if (index === ind) {
+                    console.log(entry, 'inhandleentrytosmokelist')
+                    let data = { entry_id: entry.id, smoke_list_id: selectedSmokeList.id }
+                    onPostSmokeListEntry(data)
+                }
+            })
+        })
+        setSelected([])
+    }
+
+
     return (
 
         <div className={classes.root}>
             <Grow in={grow}>
                 <Paper className={classes.paper}>
-                    <EnhancedTableToolbar entriesPage={entriesPage} onFetchCollection={onFetchCollection} smokeListPage={smokeListPage} numSelected={selected.length} handleDelete={handleDelete} handleEdit={handleEdit} setForm={setForm} />
+                    <EnhancedTableToolbar handleAddEntryToSmokeList={handleAddEntryToSmokeList} entriesPage={entriesPage} onFetchCollection={onFetchCollection} smokeListPage={smokeListPage} numSelected={selected.length} handleDelete={handleDelete} handleEdit={handleEdit} setForm={setForm} onSetEntriesForSmokeList={onSetEntriesForSmokeList} onFetchEntries={onFetchEntries} />
                     <TableContainer>
                         <Table
                             className={classes.table}
@@ -378,12 +410,12 @@ function EntriesTable(props) {
                                 rowCount={entriesForStrain.length}
                             />
                             <TableBody>
-                                {collectionEntries ? stableSort(collectionEntries, getComparator(order, orderBy))
+                                {(selectedEntriesForSmokeList.length > 0 && !subEntryTable) ? stableSort(selectedEntriesForSmokeList, getComparator(order, orderBy))
                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     .map((row, index) => {
                                         const isItemSelected = isSelected(index);
                                         const labelId = `enhanced-table-checkbox-${index}`;
-                                         
+
                                         return (
                                             <>
                                                 <TableRow
@@ -406,7 +438,7 @@ function EntriesTable(props) {
                                                             {open[index] ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                                                         </IconButton>
                                                     </TableCell>
-                                          
+
                                                     <TableCell align="left">{row.strain.name}</TableCell>
 
                                                     <TableCell align="left">{row.vendor.name}</TableCell>
@@ -429,56 +461,115 @@ function EntriesTable(props) {
                                         )
                                     })
                                     :
-                                    stableSort(entriesForStrain, getComparator(order, orderBy))
-                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                    .map((row, index) => {
-                                        const isItemSelected = isSelected(index);
-                                        const labelId = `enhanced-table-checkbox-${index}`;
+                                    (subEntryTable ?
 
-                                        return (
-                                            <>
-                                                <TableRow
-                                                    hover
-                                                    role="checkbox"
-                                                    aria-checked={isItemSelected}
-                                                    tabIndex={-1}
-                                                    key={row.name}
-                                                    selected={isItemSelected}
-                                                >
-                                                    <TableCell padding="checkbox" >
-                                                        <Checkbox
-                                                            checked={isItemSelected}
-                                                            inputProps={{ 'aria-labelledby': labelId }}
-                                                            onClick={(event) => handleClick(event, index)}
-                                                        />
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <IconButton aria-label="expand row" size="small" onClick={() => setCollapse(index)}>
-                                                            {open[index] ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                                                        </IconButton>
-                                                    </TableCell>
-                                          
-                                                    <TableCell align="left">{row.strain.name}</TableCell>
+                                        stableSort(collectionEntries, getComparator(order, orderBy))
+                                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                            .map((row, index) => {
+                                                const isItemSelected = isSelected(index);
+                                                const labelId = `enhanced-table-checkbox-${index}`;
 
-                                                    <TableCell align="left">{row.vendor.name}</TableCell>
-                                                    <TableCell align="left">{row.rating}</TableCell>
-                                                    <TableCell align="left">{new Date(row.updated_at).toDateString()}</TableCell>
-                                                </TableRow>
-                                                <TableRow>
-                                                    <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-                                                        <Collapse in={open[index]} timeout="auto" unmountOnExit>
-                                                            <Box margin={1}>
-                                                                <Typography variant="h6" gutterBottom component="div">
-                                                                    {row.strain.name} by {row.vendor.name} - Review
+                                                return (
+                                                    <>
+                                                        <TableRow
+                                                            hover
+                                                            role="checkbox"
+                                                            aria-checked={isItemSelected}
+                                                            tabIndex={-1}
+                                                            key={row.name}
+                                                            selected={isItemSelected}
+                                                        >
+                                                            <TableCell padding="checkbox" >
+                                                                <Checkbox
+                                                                    checked={isItemSelected}
+                                                                    inputProps={{ 'aria-labelledby': labelId }}
+                                                                    onClick={(event) => handleClick(event, index)}
+                                                                />
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <IconButton aria-label="expand row" size="small" onClick={() => setCollapse(index)}>
+                                                                    {open[index] ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                                                                </IconButton>
+                                                            </TableCell>
+
+                                                            <TableCell align="left">{row.strain.name}</TableCell>
+
+                                                            <TableCell align="left">{row.vendor.name}</TableCell>
+                                                            <TableCell align="left">{row.rating}</TableCell>
+                                                            <TableCell align="left">{new Date(row.updated_at).toDateString()}</TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+                                                                <Collapse in={open[index]} timeout="auto" unmountOnExit>
+                                                                    <Box margin={1}>
+                                                                        <Typography variant="h6" gutterBottom component="div">
+                                                                            {row.strain.name} by {row.vendor.name} - Review
                                                         </Typography>
-                                                                {row.review}
-                                                            </Box>
-                                                        </Collapse>
-                                                    </TableCell>
-                                                </TableRow>
-                                            </>
-                                        )
-                                    })}
+                                                                        {row.review}
+                                                                    </Box>
+                                                                </Collapse>
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    </>
+                                                )
+                                            })
+
+                                        :
+
+                                        entriesForStrain && stableSort(entriesForStrain, getComparator(order, orderBy))
+                                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                        .map((row, index) => {
+                                            const isItemSelected = isSelected(index);
+                                            const labelId = `enhanced-table-checkbox-${index}`;
+
+                                            return (
+                                                <>
+                                    <TableRow
+                                        hover
+                                        role="checkbox"
+                                        aria-checked={isItemSelected}
+                                        tabIndex={-1}
+                                        key={row.name}
+                                        selected={isItemSelected}
+                                    >
+                                        <TableCell padding="checkbox" >
+                                            <Checkbox
+                                                checked={isItemSelected}
+                                                inputProps={{ 'aria-labelledby': labelId }}
+                                                onClick={(event) => handleClick(event, index)}
+                                            />
+                                        </TableCell>
+                                        <TableCell>
+                                            <IconButton aria-label="expand row" size="small" onClick={() => setCollapse(index)}>
+                                                {open[index] ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                                            </IconButton>
+                                        </TableCell>
+
+                                        <TableCell align="left">{row.strain.name}</TableCell>
+
+                                        <TableCell align="left">{row.vendor.name}</TableCell>
+                                        <TableCell align="left">{row.rating}</TableCell>
+                                        <TableCell align="left">{new Date(row.updated_at).toDateString()}</TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+                                            <Collapse in={open[index]} timeout="auto" unmountOnExit>
+                                                <Box margin={1}>
+                                                    <Typography variant="h6" gutterBottom component="div">
+                                                        {row.strain.name} by {row.vendor.name} - Review
+                                                        </Typography>
+                                                    {row.review}
+                                                </Box>
+                                            </Collapse>
+                                        </TableCell>
+                                    </TableRow>
+                                </>
+                                            )
+                                        }))
+
+
+
+                                        }
                                 {emptyRows > 0 && (
                                     <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
                                         <TableCell colSpan={6} />
@@ -530,7 +621,7 @@ function EntriesTable(props) {
                                 </Modal.Header>
                                 <Modal.Body>
                                     <AddEntryToList />
-                            </Modal.Body>
+                                </Modal.Body>
                             </>)
                         :
 
@@ -567,15 +658,21 @@ function EntriesTable(props) {
 const mapStateToProps = (store) => ({
     selectedEntry: store.entries.selectedEntry,
     entriesForStrain: store.entries.selectedStrainsEntries,
-    allEntries: store.entries.allEntries
+    allEntries: store.entries.allEntries,
+    selectedSmokeList: store.smokeLists.selectedSmokeList,
+    selectedEntriesForSmokeList: store.smokeLists.selectedEntriesForSmokeList,
+    totalCollection: store.collection.totalCollection,
 })
 
 const mapDispatchToProps = (dispatch) => ({
     onSetEntry: (entry) => dispatch(setEntryDisplay(entry)),
     onEditEntry: (entryData, entryId) => patchEntry(entryData, entryId, dispatch),
     onDeleteEntry: (entryId) => deleteEntry(entryId, dispatch),
-    onFetchEntries: (userId) => fetchEntries(userId, dispatch),
+    onFetchEntries: (userId, smokeListPage = false) => fetchEntries(userId, dispatch, smokeListPage),
     onFetchCollection: (userId) => fetchCollection(userId, dispatch),
+    onPostSmokeListEntry: (data) => postSmokeListEntry(data, dispatch),
+    onDeleteSmokeListEntry: (data) => deleteSmokeListEntry(data, dispatch),
+    onSetEntriesForSmokeList: (entries) => dispatch(setEntriesForSmokeList(entries)),
 })
 
 

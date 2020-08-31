@@ -65,7 +65,7 @@ const useRowStyles = makeStyles((theme) => ({
 
 
 function Row(props) {
-    const { row, addStrain, onPostStrainToCollection, user, auth, collection, onSetSelectedStrainsEntries } = props;
+    const { row, addStrain, onPostStrainToCollection, user, auth, collection, onSetSelectedStrainsEntries, subEntryTable } = props;
     const [open, setOpen] = React.useState(false);
     const classes = useRowStyles();
     const options = ['Add to Collection', 'Add to Strain List']
@@ -143,7 +143,7 @@ function Row(props) {
                                         </>}
                                 </div>
                             </Typography>
-                            {collection ? <Entries collectionEntries={row.entries} /> : <StrainCard strain={row} />}
+                            {collection ? <Entries collectionEntries={row.entries} collection={row} subEntryTable={subEntryTable}/> : <StrainCard strain={row} />}
                             {/* <StrainCard strain={row} /> */}
                         </Box>
                     </Collapse>
@@ -155,7 +155,7 @@ function Row(props) {
 
 
 function CollapsibleTable(props) {
-    const { strains, onPostStrainToCollection, user, auth, onCloseSnackBarAddedToCollection, snackBarCollSuccessDisplay, selectedStrain, collection, onSetSelectedStrainsEntries } = props
+    const { strains, onPostStrainToCollection, user, auth, onCloseSnackBarAddedToCollection, snackBarCollSuccessDisplay, selectedStrain, collection, onSetSelectedStrainsEntries, subEntryTable } = props
     const [query, setQuery] = useState('')
     const [columnToQuery, setColumnToQuery] = useState('name')
     const [showTable, setShowTable] = useState(true)
@@ -190,7 +190,7 @@ function CollapsibleTable(props) {
         }
 
         return x.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-            <Row key={row.name} row={row} setShowTable={setShowTable} collection={collection} onSetSelectedStrainsEntries={onSetSelectedStrainsEntries} onPostStrainToCollection={onPostStrainToCollection} user={user} auth={auth} />
+            <Row key={row.name} row={row} setShowTable={setShowTable} collection={collection} onSetSelectedStrainsEntries={onSetSelectedStrainsEntries} onPostStrainToCollection={onPostStrainToCollection} user={user} auth={auth} subEntryTable={subEntryTable}/>
         ))
     }
     function Alert(props) {

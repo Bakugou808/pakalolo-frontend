@@ -9,7 +9,7 @@ export const AddEntryToList = (props) => {
     return (
         <div>
             {collection &&
-                <StrainTable collection={collection} />
+                <StrainTable collection={collection} subEntryTable={true}/>
             }
         </div>
     )

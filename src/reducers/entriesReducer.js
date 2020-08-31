@@ -13,7 +13,7 @@ const entriesReducer = (state = initialState, action) => {
     switch (action.type) {
 
         // ----------****** UI ACTIONS ******-----------
-
+ 
         case 'SET_ENTRY_DISPLAY':
             return {
                 ...state,
