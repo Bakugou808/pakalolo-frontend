@@ -57,7 +57,7 @@ const entriesReducer = (state = initialState, action) => {
                 ...state,
                 fetching: false,
                 allEntries: action.entries,
-                selectedStrainsEntries: [...sorted0]
+                // selectedStrainsEntries: [...sorted0]
             }
         case 'FETCH_ENTRIES_FAILURE':
 

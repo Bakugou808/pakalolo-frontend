@@ -415,7 +415,7 @@ function EntriesTable(props) {
                                     .map((row, index) => {
                                         const isItemSelected = isSelected(index);
                                         const labelId = `enhanced-table-checkbox-${index}`;
-
+                                        debugger
                                         return (
                                             <>
                                                 <TableRow
