@@ -1,34 +1,31 @@
 const initialState = {
-    selectedStrainsEntries: [],
     fetching: false,
     error: false,
-    selectedEntry: null,
-    snackBarSuccessDisplay: false,
-    allEntries: [],
-    tableRowCount: 0,
+    allLikes: [],
+    selectedStrainsLikes: [],
 }
 
-const entriesReducer = (state = initialState, action) => {
+const likesReducer = (state = initialState, action) => {
 
 
     switch (action.type) {
 
         // ----------****** UI ACTIONS ******-----------
- 
-        case 'SET_ENTRY_DISPLAY':
+
+        case 'SET_LIKE_DISPLAY':
             return {
                 ...state,
-                selectedEntry: action.entry
+                selectedLike: action.like
             }
-        case 'SET_SELECTED_STRAINS_ENTRIES':
+        case 'SET_SELECTED_STRAINS_LIKES':
             return {
                 ...state,
-                selectedStrainsEntries: action.entries
+                selectedStrainsLikes: action.likes
             }
         // case 'SET_STRAIN_DISPLAY':
         //     return {
         //         ...state,
-        //         selectedStrainsEntries: action.strain.entries
+        //         selectedStrainsLikes: action.strain.likes
         //     }
 
         // case 'DISPLAY_SNACKBAR_ADD_SUCCESS':
@@ -44,23 +41,23 @@ const entriesReducer = (state = initialState, action) => {
 
         // ----------****** ASYNC ACTIONS ******-----------
 
-        // ----------FETCH ENTRIES-------  *****************************
+        // ----------FETCH COMMENTS-------  *****************************
 
-        case 'FETCH_ENTRIES_REQUEST':
+        case 'FETCH_LIKES_REQUEST':
             return {
                 ...state,
                 fetching: true
             }
-        case 'FETCH_ENTRIES_SUCCESS':
-            const data0 = action.entries 
-            const sorted0 = data0.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
+        case 'FETCH_LIKES_SUCCESS':
+            const data0 = action.likes 
+            const sorted0 = data0.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
             return {
                 ...state,
                 fetching: false,
-                allEntries: action.entries,
-                // selectedStrainsEntries: [...sorted0]
+                allLikes: action.likes,
+                selectedStrainsLikes: [...sorted0]
             }
-        case 'FETCH_ENTRIES_FAILURE':
+        case 'FETCH_LIKES_FAILURE':
 
             return {
                 ...state,
@@ -70,83 +67,80 @@ const entriesReducer = (state = initialState, action) => {
 
         // ----------ADD ENTRY-------  *****************************
 
-        case 'POST_ENTRY_REQUEST':
+        case 'POST_LIKE_REQUEST':
             return {
                 ...state,
                 fetching: true
             }
-        case 'POST_ENTRY_FAILURE':
+        case 'POST_LIKE_FAILURE':
 
             return {
                 ...state,
                 fetching: false,
                 error: action.error
             }
-        case 'POST_ENTRY_SUCCESS':
-            const data1 = [...state.selectedStrainsEntries, action.entry]
-            const sorted1 = data1.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
+        case 'POST_LIKE_SUCCESS':
+            const data1 = [...state.selectedStrainsLikes, action.like]
+            const sorted1 = data1.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
 
             return {
                 ...state,
                 fetching: false,
-                allEntries: [...state.allEntries, action.entry],
-                selectedStrainsEntries: [...sorted1]
+                allLikes: [...state.allLikes, action.like],
+                selectedStrainsLikes: [...sorted1]
                 // selectedStrain: action.strain
             }
 
         // ----------PATCH ENTRY-------  *****************************
 
 
-        case 'PATCH_ENTRY_REQUEST':
+        case 'PATCH_LIKE_REQUEST':
             return {
                 ...state,
                 fetching: true
             }
-        case 'PATCH_ENTRY_FAILURE':
+        case 'PATCH_LIKE_FAILURE':
 
             return {
                 ...state,
                 fetching: false,
                 error: action.error
             }
-        case 'PATCH_ENTRY_SUCCESS':
-            const data = [...[...state.selectedStrainsEntries.filter(entry => entry.id != action.entry.id)], action.entry]
+        case 'PATCH_LIKE_SUCCESS':
+            const data = [...[...state.selectedStrainsLikes.filter(like => like.id != action.like.id)], action.like]
             
-            const sorted = data.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
-            const AllEntriesData = [...[...state.allEntries.filter(entry => entry.id != action.entry.id)], action.entry]
-            
-            const sortedAE = AllEntriesData.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
+            const sorted = data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
             
             return {
                 ...state,
                 fetching: false,
-                allEntries: [...sortedAE],
-                selectedStrainsEntries: [...sorted]
-                // [...state.allEntries, action.entry],
+                allLikes: [...[...state.allLikes.filter(like => like.id != action.like.id)], action.like],
+                selectedStrainsLikes: [...sorted]
+                // [...state.allLikes, action.like],
                 // selectedStrain: action.strain
             }
 
         // ----------DELETE ENTRY-------  *****************************
 
-        case 'DELETE_ENTRY_REQUEST':
+        case 'DELETE_LIKE_REQUEST':
             return {
                 ...state,
                 fetching: true
             }
-        case 'DELETE_ENTRY_FAILURE':
+        case 'DELETE_LIKE_FAILURE':
 
             return {
                 ...state,
                 fetching: false,
                 error: action.error
             }
-        case 'DELETE_ENTRY_SUCCESS':
+        case 'DELETE_LIKE_SUCCESS':
 
             return {
                 ...state,
                 fetching: false,
-                allEntries: state.allEntries.filter(entry => entry.id != action.entryId.id),
-                selectedStrainsEntries: state.selectedStrainsEntries.filter(entry => entry.id != action.entryId.id)
+                allLikes: state.allLikes.filter(like => like.id != action.likeId.id),
+                selectedStrainsLikes: state.selectedStrainsLikes.filter(like => like.id != action.likeId.id)
                 // gigsForService: state.gigsForService.filter(gig => gig.id != action.gigId)
             }
 
@@ -156,4 +150,4 @@ const entriesReducer = (state = initialState, action) => {
     }
 }
 
-export default entriesReducer
+export default likesReducer

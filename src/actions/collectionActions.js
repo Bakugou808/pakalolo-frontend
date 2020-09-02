@@ -114,7 +114,6 @@ export const fetchCollection = (userId, dispatch) => {
         if (data.error){
             dispatch(fetchCollectionFailure(data.error))
         } else {
-            console.log(data)
             dispatch(fetchCollectionSuccess(data))
         }
     }) 

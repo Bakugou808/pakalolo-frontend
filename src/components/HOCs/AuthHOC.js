@@ -46,6 +46,7 @@ import {Redirect} from 'react-router-dom'
               this.setState({authorized: true, pending: false}, ()=> this.props.onFetchCurrentUserSuccess(resp))
               this.props.onFetchCollection(localStorage.userId)
               this.props.onFetchVendors(localStorage.userId)
+              localStorage.setItem('userName', resp.username)
 
             }
           })

@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react'
+import React, { Component, useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { AuthHOC } from '../HOCs/AuthHOC'
 import { makeStyles } from '@material-ui/core/styles';
@@ -23,6 +23,10 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import SpaIcon from '@material-ui/icons/Spa';
+import ListForm from './ListForm'
+import {fetchSmokeLists, setSmokeListDisplay, setEntriesForSmokeList} from '../../actions/smokeListActions'
+import {setSelectedStrainsEntries} from '../../actions/entriesActions'
+
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -59,6 +63,11 @@ export const Lists = (props) => {
     const classes = useStyles();
     const [openList, setOpenList] = React.useState(false);
     const [showForm, setShowForm] = React.useState(false);
+    const {allSmokeLists, onFetchSmokeLists, onSetSmokeListDisplay, selectedSmokeList, onSetEntriesForSmokeList} = props 
+
+    useEffect(() => {
+        onFetchSmokeLists(localStorage.userId)
+    }, [])
 
     const [drawer, setDrawer] = React.useState({
         left: false,
@@ -71,10 +80,22 @@ export const Lists = (props) => {
 
         setDrawer({ ...drawer, [anchor]: open });
     };
-    const redirect = (path) => {
-        console.log(path)
-        props.history.push(`/${path}`)
+
+    const handleForm = () => {
+        setShowForm(true)
+        toggleDrawer('left', true)
     }
+
+    const handleSmokeList = (smokeList) => {
+        console.log(smokeList, 'was selected from menu')
+        setShowForm(false)
+        onSetSmokeListDisplay(smokeList)
+        onSetEntriesForSmokeList([])
+        
+        onSetEntriesForSmokeList(smokeList.entries)
+    }
+    
+    
 
 
     const strainLists = (anchor) => (
@@ -89,17 +110,17 @@ export const Lists = (props) => {
         >
 
             <List>
-                <ListItem button key={'add-list'}>
+                <ListItem button key={'add-list'} onClick={handleForm}>
                     <ListItemIcon><PlaylistAddIcon /></ListItemIcon>
-                    <ListItemText primary={'Add Strain List'} onClick={()=>showForm(true)}/>
+                    <ListItemText primary={'Add Strain List'} />
                 </ListItem>
             </List>
             <Divider />
             <List>
-                {[['Search', <SpaIcon />, ''], ['Home', <SpaIcon />, 'home'], ['Collection', <SpaIcon />, 'collection'], ['Strain Lists', <SpaIcon />, 'lists'], ['Entries', <SpaIcon />, 'entries'], ['Vendors', <SpaIcon />, 'vendors']].map((arr, index) => (
-                    <ListItem button key={index} onClick={() => redirect(arr[2])}>
-                        <ListItemIcon>{arr[1]}</ListItemIcon>
-                        <ListItemText primary={arr[0]} />
+                {allSmokeLists.map((smokeList, index) => (
+                    <ListItem button key={index} onClick={()=>handleSmokeList(smokeList)}>
+                        <ListItemIcon><SpaIcon /></ListItemIcon>
+                        <ListItemText primary={smokeList.title} />
                     </ListItem>
                 ))}
             </List>
@@ -133,16 +154,11 @@ export const Lists = (props) => {
             </div>
             <Container maxWidth="md">
                 <div className={classes.root}>
-                    {/* <Grid container spacing={1} direction="row" justify="center" alignItems="center" >
-                    <Grid item xs>
-                        Side menu/list
-                    </Grid> */}
-                    {/* <Grid item xs={10} > */}
                     <Grid
                         container
                         spacing={3}
                         direction="column"
-                        justify="space-between"
+                        justify="space-between" 
                         alignItems="stretch"
                     >   
                         <Grid></Grid>
@@ -150,10 +166,14 @@ export const Lists = (props) => {
                             {/* <SideBar /> */}
                         </Grid>
                         <Grid item xs={12}>
-                            Animation carousel?
-                            </Grid>
+                            {selectedSmokeList && selectedSmokeList.title}
+                        </Grid>
                         <Grid item xs={12}>
-                            <Notebook />
+                            {showForm ? <ListForm setForm={setShowForm}/> 
+                            : 
+                            
+                            <Notebook />}
+                            
                         </Grid>
                         <Grid>
 
@@ -168,13 +188,16 @@ export const Lists = (props) => {
 }
 
 
-const mapStateToProps = (state) => ({
-
+const mapStateToProps = (store) => ({
+    allSmokeLists: store.smokeLists.allSmokeLists,
+    selectedSmokeList: store.smokeLists.selectedSmokeList,
 })
 
-const mapDispatchToProps = {
-
-}
+const mapDispatchToProps = (dispatch) => ({
+    onFetchSmokeLists: (userId) => fetchSmokeLists(userId, dispatch),
+    onSetSmokeListDisplay: (smokeList) => dispatch(setSmokeListDisplay(smokeList)),
+    onSetEntriesForSmokeList: (entries) => dispatch(setEntriesForSmokeList(entries))
+})
 
 export default AuthHOC(connect(mapStateToProps, mapDispatchToProps)(Lists))
 

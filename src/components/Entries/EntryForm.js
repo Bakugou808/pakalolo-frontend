@@ -10,7 +10,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 
 
 export const EntryForm = (props) => {
-    const {collection, setSelected, onPatchEntry, onPostEntry, closeForm, entry, vendors} = props
+    const {collection, setSelected, onPatchEntry, onPostEntry, closeForm, entry, vendors, smokeListPage, subEntryTable, setEdit} = props
 
     const [state, setState] = React.useState({
         edit: false,
@@ -54,7 +54,6 @@ export const EntryForm = (props) => {
         options: vendors.map((option) => option.name),
     };
 
-    // const [value, setValue] = React.useState(null);
 
     const handleChange = (e) => {
         const newFields = { ...state.fields, [e.target.name]: e.target.value };
@@ -66,10 +65,23 @@ export const EntryForm = (props) => {
         e.preventDefault();
         
         if (state.edit) {
-            onPatchEntry(state.fields, entry.id)
+            let type = ''
+            if (smokeListPage){
+                type = 'smokeList'
+            } else if (subEntryTable){
+                type = 'subEntryTable'
+            }
+            onPatchEntry(state.fields, entry.id, type)
             setSelected([])
+            setEdit(false)
         } else {
-            onPostEntry(state.fields)
+            
+            const newFields = {...state.fields, collection_id: collection.id,}
+            setState((prev)=> ({...prev, fields: newFields}))
+            
+            // onPostEntry(state.fields) this isn't updating for somereason?
+            onPostEntry(newFields)            
+            // setSelected([])
         }
         closeForm()
     };
@@ -89,36 +101,20 @@ export const EntryForm = (props) => {
         'cursor': 'pointer'
     }
 
-
+ 
  
 
         return (
             <div>
                 {state.error ? <h1>Try again...</h1> : null}
                 <div className="form-group">
-                    {/* <label>Search Vendors</label>
-                    <label onClick={handleNewVendor} style={newVendorStyle}>/New Vendor</label>
-                    {(!this.state.newVendor && !this.state.edit) && <Autocomplete suggestions={this.suggestions()} setVendor={this.setVendor} />}
-                    {this.state.newVendor && <VendorForm handleClick={this.handleNewVendor} />}
-                    {this.state.edit && <Autocomplete vendor={this.entry.vendor} suggestions={this.suggestions()} setVendor={this.setVendor} />} */}
-                    {/* <Autocomplete
-                        {...defaultProps}
-                        id="auto-select"
-                        autoSelect
-                        onChange={(event, newValue) => {
-                            setValue(newValue)
-                            setState((prevState) => ({...prevState, fields: {...prevState.fields, collection_id: collection.id, vendor_id: newValue.id}}));
-                          }}
-                        renderInput={(params) => <TextField {...params} label="Select Vendor" margin="normal" required   />}
-                    /> */}
-                    <Button onClick={handleNewVendor} style={newVendorStyle}>New Vendor</Button>
+                    <Button onClick={handleNewVendor} style={newVendorStyle}>{state.newVendor ? 'Cancel' : "New Vendor" }</Button>
                     {state.newVendor ? <VendorForm setState={setState} /> : <Autocomplete
                         {...defaultProps}
                         id="auto-select"
                         autoSelect
                         onChange={(event, newValue) => {
-                            // setValue(newValue)
-                            setState((prevState) => ({...prevState, fields: {...prevState.fields, collection_id: collection.id, vendor_id: newValue.id}}));
+                            newValue != null && setState((prevState) => ({...prevState, fields: {...prevState.fields, vendor_id: newValue.id}}));
                           }}
                         renderInput={(params) => <TextField {...params} label={entry ? entry.vendor.name : "Select Vendor"} margin="normal" required   />}
                     />}
@@ -149,7 +145,7 @@ const mapStateToProps = (store) => ({
 
 const mapDispatchToProps = (dispatch) => ({
     onPostEntry: (entryData) => postEntry(entryData, dispatch),
-    onPatchEntry: (entryData, entryId) => patchEntry(entryData, entryId, dispatch)
+    onPatchEntry: (entryData, entryId, type) => patchEntry(entryData, entryId, dispatch, type)
 
 
 })

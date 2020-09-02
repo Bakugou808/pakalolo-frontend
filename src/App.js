@@ -12,7 +12,7 @@ import HomePage from './components/HomePage/HomePage'
 import LogRocket from 'logrocket'
 import Collection from './components/Collection/Collection'
 import Lists from './components/Lists/Lists'
-import Entries from './components/Entries/Entries'
+import EntriesContainer from './components/Entries/EntriesContainer'
 import Vendors from './components/Vendors/Vendors'
 
 
@@ -29,7 +29,7 @@ function App() {
       {/* left drawer paths */}
       <Route path='/collection' render={props => <Collection {...props} /> } />
       <Route path='/lists' render={props => <Lists {...props} /> } />
-      <Route path='/entries' render={props => <Entries {...props} entriesPage={true} /> } />
+      <Route path='/entries' render={props => <EntriesContainer {...props} entriesPage={true} /> } />
       <Route path='/vendors' render={props => <Vendors {...props} /> } />
 
 

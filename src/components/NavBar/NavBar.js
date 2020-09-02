@@ -62,6 +62,7 @@ function NavBar(props) {
     onSignOutUser(user.id)
     localStorage.removeItem("token");
     localStorage.removeItem("userId");
+    localStorage.removeItem("userName")
     props.history.push("/")
   }
 

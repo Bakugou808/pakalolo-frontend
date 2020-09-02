@@ -36,7 +36,6 @@ function VendorsTable(props) {
 
 
     useEffect(() => {
-        // onFetchVendors(localStorage.userId)
 
         const fetchData = async () => {
             const result = await fetch(`http://localhost:3000/users_vendors/${userId}`, {

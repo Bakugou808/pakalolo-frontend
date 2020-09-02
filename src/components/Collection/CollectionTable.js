@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
+import { fetchComments } from '../../actions/commentActions'
 import Box from '@material-ui/core/Box';
 import Collapse from '@material-ui/core/Collapse';
 import IconButton from '@material-ui/core/IconButton';
@@ -50,8 +51,9 @@ const useRowStyles = makeStyles((theme) => ({
     },
     block: {
         // width: '100%',
-        display: 'inline-block',
-        margin: '30px'
+        display: 'inline',
+        margin: '2 in',
+
     },
     divRoot: {
         flexGrow: 1
@@ -70,7 +72,7 @@ const useRowStyles = makeStyles((theme) => ({
 
 
 function Row(props) {
-    const { row, onSetStrain, setShowTable, onSetSelectedStrainsEntries } = props;
+    const { row, onSetStrain, setShowTable, onSetSelectedStrainsEntries, onFetchComments } = props;
     const [open, setOpen] = React.useState(false);
     const classes = useRowStyles();
     
@@ -78,6 +80,7 @@ function Row(props) {
     const handleClick = (row) => {
         onSetStrain(row.strain)
         onSetSelectedStrainsEntries(row.entries)
+        onFetchComments(row.strain.id, 'Strain')
         setShowTable(false)
     }
 
@@ -96,7 +99,7 @@ function Row(props) {
 
 
 function CollectionTable(props) {
-    const { collection, onSetStrain, onSetSelectedStrainsEntries } = props
+    const { collection, onSetStrain, onSetSelectedStrainsEntries, onFetchComments } = props
     const [query, setQuery] = useState('')
     const [columnToQuery, setColumnToQuery] = useState('name')
     const [showTable, setShowTable] = useState(true)
@@ -141,7 +144,7 @@ function CollectionTable(props) {
         }
         
         return x.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-            <Row key={row.name} row={row} onSetStrain={onSetStrain} onSetSelectedStrainsEntries={onSetSelectedStrainsEntries} setShowTable={setShowTable} />
+            <Row key={row.id} row={row} onSetStrain={onSetStrain} onFetchComments={onFetchComments} onSetSelectedStrainsEntries={onSetSelectedStrainsEntries} setShowTable={setShowTable} />
         ))
     }
 
@@ -180,13 +183,13 @@ function CollectionTable(props) {
 
                 </Grid>
                 <Grid item xs={16}>
-                    <div className={classes.row}>
+                    <div className={classes.block}>
                         <Select
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
                             value={columnToQuery}
                             onChange={(event, index, value) => setColumnToQuery(event.target.value)}
-                            className={classes.block}
+                            // className={classes.block}
                         >
                             <MenuItem value="name">Name</MenuItem>
                             <MenuItem value="genus">Type</MenuItem>
@@ -194,25 +197,19 @@ function CollectionTable(props) {
 
                         </Select>
                         <TextField
-                            hintText="Query"
-                            floatingLabelText="Query"
+                            // hintText="Query"
+                            // floatingLabelText="Query"
                             value={query}
                             onChange={handleSearch}
                             floatingLabelFixed
-                            className={classes.block}
+                            // className={classes.block}
                         />
-                        <FormGroup className={classes.block}>
+                        <FormGroup >
                             <FormControlLabel
                                 control={<GreenSwitch checked={showTable} onChange={handleChange} name="table" />}
                                 label="Hide/Show Table"
                             />
-
                         </FormGroup>
-                        {/* <Tooltip title="Add Strain" aria-label="add" className={classes.block} onClick={()=>redirect('')}>
-                            <Fab color="primary" className={classes.fab}>
-                                <AddIcon />
-                            </Fab>
-                        </Tooltip> */}
 
                     </div>
                 </Grid>
@@ -260,7 +257,8 @@ const mapStateToProps = (store) => ({
 
 const mapDispatchToProps = (dispatch) => ({
     onSetStrain: (strain) => dispatch(setStrainDisplay(strain)),
-    onSetSelectedStrainsEntries: (entries) => dispatch(setSelectedStrainsEntries(entries))
+    onSetSelectedStrainsEntries: (entries) => dispatch(setSelectedStrainsEntries(entries)),
+    onFetchComments: (strainId, type) => fetchComments(strainId, type, dispatch),
 })
 
 

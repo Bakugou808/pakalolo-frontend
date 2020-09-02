@@ -111,9 +111,24 @@ export const patchEntryFailure = (error) => {
     }
 }
 
+export const patchEntryInSmokeList = (entry) => {
+    return {
+        type: 'ADD_ENTRY_TO_SMOKELIST_PAGE',
+        entry: entry,
+    }
+}
+
+export const patchEntryInSubEntryTable = (entry) => {
+    return {
+        type: 'ADD_ENTRY_TO_SUB_ENTRY_TABLE_PATCH',
+        entry: entry,
+    }
+}
+
 // -------***** PATCH FETCH REQUEST *****------------------*******************-------------
 
-export const patchEntry = (data, entryId, dispatch) => {
+export const patchEntry = (data, entryId, dispatch, type='') => {
+    console.log(type)
     dispatch(patchEntryRequest())
     fetch(`http://localhost:3000/entries/${entryId}`, {
         method: "PATCH",
@@ -127,6 +142,12 @@ export const patchEntry = (data, entryId, dispatch) => {
             } else {
                 dispatch(patchEntrySuccess(data))
                 dispatch(openSnackBarEntryAdded())
+                if (type === 'smokeList'){
+                    dispatch(patchEntryInSmokeList(data))
+                } else if (type === 'subEntryTable'){
+                    dispatch(patchEntryInSubEntryTable(data))
+                    dispatch(patchEntryInSmokeList(data))
+                }
             }
         })
 }
@@ -197,9 +218,16 @@ export const fetchEntriesFailure = (error) => {
     }
 }
 
+export const setEntriesForSmokeList = (entries) => {
+    return {
+        type: 'SET_SELECTED_SMOKELISTS_ENTRIES',
+        entries: entries
+    }
+}
+
 // -------***** GET ALL ENTRIES FETCH REQUEST FUNCTION *****------------------*******************-------------
 
-export const fetchEntries = (userId, dispatch) => {
+export const fetchEntries = (userId, dispatch, smokeListPage) => {
     dispatch(fetchEntriesRequest())
     fetch(`http://localhost:3000/users_entries/${userId}`, {
         headers: headers()
@@ -207,8 +235,9 @@ export const fetchEntries = (userId, dispatch) => {
         .then(data => {
             if (data.error) {
                 dispatch(fetchEntriesFailure(data.error))
+            } else if (smokeListPage) {
+                // dispatch(setEntriesForSmokeList(data))
             } else {
-                console.log(data)
                 dispatch(fetchEntriesSuccess(data))
             }
         })

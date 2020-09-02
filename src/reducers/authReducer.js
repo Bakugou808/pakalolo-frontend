@@ -34,9 +34,7 @@ const authReducer = (state=initialState, action) => {
                 data: true
             }
         case 'SIGN_OUT_USER':
-            // localStorage.removeItem("token");
             return {
-                // ...state,
                 data: false
             }
         default:
