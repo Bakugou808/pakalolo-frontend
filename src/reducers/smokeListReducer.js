@@ -25,8 +25,10 @@ const smokeListReducer = (state = initialState, action) => {
                 selectedEntriesForSmokeList: action.entries
             }
         case 'POST_SMOKELISTENTRY_SUCCESS':
-            const dataSLE = [...state.selectedEntriesForSmokeList, action.smokeListEntry] 
+            
+            const dataSLE = [...state.selectedSmokeList.entries, action.smokeListEntry] 
             const sortedSLE = dataSLE.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
+            
             return {
                 ...state,
                 selectedEntriesForSmokeList: [...sortedSLE]
@@ -128,7 +130,7 @@ const smokeListReducer = (state = initialState, action) => {
                 ...state,
                 fetching: false,
                 allSmokeLists: [...state.allSmokeLists, action.smokeList],
-                selectedEntriesForSmokeList: [...sorted1]
+                selectedSmokeList: action.smokeList
                 // selectedStrain: action.strain
             }
 
@@ -159,6 +161,17 @@ const smokeListReducer = (state = initialState, action) => {
                 selectedEntriesForSmokeList: [...sorted]
                 // [...state.allSmokeLists, action.smokeList],
                 // selectedStrain: action.strain
+            }
+
+        case 'ADD_ENTRY_TO_SMOKELIST_PAGE':
+            const dataa = [...[...state.selectedEntriesForSmokeList.filter(entry => entry.id != action.entry.id)], action.entry]
+            
+            const sortedd = dataa.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
+            
+            return {
+                ...state,
+                fetching: false,
+                selectedEntriesForSmokeList: [...sortedd]
             }
 
         // ----------DELETE ENTRY-------  *****************************

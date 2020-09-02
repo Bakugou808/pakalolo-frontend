@@ -31,6 +31,32 @@ const collectionReducer = (state = initialState, action) => {
                 ...state,
                 snackBarSuccessDisplay: action.payload
             }
+        case 'POST_ENTRY_SUCCESS':
+            let target = state.totalCollection.filter(collection => collection.id === action.entry.collection.id)[0]
+            
+            let data = [...target.entries, action.entry]
+            const sorted = data.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
+            target.entries = sorted
+            const newCollection = [...[...state.totalCollection.filter(collection => collection.id != target.id)], target]
+            
+            
+            return {
+                ...state,
+                totalCollection: newCollection
+            }
+        case 'ADD_ENTRY_TO_SUB_ENTRY_TABLE':
+            let target1 = state.totalCollection.filter(collection => collection.id === action.entry.collection.id)[0]
+            
+            let data1 = [...target1.entries.filter(entry => entry.id != action.entry.id), action.entry]
+            const sorted1 = data1.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
+            target1.entries = sorted1
+            const newCollection1 = [...[...state.totalCollection.filter(collection => collection.id != target1.id)], target1]
+            
+            
+            return {
+                ...state,
+                totalCollection: newCollection
+            }
 
         // ----------****** ASYNC ACTIONS ******-----------
         case 'FETCH_COLLECTION_REQUEST':

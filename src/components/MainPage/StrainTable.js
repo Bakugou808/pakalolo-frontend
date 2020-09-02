@@ -65,7 +65,7 @@ const useRowStyles = makeStyles((theme) => ({
 
 
 function Row(props) {
-    const { row, addStrain, onPostStrainToCollection, user, auth, collection, onSetSelectedStrainsEntries, subEntryTable } = props;
+    const { row, addStrain, onPostStrainToCollection, user, auth, collection, onSetSelectedStrainsEntries, subEntryTable, setAddedStrain } = props;
     const [open, setOpen] = React.useState(false);
     const classes = useRowStyles();
     const options = ['Add to Collection', 'Add to Strain List']
@@ -81,6 +81,7 @@ function Row(props) {
 
     const handleAddStrainToCollection = () => {
         console.log('adding strain')
+        setAddedStrain(row)
         handleClose()
         let data = { strain_id: row.id, user_id: parseInt(localStorage.userId) }
         onPostStrainToCollection(data)
@@ -121,7 +122,7 @@ function Row(props) {
                                     {collection ? `${row.strain.name}: Entries` : `${row.name}: Strain Details`}
                                     {/* {`${row.name}: Strain Details`} */}
 
-                                    {(user && auth) &&
+                                    {((user && auth) && !subEntryTable) &&
                                         <>
                                             <Tooltip title="Add" aria-label="Add" interactive >
                                                 {/* <Fab color="primary" className={classes.fab}> */}
@@ -138,7 +139,6 @@ function Row(props) {
                                                 onClose={handleClose}
                                             >
                                                 <MenuItem onClick={handleAddStrainToCollection}>Add To Collection</MenuItem>
-                                                <MenuItem onClick={handleAddStrainToStrainList}>Add To Strain List</MenuItem>
                                             </Menu>
                                         </>}
                                 </div>
@@ -159,7 +159,7 @@ function CollapsibleTable(props) {
     const [query, setQuery] = useState('')
     const [columnToQuery, setColumnToQuery] = useState('name')
     const [showTable, setShowTable] = useState(true)
-
+    const [addedStrain, setAddedStrain] = useState('')
     const [displayed, setDisplay] = useState([])
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -184,13 +184,15 @@ function CollapsibleTable(props) {
 
         let x
         if (query) {
+            subEntryTable ? x = displayed.filter(collection => collection.strain[columnToQuery].toLowerCase().includes(query.toLowerCase()))
+            :
             x = displayed.filter(strain => strain[columnToQuery].toLowerCase().includes(query.toLowerCase()))
         } else {
             x = displayed
         }
-
+        
         return x.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-            <Row key={row.name} row={row} setShowTable={setShowTable} collection={collection} onSetSelectedStrainsEntries={onSetSelectedStrainsEntries} onPostStrainToCollection={onPostStrainToCollection} user={user} auth={auth} subEntryTable={subEntryTable}/>
+            <Row key={row.name} row={row} setShowTable={setShowTable} setAddedStrain={setAddedStrain} collection={collection} onSetSelectedStrainsEntries={onSetSelectedStrainsEntries} onPostStrainToCollection={onPostStrainToCollection} user={user} auth={auth} subEntryTable={subEntryTable}/>
         ))
     }
     function Alert(props) {
@@ -302,9 +304,9 @@ function CollapsibleTable(props) {
                 </Grid>
 
             </Grid>
-            <Snackbar open={snackBarCollSuccessDisplay} autoHideDuration={6000} onClose={handleCloseSB}>
+            <Snackbar open={snackBarCollSuccessDisplay} autoHideDuration={6000} setAddedStrain={setAddedStrain} onClose={handleCloseSB}>
                 <Alert onClose={handleCloseSB} severity="success">
-                    Strain number {selectedStrain && selectedStrain.id} was successfully added to your Collection
+                    {addedStrain.name} was successfully added to your Collection
                     </Alert>
             </Snackbar>
 

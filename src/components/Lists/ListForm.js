@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import { postSmokeList, patchSmokeList } from '../../actions/smokeListActions'
+import { postSmokeList, patchSmokeList, setEntriesForSmokeList } from '../../actions/smokeListActions'
 import { connect } from 'react-redux'
 
 
@@ -16,7 +16,7 @@ const ListForm = (props) => {
         }
     })
 
-    const { list, onPostSmokeList, onPatchSmokeList, smokeList, setForm } = props 
+    const { list, onPostSmokeList, onPatchSmokeList, smokeList, setForm, onSetEntriesForSmokeList } = props 
 
     useEffect(() => {
         if (list) {
@@ -29,6 +29,7 @@ const ListForm = (props) => {
                 }
             })
         }
+        onSetEntriesForSmokeList([])
     }, [])
 
     const handleChange = (e) => {
@@ -83,8 +84,8 @@ const mapStateToProps = (store) => ({
 
 const mapDispatchToProps = (dispatch) => ({
     onPostSmokeList: (data) => postSmokeList(data, dispatch),
-    onPatchSmokeList: (data, smokeListId) => patchSmokeList(data, smokeListId, dispatch)
-
+    onPatchSmokeList: (data, smokeListId) => patchSmokeList(data, smokeListId, dispatch),
+    onSetEntriesForSmokeList: (data) => dispatch(setEntriesForSmokeList(data))
 
 })
 

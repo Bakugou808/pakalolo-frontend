@@ -113,11 +113,14 @@ const entriesReducer = (state = initialState, action) => {
             const data = [...[...state.selectedStrainsEntries.filter(entry => entry.id != action.entry.id)], action.entry]
             
             const sorted = data.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
+            const AllEntriesData = [...[...state.allEntries.filter(entry => entry.id != action.entry.id)], action.entry]
+            
+            const sortedAE = AllEntriesData.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
             
             return {
                 ...state,
                 fetching: false,
-                allEntries: [...[...state.allEntries.filter(entry => entry.id != action.entry.id)], action.entry],
+                allEntries: [...sortedAE],
                 selectedStrainsEntries: [...sorted]
                 // [...state.allEntries, action.entry],
                 // selectedStrain: action.strain

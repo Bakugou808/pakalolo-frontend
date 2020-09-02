@@ -10,7 +10,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 
 
 export const EntryForm = (props) => {
-    const {collection, setSelected, onPatchEntry, onPostEntry, closeForm, entry, vendors} = props
+    const {collection, setSelected, onPatchEntry, onPostEntry, closeForm, entry, vendors, smokeListPage, subEntryTable, setEdit} = props
 
     const [state, setState] = React.useState({
         edit: false,
@@ -65,8 +65,15 @@ export const EntryForm = (props) => {
         e.preventDefault();
         
         if (state.edit) {
-            onPatchEntry(state.fields, entry.id)
+            let type = ''
+            if (smokeListPage){
+                type = 'smokeList'
+            } else if (subEntryTable){
+                type = 'subEntryTable'
+            }
+            onPatchEntry(state.fields, entry.id, type)
             setSelected([])
+            setEdit(false)
         } else {
             
             const newFields = {...state.fields, collection_id: collection.id,}
@@ -138,7 +145,7 @@ const mapStateToProps = (store) => ({
 
 const mapDispatchToProps = (dispatch) => ({
     onPostEntry: (entryData) => postEntry(entryData, dispatch),
-    onPatchEntry: (entryData, entryId) => patchEntry(entryData, entryId, dispatch)
+    onPatchEntry: (entryData, entryId, type) => patchEntry(entryData, entryId, dispatch, type)
 
 
 })

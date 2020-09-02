@@ -24,7 +24,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import SpaIcon from '@material-ui/icons/Spa';
 import ListForm from './ListForm'
-import {fetchSmokeLists, setSmokeListDisplay} from '../../actions/smokeListActions'
+import {fetchSmokeLists, setSmokeListDisplay, setEntriesForSmokeList} from '../../actions/smokeListActions'
 import {setSelectedStrainsEntries} from '../../actions/entriesActions'
 
 
@@ -63,7 +63,7 @@ export const Lists = (props) => {
     const classes = useStyles();
     const [openList, setOpenList] = React.useState(false);
     const [showForm, setShowForm] = React.useState(false);
-    const {allSmokeLists, onFetchSmokeLists, onSetSmokeListDisplay, selectedSmokeList, onSetSelectedStrainsEntries} = props 
+    const {allSmokeLists, onFetchSmokeLists, onSetSmokeListDisplay, selectedSmokeList, onSetEntriesForSmokeList} = props 
 
     useEffect(() => {
         onFetchSmokeLists(localStorage.userId)
@@ -88,8 +88,11 @@ export const Lists = (props) => {
 
     const handleSmokeList = (smokeList) => {
         console.log(smokeList, 'was selected from menu')
+        setShowForm(false)
         onSetSmokeListDisplay(smokeList)
-        onSetSelectedStrainsEntries(smokeList.entries)
+        onSetEntriesForSmokeList([])
+        
+        onSetEntriesForSmokeList(smokeList.entries)
     }
     
     
@@ -107,9 +110,9 @@ export const Lists = (props) => {
         >
 
             <List>
-                <ListItem button key={'add-list'}>
+                <ListItem button key={'add-list'} onClick={handleForm}>
                     <ListItemIcon><PlaylistAddIcon /></ListItemIcon>
-                    <ListItemText primary={'Add Strain List'} onClick={handleForm}/>
+                    <ListItemText primary={'Add Strain List'} />
                 </ListItem>
             </List>
             <Divider />
@@ -193,7 +196,7 @@ const mapStateToProps = (store) => ({
 const mapDispatchToProps = (dispatch) => ({
     onFetchSmokeLists: (userId) => fetchSmokeLists(userId, dispatch),
     onSetSmokeListDisplay: (smokeList) => dispatch(setSmokeListDisplay(smokeList)),
-    onSetSelectedStrainsEntries: (entries) => dispatch(setSelectedStrainsEntries(entries))
+    onSetEntriesForSmokeList: (entries) => dispatch(setEntriesForSmokeList(entries))
 })
 
 export default AuthHOC(connect(mapStateToProps, mapDispatchToProps)(Lists))

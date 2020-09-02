@@ -111,9 +111,24 @@ export const patchEntryFailure = (error) => {
     }
 }
 
+export const patchEntryInSmokeList = (entry) => {
+    return {
+        type: 'ADD_ENTRY_TO_SMOKELIST_PAGE',
+        entry: entry,
+    }
+}
+
+export const patchEntryInSubEntryTable = (entry) => {
+    return {
+        type: 'ADD_ENTRY_TO_SUB_ENTRY_TABLE',
+        entry: entry,
+    }
+}
+
 // -------***** PATCH FETCH REQUEST *****------------------*******************-------------
 
-export const patchEntry = (data, entryId, dispatch) => {
+export const patchEntry = (data, entryId, dispatch, type='') => {
+    console.log(type)
     dispatch(patchEntryRequest())
     fetch(`http://localhost:3000/entries/${entryId}`, {
         method: "PATCH",
@@ -127,6 +142,11 @@ export const patchEntry = (data, entryId, dispatch) => {
             } else {
                 dispatch(patchEntrySuccess(data))
                 dispatch(openSnackBarEntryAdded())
+                if (type === 'smokeList'){
+                    dispatch(patchEntryInSmokeList(data))
+                } else if (type === 'subEntryTable'){
+                    dispatch(patchEntryInSubEntryTable(data))
+                }
             }
         })
 }
@@ -215,7 +235,7 @@ export const fetchEntries = (userId, dispatch, smokeListPage) => {
             if (data.error) {
                 dispatch(fetchEntriesFailure(data.error))
             } else if (smokeListPage) {
-                dispatch(setEntriesForSmokeList(data))
+                // dispatch(setEntriesForSmokeList(data))
             } else {
                 dispatch(fetchEntriesSuccess(data))
             }
