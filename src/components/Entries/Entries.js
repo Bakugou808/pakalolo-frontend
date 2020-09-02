@@ -255,7 +255,7 @@ const useStyles = makeStyles((theme) => ({
 
 function EntriesTable(props) {
     const classes = useStyles();
-    const { onSetEntry, entriesForStrain, collection, onEditEntry, onDeleteEntry, entriesPage, onFetchEntries, smokeListPage, onFetchCollection, collectionEntries, selectedSmokeList, onPostSmokeListEntry, onSetEntriesForSmokeList, selectedEntriesForSmokeList, onDeleteSmokeListEntry, totalCollection, subEntryTable } = props
+    const { onSetEntry, entriesForStrain, collection, onEditEntry, onDeleteEntry, entriesPage, onFetchEntries, smokeListPage, onFetchCollection, collectionEntries, selectedSmokeList, onPostSmokeListEntry, onSetEntriesForSmokeList, selectedEntriesForSmokeList, onDeleteSmokeListEntry, totalCollection, subEntryTable, allEntries } = props
     const [open, setOpen] = React.useState({ 0: false });
     const [form, setForm] = React.useState(false);
     const [order, setOrder] = React.useState('asc');
@@ -267,7 +267,7 @@ function EntriesTable(props) {
     const [edit, setEdit] = React.useState(false)
     const [entries, setEntries] = React.useState([])
     const [grow, setGrow] = React.useState(true);
-
+    const [rowCount, setRowCount] = React.useState(0)
 
     useEffect(() => {
         const userId = localStorage.userId
@@ -277,6 +277,7 @@ function EntriesTable(props) {
             // onSetEntriesForSmokeList(selectedSmokeList.entries)
             onFetchEntries(userId, smokeListPage)
         }
+        setRowCount(handleRowCount())
     }, [])
 
     const handleRequestSort = (event, property) => {
@@ -386,7 +387,19 @@ function EntriesTable(props) {
         setSelected([])
     }
 
+    const handleRowCount = () => {
+        if (entriesPage){
+            return allEntries.length 
+        } else if (smokeListPage){
+            return selectedEntriesForSmokeList.length
+        } else if (subEntryTable) {
+            return collectionEntries.length 
+        } else {
+            return entriesForStrain.length
+        }
+    }
 
+    
     return (
 
         <div className={classes.root}>
@@ -407,7 +420,7 @@ function EntriesTable(props) {
                                 orderBy={orderBy}
                                 onSelectAllClick={handleSelectAllClick}
                                 onRequestSort={handleRequestSort}
-                                rowCount={entriesForStrain.length}
+                                rowCount={handleRowCount()}
                             />
                             <TableBody>
                                 {(selectedEntriesForSmokeList.length > 0 && !subEntryTable) ? stableSort(selectedEntriesForSmokeList, getComparator(order, orderBy))
@@ -415,7 +428,7 @@ function EntriesTable(props) {
                                     .map((row, index) => {
                                         const isItemSelected = isSelected(index);
                                         const labelId = `enhanced-table-checkbox-${index}`;
-                                        debugger
+                                        
                                         return (
                                             <>
                                                 <TableRow
@@ -516,6 +529,59 @@ function EntriesTable(props) {
 
                                         :
 
+                                        (entriesPage ? allEntries && stableSort(allEntries, getComparator(order, orderBy))
+                                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                        .map((row, index) => {
+                                            const isItemSelected = isSelected(index);
+                                            const labelId = `enhanced-table-checkbox-${index}`;
+
+                                            return (
+                                                <>
+                                    <TableRow
+                                        hover
+                                        role="checkbox"
+                                        aria-checked={isItemSelected}
+                                        tabIndex={-1}
+                                        key={row.name}
+                                        selected={isItemSelected}
+                                    >
+                                        <TableCell padding="checkbox" >
+                                            <Checkbox
+                                                checked={isItemSelected}
+                                                inputProps={{ 'aria-labelledby': labelId }}
+                                                onClick={(event) => handleClick(event, index)}
+                                            />
+                                        </TableCell>
+                                        <TableCell>
+                                            <IconButton aria-label="expand row" size="small" onClick={() => setCollapse(index)}>
+                                                {open[index] ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                                            </IconButton>
+                                        </TableCell>
+
+                                        <TableCell align="left">{row.strain.name}</TableCell>
+
+                                        <TableCell align="left">{row.vendor.name}</TableCell>
+                                        <TableCell align="left">{row.rating}</TableCell>
+                                        <TableCell align="left">{new Date(row.updated_at).toDateString()}</TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+                                            <Collapse in={open[index]} timeout="auto" unmountOnExit>
+                                                <Box margin={1}>
+                                                    <Typography variant="h6" gutterBottom component="div">
+                                                        {row.strain.name} by {row.vendor.name} - Review
+                                                        </Typography>
+                                                    {row.review}
+                                                </Box>
+                                            </Collapse>
+                                        </TableCell>
+                                    </TableRow>
+                                </>
+                                            )
+                                        })
+                                        
+                                        :
+                                        
                                         entriesForStrain && stableSort(entriesForStrain, getComparator(order, orderBy))
                                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                         .map((row, index) => {
@@ -567,6 +633,8 @@ function EntriesTable(props) {
                                             )
                                         }))
 
+                                        )
+
 
 
                                         }
@@ -581,7 +649,7 @@ function EntriesTable(props) {
                     <TablePagination
                         rowsPerPageOptions={[5, 10, 25]}
                         component="div"
-                        count={entriesForStrain.length}
+                        count={handleRowCount()}
                         rowsPerPage={rowsPerPage}
                         page={page}
                         onChangePage={handleChangePage}
@@ -633,7 +701,7 @@ function EntriesTable(props) {
                             </Modal.Title>
                                 </Modal.Header>
                                 <Modal.Body>
-                                    <EntryForm closeForm={setForm} collection={collection} entry={entriesForStrain[selected[0]]} setSelected={setSelected} />
+                                    <EntryForm closeForm={setForm} collection={collection} entry={entriesPage ? allEntries[selected[0]] : entriesForStrain[selected[0]]} setSelected={setSelected} />
                                 </Modal.Body>
                             </>
                             :

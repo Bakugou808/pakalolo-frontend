@@ -4,7 +4,8 @@ const initialState = {
     error: false,
     selectedEntry: null,
     snackBarSuccessDisplay: false,
-    allEntries: []
+    allEntries: [],
+    tableRowCount: 0,
 }
 
 const entriesReducer = (state = initialState, action) => {

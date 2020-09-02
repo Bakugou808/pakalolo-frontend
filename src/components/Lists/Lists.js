@@ -166,7 +166,10 @@ export const Lists = (props) => {
                             {selectedSmokeList && selectedSmokeList.title}
                         </Grid>
                         <Grid item xs={12}>
-                            {showForm ? <ListForm setForm={setShowForm}/> : <Notebook />}
+                            {showForm ? <ListForm setForm={setShowForm}/> 
+                            : 
+                            
+                            <Notebook />}
                             
                         </Grid>
                         <Grid>

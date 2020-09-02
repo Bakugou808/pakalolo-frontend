@@ -51,10 +51,7 @@ export const NoteBook = (props) => {
 
     return (
         <div className={classes.root}>
-            {/* <FormControlLabel
-                control={<Switch checked={checked} onChange={handleChange} />}
-                label="Show"
-            /> */}
+
             {selectedSmokeList &&
             
             <div className={classes.container}>
@@ -83,18 +80,6 @@ export const NoteBook = (props) => {
                         </Typography>
                     </Container> 
                 </Grow>
-                {/* Conditionally applies the timeout prop to change the entry speed. */}
-                {/* <Grow
-                    in={checked}
-                    style={{ transformOrigin: '0 0 0' }}
-                    {...(checked ? { timeout: 1000 } : {})}
-                >
-                    <Container maxWidth="md">
-                        <Typography component="div" style={{ backgroundColor: '#cfe8fc', height: '100vh', width: 'auto' }} >
-                            {selectedSmokeList.title}
-                        </Typography>
-                    </Container>
-                </Grow> */}
             </div>}
         </div>
     );
