@@ -120,7 +120,7 @@ export const patchEntryInSmokeList = (entry) => {
 
 export const patchEntryInSubEntryTable = (entry) => {
     return {
-        type: 'ADD_ENTRY_TO_SUB_ENTRY_TABLE',
+        type: 'ADD_ENTRY_TO_SUB_ENTRY_TABLE_PATCH',
         entry: entry,
     }
 }
@@ -146,6 +146,7 @@ export const patchEntry = (data, entryId, dispatch, type='') => {
                     dispatch(patchEntryInSmokeList(data))
                 } else if (type === 'subEntryTable'){
                     dispatch(patchEntryInSubEntryTable(data))
+                    dispatch(patchEntryInSmokeList(data))
                 }
             }
         })

@@ -44,7 +44,7 @@ const collectionReducer = (state = initialState, action) => {
                 ...state,
                 totalCollection: newCollection
             }
-        case 'ADD_ENTRY_TO_SUB_ENTRY_TABLE':
+        case 'ADD_ENTRY_TO_SUB_ENTRY_TABLE_PATCH':
             let target1 = state.totalCollection.filter(collection => collection.id === action.entry.collection.id)[0]
             
             let data1 = [...target1.entries.filter(entry => entry.id != action.entry.id), action.entry]
@@ -55,7 +55,7 @@ const collectionReducer = (state = initialState, action) => {
             
             return {
                 ...state,
-                totalCollection: newCollection
+                totalCollection: newCollection1
             }
 
         // ----------****** ASYNC ACTIONS ******-----------

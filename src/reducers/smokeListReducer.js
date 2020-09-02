@@ -25,10 +25,10 @@ const smokeListReducer = (state = initialState, action) => {
                 selectedEntriesForSmokeList: action.entries
             }
         case 'POST_SMOKELISTENTRY_SUCCESS':
-            
-            const dataSLE = [...state.selectedSmokeList.entries, action.smokeListEntry] 
+
+            const dataSLE = [...state.selectedSmokeList.entries, action.smokeListEntry]
             const sortedSLE = dataSLE.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
-            
+
             return {
                 ...state,
                 selectedEntriesForSmokeList: [...sortedSLE]
@@ -41,11 +41,11 @@ const smokeListReducer = (state = initialState, action) => {
         case 'POST_SMOKELISTENTRY_FAILURE':
             return {
                 ...state,
-                fetching: false, 
+                fetching: false,
                 error: action.error
             }
 
-            // DELETE SMOKE LIST ENTRY 
+        // DELETE SMOKE LIST ENTRY 
         case 'DELETE_SMOKELISTENTRY_SUCCESS':
             const newDataSLE = state.selectedEntriesForSmokeList.filter(sle => sle.id != action.sleId)
             const newSortedSLE = newDataSLE.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
@@ -62,7 +62,7 @@ const smokeListReducer = (state = initialState, action) => {
         case 'DELETE_SMOKELISTENTRY_FAILURE':
             return {
                 ...state,
-                fetching: false, 
+                fetching: false,
                 error: action.error
             }
         // case 'SET_STRAIN_DISPLAY':
@@ -92,7 +92,7 @@ const smokeListReducer = (state = initialState, action) => {
                 fetching: true
             }
         case 'FETCH_SMOKELISTS_SUCCESS':
-            const data0 = action.smokeLists 
+            const data0 = action.smokeLists
             const sorted0 = data0.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
             return {
                 ...state,
@@ -151,9 +151,9 @@ const smokeListReducer = (state = initialState, action) => {
             }
         case 'PATCH_SMOKELIST_SUCCESS':
             const data = [...[...state.selectedEntriesForSmokeList.filter(smokeList => smokeList.id != action.smokeList.id)], action.smokeList]
-            
+
             const sorted = data.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
-            
+
             return {
                 ...state,
                 fetching: false,
@@ -164,15 +164,33 @@ const smokeListReducer = (state = initialState, action) => {
             }
 
         case 'ADD_ENTRY_TO_SMOKELIST_PAGE':
-            const dataa = [...[...state.selectedEntriesForSmokeList.filter(entry => entry.id != action.entry.id)], action.entry]
+            let add = false
+            state.selectedEntriesForSmokeList.forEach(entry => entry.id === action.entry.id && (add = true))
             
-            const sortedd = dataa.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
-            
-            return {
-                ...state,
-                fetching: false,
-                selectedEntriesForSmokeList: [...sortedd]
+            if (add){
+                const dataa = [...[...state.selectedEntriesForSmokeList.filter(entry => entry.id != action.entry.id)], action.entry]
+
+                const sortedd = dataa.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
+
+                return {
+                    ...state,
+                    fetching: false,
+                    selectedEntriesForSmokeList: [...sortedd]
+                }
             }
+        // case 'ADD_ENTRY_TO_SUB_ENTRY_TABLE_PATCH':
+        //     let target1 = state.totalCollection.filter(collection => collection.id === action.entry.collection.id)[0]
+
+        //     let data1 = [...target1.entries.filter(entry => entry.id != action.entry.id), action.entry]
+        //     const sorted1 = data1.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
+        //     target1.entries = sorted1
+        //     const newCollection1 = [...[...state.totalCollection.filter(collection => collection.id != target1.id)], target1]
+
+
+        //     return {
+        //         ...state,
+        //         totalCollection: newCollection1
+        //     }
 
         // ----------DELETE ENTRY-------  *****************************
 
