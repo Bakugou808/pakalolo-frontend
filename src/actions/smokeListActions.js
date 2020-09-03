@@ -46,6 +46,19 @@ export const setEntriesForSmokeList = (entries) => {
     }
 }
 
+export const setSelectedSmokeList = (smokeList) => {
+    return {
+        type: 'SET_SELECTED_SMOKELIST',
+        smokeList: smokeList
+    }
+}
+
+export const setNoteBookDisplay = (payload) => {
+    return {
+        type: 'SHOW_SMOKELIST_ON_PAGE',
+        payload: payload
+    }
+}
 
 
 
@@ -167,7 +180,7 @@ export const deleteSmokeListFailure = (error) => {
 export const deleteSmokeList = (smokeListId, dispatch) => {
     dispatch(deleteSmokeListRequest())
     console.log(smokeListId)
-    fetch(`http://localhost:3000/smokeLists/${smokeListId}`, {
+    fetch(`http://localhost:3000/smoke_lists/${smokeListId}`, {
         method: 'DELETE',
         headers: headers(),
     })
@@ -178,6 +191,7 @@ export const deleteSmokeList = (smokeListId, dispatch) => {
             } else {
                 console.log('indelete success')
                 dispatch(deleteSmokeListSuccess(data))
+                dispatch(setNoteBookDisplay(false))
             }
         }) 
 }
@@ -273,10 +287,10 @@ export const deleteSmokeListEntryRequest = () => {
     }
 }
 
-export const deleteSmokeListEntrySuccess = (sleId) => {
+export const deleteSmokeListEntrySuccess = (entryId) => {
     return {
         type: 'DELETE_SMOKELISTENTRY_SUCCESS',
-        sleId: sleId,
+        entryId: entryId,
     }
 }
 
@@ -289,12 +303,13 @@ export const deleteSmokeListEntryFailure = (error) => {
 
 // --------DELETE SMOKELISTENTRY FETCH FUNCTION---------  ********************************
 
-export const deleteSmokeListEntry = (sleId, dispatch) => {
+export const deleteSmokeListEntry = (entryData, dispatch) => {
     dispatch(deleteSmokeListEntryRequest())
-    console.log(sleId)
-    fetch(`http://localhost:3000/smoke_lists/delete/${sleId}`, {
-        method: 'DELETE',
+    console.log(entryData)
+    fetch(`http://localhost:3000/smoke_lists_entry/delete`, {
+        method: 'POST',
         headers: headers(),
+        body: JSON.stringify(entryData)
     })
         .then(res=>res.json())
         .then(data => {

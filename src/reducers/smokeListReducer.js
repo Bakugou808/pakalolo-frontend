@@ -4,7 +4,8 @@ const initialState = {
     error: false,
     selectedSmokeList: null,
     snackBarSuccessDisplay: false,
-    allSmokeLists: []
+    allSmokeLists: [],
+    showSmokeList: false
 }
 
 const smokeListReducer = (state = initialState, action) => {
@@ -13,6 +14,11 @@ const smokeListReducer = (state = initialState, action) => {
     switch (action.type) {
 
         // ----------****** UI ACTIONS ******-----------
+        case 'SHOW_SMOKELIST_ON_PAGE':
+            return {
+                ...state,
+                showSmokeList: action.payload
+            }
 
         case 'SET_SMOKELIST_DISPLAY':
             return {
@@ -23,6 +29,11 @@ const smokeListReducer = (state = initialState, action) => {
             return {
                 ...state,
                 selectedEntriesForSmokeList: action.entries
+            }
+        case 'SET_SELECTED_SMOKELIST':
+            return {
+                ...state,
+                selectedSmokeList: action.smokeList
             }
         case 'POST_SMOKELISTENTRY_SUCCESS':
 
@@ -47,7 +58,7 @@ const smokeListReducer = (state = initialState, action) => {
 
         // DELETE SMOKE LIST ENTRY 
         case 'DELETE_SMOKELISTENTRY_SUCCESS':
-            const newDataSLE = state.selectedEntriesForSmokeList.filter(sle => sle.id != action.sleId)
+            const newDataSLE = state.selectedEntriesForSmokeList.filter(entry => entry.id != action.entryId)
             const newSortedSLE = newDataSLE.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
             // state.allSmokeLists.filter(smokeList => smokeList.id != action.smokeListId),
             return {
@@ -123,14 +134,15 @@ const smokeListReducer = (state = initialState, action) => {
                 error: action.error
             }
         case 'POST_SMOKELIST_SUCCESS':
-            const data1 = [...state.selectedEntriesForSmokeList, action.smokeList]
-            const sorted1 = data1.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
+            // const data1 = [...state.selectedEntriesForSmokeList, action.smokeList]
+            // const sorted1 = data1.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
 
             return {
                 ...state,
                 fetching: false,
                 allSmokeLists: [...state.allSmokeLists, action.smokeList],
-                selectedSmokeList: action.smokeList
+                selectedSmokeList: action.smokeList,
+                showSmokeList: true
                 // selectedStrain: action.strain
             }
 
@@ -165,6 +177,7 @@ const smokeListReducer = (state = initialState, action) => {
 
         case 'ADD_ENTRY_TO_SMOKELIST_PAGE':
             let add = false
+            
             state.selectedEntriesForSmokeList.forEach(entry => entry.id === action.entry.id && (add = true))
             
             if (add){
@@ -178,19 +191,6 @@ const smokeListReducer = (state = initialState, action) => {
                     selectedEntriesForSmokeList: [...sortedd]
                 }
             }
-        // case 'ADD_ENTRY_TO_SUB_ENTRY_TABLE_PATCH':
-        //     let target1 = state.totalCollection.filter(collection => collection.id === action.entry.collection.id)[0]
-
-        //     let data1 = [...target1.entries.filter(entry => entry.id != action.entry.id), action.entry]
-        //     const sorted1 = data1.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
-        //     target1.entries = sorted1
-        //     const newCollection1 = [...[...state.totalCollection.filter(collection => collection.id != target1.id)], target1]
-
-
-        //     return {
-        //         ...state,
-        //         totalCollection: newCollection1
-        //     }
 
         // ----------DELETE ENTRY-------  *****************************
 
@@ -207,11 +207,13 @@ const smokeListReducer = (state = initialState, action) => {
                 error: action.error
             }
         case 'DELETE_SMOKELIST_SUCCESS':
-
+            
             return {
                 ...state,
                 fetching: false,
-                allSmokeLists: state.allSmokeLists.filter(smokeList => smokeList.id != action.smokeListId),
+                allSmokeLists: state.allSmokeLists.filter(smokeList => smokeList.id != action.smokeListId.id),
+                selectedSmokeList: [],
+                selectedEntriesForSmokeList: []
                 // gigsForService: state.gigsForService.filter(gig => gig.id != action.gigId)
             }
 

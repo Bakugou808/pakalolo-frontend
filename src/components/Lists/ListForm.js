@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react'
-import { postSmokeList, patchSmokeList, setEntriesForSmokeList } from '../../actions/smokeListActions'
+import { postSmokeList, patchSmokeList, setEntriesForSmokeList, setSelectedSmokeList } from '../../actions/smokeListActions'
+import { setSelectedStrainsEntries } from '../../actions/entriesActions'
 import { connect } from 'react-redux'
 
 
@@ -16,7 +17,7 @@ const ListForm = (props) => {
         }
     })
 
-    const { list, onPostSmokeList, onPatchSmokeList, smokeList, setForm, onSetEntriesForSmokeList } = props 
+    const { list, onPostSmokeList, onPatchSmokeList, smokeList, setForm, onSetEntriesForSmokeList, onSetSelectedStrainsEntries, onSetSelectedSmokeList } = props 
 
     useEffect(() => {
         if (list) {
@@ -30,6 +31,7 @@ const ListForm = (props) => {
             })
         }
         onSetEntriesForSmokeList([])
+        onSetSelectedStrainsEntries([])
     }, [])
 
     const handleChange = (e) => {
@@ -50,6 +52,9 @@ const ListForm = (props) => {
             
             onPostSmokeList(newFields)            
         }
+        onSetEntriesForSmokeList([])
+        onSetSelectedStrainsEntries([])
+        onSetSelectedSmokeList([])
         setForm(false)
     };
 
@@ -85,7 +90,9 @@ const mapStateToProps = (store) => ({
 const mapDispatchToProps = (dispatch) => ({
     onPostSmokeList: (data) => postSmokeList(data, dispatch),
     onPatchSmokeList: (data, smokeListId) => patchSmokeList(data, smokeListId, dispatch),
-    onSetEntriesForSmokeList: (data) => dispatch(setEntriesForSmokeList(data))
+    onSetEntriesForSmokeList: (data) => dispatch(setEntriesForSmokeList(data)),
+    onSetSelectedStrainsEntries: (data) => dispatch(setSelectedStrainsEntries(data)),
+    onSetSelectedSmokeList: (data) => dispatch(setSelectedSmokeList(data)),
 
 })
 

@@ -24,7 +24,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import SpaIcon from '@material-ui/icons/Spa';
 import ListForm from './ListForm'
-import {fetchSmokeLists, setSmokeListDisplay, setEntriesForSmokeList} from '../../actions/smokeListActions'
+import {fetchSmokeLists, setSmokeListDisplay, setEntriesForSmokeList, setNoteBookDisplay} from '../../actions/smokeListActions'
 import {setSelectedStrainsEntries} from '../../actions/entriesActions'
 
 
@@ -63,7 +63,7 @@ export const Lists = (props) => {
     const classes = useStyles();
     const [openList, setOpenList] = React.useState(false);
     const [showForm, setShowForm] = React.useState(false);
-    const {allSmokeLists, onFetchSmokeLists, onSetSmokeListDisplay, selectedSmokeList, onSetEntriesForSmokeList} = props 
+    const {allSmokeLists, onFetchSmokeLists, onSetSmokeListDisplay, selectedSmokeList, onSetEntriesForSmokeList, showNotebook, onSetNotebookDisplay} = props 
 
     useEffect(() => {
         onFetchSmokeLists(localStorage.userId)
@@ -91,8 +91,8 @@ export const Lists = (props) => {
         setShowForm(false)
         onSetSmokeListDisplay(smokeList)
         onSetEntriesForSmokeList([])
-        
         onSetEntriesForSmokeList(smokeList.entries)
+        onSetNotebookDisplay(true)
     }
     
     
@@ -172,7 +172,7 @@ export const Lists = (props) => {
                             {showForm ? <ListForm setForm={setShowForm}/> 
                             : 
                             
-                            <Notebook />}
+                            showNotebook && <Notebook />}
                             
                         </Grid>
                         <Grid>
@@ -191,12 +191,14 @@ export const Lists = (props) => {
 const mapStateToProps = (store) => ({
     allSmokeLists: store.smokeLists.allSmokeLists,
     selectedSmokeList: store.smokeLists.selectedSmokeList,
+    showNotebook: store.smokeLists.showSmokeList,
 })
 
 const mapDispatchToProps = (dispatch) => ({
     onFetchSmokeLists: (userId) => fetchSmokeLists(userId, dispatch),
     onSetSmokeListDisplay: (smokeList) => dispatch(setSmokeListDisplay(smokeList)),
-    onSetEntriesForSmokeList: (entries) => dispatch(setEntriesForSmokeList(entries))
+    onSetEntriesForSmokeList: (entries) => dispatch(setEntriesForSmokeList(entries)),
+    onSetNotebookDisplay: (payload) => dispatch(setNoteBookDisplay(payload)),
 })
 
 export default AuthHOC(connect(mapStateToProps, mapDispatchToProps)(Lists))

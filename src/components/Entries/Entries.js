@@ -273,12 +273,15 @@ function EntriesTable(props) {
     const [grow, setGrow] = React.useState(true);
     const [rowCount, setRowCount] = React.useState(0)
     const [selectedStrain, setSelectedStrain] = React.useState('selectedStrain')
+    const [selectedEntries, setSelectedEntries] = React.useState([])
 
     useEffect(() => {
         const userId = localStorage.userId
+        
         if (entriesPage) {
             onFetchEntries(userId)
         } else if (smokeListPage) {
+            
             onSetEntriesForSmokeList(selectedSmokeList.entries)
             onFetchEntries(userId, smokeListPage)
         }
@@ -303,8 +306,11 @@ function EntriesTable(props) {
     const handleClick = (event, index, row) => {
         setSelectedStrain(row)
         const selectedIndex = selected.indexOf(index);
+        const data = {entry_id: row.id, smoke_list_id: selectedSmokeList.id}
         let newSelected = [];
+        let newSelectedEntries = []
         // debugger
+        // console.log(row)
         if (selectedIndex === -1) {
             newSelected = newSelected.concat(selected, index);
         } else if (selectedIndex === 0) {
@@ -317,10 +323,23 @@ function EntriesTable(props) {
                 selected.slice(selectedIndex + 1),
             );
         }
-        
+
+        if (selectedEntries.includes(row)){
+            newSelectedEntries = newSelectedEntries.concat(selectedEntries.slice(0, selectedEntries.indexOf(row)), selectedEntries.slice(selectedEntries.indexOf(row) + 1))
+            
+            setSelectedEntries(newSelectedEntries)
+        } else {
+            // newSelectedEntries = selectedEntries
+            // debugger
+            // newSelectedEntries.push(row)
+            setSelectedEntries([...selectedEntries, row])
+
+        }
+        // setSelectedStrains(newSelectedEntries)
+
         setSelected(newSelected);
         // selected.length === 1 && setSelectedStrain(row)
-        console.log(selectedStrain)
+        // console.log(selected)
     };
 
     const handleChangePage = (event, newPage) => {
@@ -357,23 +376,24 @@ function EntriesTable(props) {
     const handleDelete = () => {
         console.log('in entry delete')
         if (smokeListPage) {
-            selectedEntriesForSmokeList.forEach((entry, index) => {
-                selected.forEach((ind) => {
-                    if (index === ind) {
+            selectedEntries.forEach((entry, index) => {
+                // selected.forEach((ind) => {
+                //     if (index === ind) {
                         let data = { smoke_list_id: selectedSmokeList.id, entry_id: entry.id }
 
                         onDeleteSmokeListEntry(data)
-                    }
-                })
+                //     }
+                // })
             })
 
         } else {
-            entriesForStrain.forEach((entry, index) => {
-                selected.forEach((ind) => {
-                    if (index === ind) {
+            selectedEntries.forEach((entry, index) => {
+                // selected.forEach((ind) => {
+                //     if (index === ind) {
                         onDeleteEntry(entry.id)
-                    }
-                })
+                    // }
+                // }
+                // )
             })
         }
         setSelected([])
