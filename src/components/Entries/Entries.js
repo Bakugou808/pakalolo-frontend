@@ -7,9 +7,11 @@ import Box from '@material-ui/core/Box';
 import Collapse from '@material-ui/core/Collapse';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import { setEntryDisplay, patchEntry, deleteEntry, fetchEntries } from '../../actions/entriesActions'
+import { setEntryDisplay, patchEntry, deleteEntry, fetchEntries, closeSnackBarEntryAdded } from '../../actions/entriesActions'
 import { fetchCollection } from '../../actions/collectionActions'
 import { postSmokeListEntry, deleteSmokeListEntry, setEntriesForSmokeList } from '../../actions/smokeListActions'
+import { postStrainToCollection, setStrainDisplay, closeSnackBarAddedToCollection } from '../../actions/collectionActions'
+
 import EntryForm from './EntryForm'
 
 import PropTypes from 'prop-types';
@@ -39,7 +41,8 @@ import Container from '@material-ui/core/Container';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grow from '@material-ui/core/Grow';
 import AddEntryToList from '../Lists/AddEntryToList'
-
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 
 
 
@@ -200,12 +203,12 @@ const EnhancedTableToolbar = (props) => {
                                     <EditIcon onClick={handleEdit} />
                                 </IconButton>
                             </Tooltip>
-                            {!smokeListPage && 
-                            <Tooltip title="Add To Smoke List">
-                                <IconButton aria-label="addToSmokeList">
-                                    <AddIcon onClick={handleAddEntryToSmokeList} />
-                                </IconButton>
-                            </Tooltip>}
+                            {!smokeListPage &&
+                                <Tooltip title="Add To Smoke List">
+                                    <IconButton aria-label="addToSmokeList">
+                                        <AddIcon onClick={handleAddEntryToSmokeList} />
+                                    </IconButton>
+                                </Tooltip>}
                         </>
                     )
 
@@ -259,7 +262,7 @@ const useStyles = makeStyles((theme) => ({
 
 function EntriesTable(props) {
     const classes = useStyles();
-    const { onSetEntry, entriesForStrain, collection, onEditEntry, onDeleteEntry, entriesPage, onFetchEntries, smokeListPage, onFetchCollection, collectionEntries, selectedSmokeList, onPostSmokeListEntry, onSetEntriesForSmokeList, selectedEntriesForSmokeList, onDeleteSmokeListEntry, totalCollection, subEntryTable, allEntries } = props
+    const { onSetEntry, entriesForStrain, collection, onEditEntry, onDeleteEntry, entriesPage, onFetchEntries, smokeListPage, onFetchCollection, collectionEntries, selectedSmokeList, onPostSmokeListEntry, onSetEntriesForSmokeList, selectedEntriesForSmokeList, onDeleteSmokeListEntry, totalCollection, subEntryTable, allEntries, selectedEntry, snackBarEntrySuccessDisplay, onCloseSnackBar } = props
     const [open, setOpen] = React.useState({ 0: false });
     const [form, setForm] = React.useState(false);
     const [order, setOrder] = React.useState('asc');
@@ -277,11 +280,11 @@ function EntriesTable(props) {
 
     useEffect(() => {
         const userId = localStorage.userId
-        
+
         if (entriesPage) {
             onFetchEntries(userId)
         } else if (smokeListPage) {
-            
+
             onSetEntriesForSmokeList(selectedSmokeList.entries)
             onFetchEntries(userId, smokeListPage)
         }
@@ -306,11 +309,10 @@ function EntriesTable(props) {
     const handleClick = (event, index, row) => {
         setSelectedStrain(row)
         const selectedIndex = selected.indexOf(index);
-        const data = {entry_id: row.id, smoke_list_id: selectedSmokeList.id}
+        const data = { entry_id: row.id, smoke_list_id: selectedSmokeList.id }
         let newSelected = [];
         let newSelectedEntries = []
-        // debugger
-        // console.log(row)
+ 
         if (selectedIndex === -1) {
             newSelected = newSelected.concat(selected, index);
         } else if (selectedIndex === 0) {
@@ -324,22 +326,13 @@ function EntriesTable(props) {
             );
         }
 
-        if (selectedEntries.includes(row)){
+        if (selectedEntries.includes(row)) {
             newSelectedEntries = newSelectedEntries.concat(selectedEntries.slice(0, selectedEntries.indexOf(row)), selectedEntries.slice(selectedEntries.indexOf(row) + 1))
-            
             setSelectedEntries(newSelectedEntries)
         } else {
-            // newSelectedEntries = selectedEntries
-            // debugger
-            // newSelectedEntries.push(row)
             setSelectedEntries([...selectedEntries, row])
-
         }
-        // setSelectedStrains(newSelectedEntries)
-
         setSelected(newSelected);
-        // selected.length === 1 && setSelectedStrain(row)
-        // console.log(selected)
     };
 
     const handleChangePage = (event, newPage) => {
@@ -377,27 +370,16 @@ function EntriesTable(props) {
         console.log('in entry delete')
         if (smokeListPage) {
             selectedEntries.forEach((entry, index) => {
-                // selected.forEach((ind) => {
-                //     if (index === ind) {
-                        let data = { smoke_list_id: selectedSmokeList.id, entry_id: entry.id }
-
-                        onDeleteSmokeListEntry(data)
-                //     }
-                // })
+                let data = { smoke_list_id: selectedSmokeList.id, entry_id: entry.id }
+                onDeleteSmokeListEntry(data)
             })
-
         } else {
             selectedEntries.forEach((entry, index) => {
-                // selected.forEach((ind) => {
-                //     if (index === ind) {
-                        onDeleteEntry(entry.id)
-                    // }
-                // }
-                // )
-            })
-        }
+                onDeleteEntry(entry.id)
+             })}
         setSelected([])
     }
+
     const isSelected = (index) => selected.indexOf(index) !== -1;
 
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, entriesForStrain.length - page * rowsPerPage);
@@ -426,9 +408,20 @@ function EntriesTable(props) {
             return entriesForStrain.length
         }
     }
+    function Alert(props) {
+        return <MuiAlert elevation={6} variant="filled" {...props} />;
+    }
+
+    const handleCloseSB = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        onCloseSnackBar();
+    };
 
     const renderRows = (array) => {
-        
+
         return stableSort(array, getComparator(order, orderBy))
             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             .map((row, index) => {
@@ -506,7 +499,7 @@ function EntriesTable(props) {
                             />
                             <TableBody>
                                 {(selectedEntriesForSmokeList.length > 0 && !subEntryTable) ?
-                                
+
                                     renderRows(selectedEntriesForSmokeList)
                                     :
                                     (subEntryTable ?
@@ -600,6 +593,11 @@ function EntriesTable(props) {
                     }
                 </Modal>
             }
+            {subEntryTable && <Snackbar open={snackBarEntrySuccessDisplay} autoHideDuration={6000} onClose={handleCloseSB}>
+                <Alert onClose={handleCloseSB} severity="success">
+                    Your Entry was successfully added!
+                </Alert>
+            </Snackbar>}
         </div >
     );
 }
@@ -612,6 +610,8 @@ const mapStateToProps = (store) => ({
     selectedSmokeList: store.smokeLists.selectedSmokeList,
     selectedEntriesForSmokeList: store.smokeLists.selectedEntriesForSmokeList,
     totalCollection: store.collection.totalCollection,
+    snackBarEntrySuccessDisplay: store.entries.snackBarSuccessDisplay,
+
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -623,6 +623,8 @@ const mapDispatchToProps = (dispatch) => ({
     onPostSmokeListEntry: (data) => postSmokeListEntry(data, dispatch),
     onDeleteSmokeListEntry: (data) => deleteSmokeListEntry(data, dispatch),
     onSetEntriesForSmokeList: (entries) => dispatch(setEntriesForSmokeList(entries)),
+    onCloseSnackBar: () => dispatch(closeSnackBarEntryAdded()),
+
 })
 
 

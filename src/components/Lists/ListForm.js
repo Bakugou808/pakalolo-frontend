@@ -17,16 +17,16 @@ const ListForm = (props) => {
         }
     })
 
-    const { list, onPostSmokeList, onPatchSmokeList, smokeList, setForm, onSetEntriesForSmokeList, onSetSelectedStrainsEntries, onSetSelectedSmokeList } = props 
+    const { onPostSmokeList, onPatchSmokeList, smokeList, setForm, onSetEntriesForSmokeList, onSetSelectedStrainsEntries, onSetSelectedSmokeList } = props 
 
     useEffect(() => {
-        if (list) {
+        if (smokeList) {
             setState({
                 edit: true, 
                 fields: {
-                    user_id: list.user_id, 
-                    title: list.title, 
-                    description: list.description
+                    user_id: smokeList.user_id, 
+                    title: smokeList.title, 
+                    description: smokeList.description
                 }
             })
         }

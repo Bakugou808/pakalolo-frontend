@@ -14,7 +14,7 @@ export const headers = () => {
 export const setEntryDisplay = (entry) => {
     return {
         type: 'SET_ENTRY_DISPLAY',
-        entry: entry
+        entry: entry 
     }
 }
 

@@ -166,7 +166,7 @@ export const Lists = (props) => {
                             {/* <SideBar /> */}
                         </Grid>
                         <Grid item xs={12}>
-                            {selectedSmokeList && selectedSmokeList.title}
+                            {/* {selectedSmokeList && selectedSmokeList.title} */}
                         </Grid>
                         <Grid item xs={12}>
                             {showForm ? <ListForm setForm={setShowForm}/> 

@@ -25,6 +25,11 @@ const entriesReducer = (state = initialState, action) => {
                 ...state,
                 selectedStrainsEntries: action.entries
             }
+        case 'POST_SMOKELISTENTRY_SUCCESS':
+            return {
+                ...state, 
+                snackBarSuccessDisplay: true
+            }
         // case 'SET_STRAIN_DISPLAY':
         //     return {
         //         ...state,
@@ -36,11 +41,11 @@ const entriesReducer = (state = initialState, action) => {
         //         ...state,
         //         snackBarSuccessDisplay: action.payload
         //     }
-        // case 'CLOSE_DISPLAY_SNACKBAR_ADD_SUCCESS':
-        //     return {
-        //         ...state,
-        //         snackBarSuccessDisplay: action.payload
-        //     }
+        case 'CLOSE_DISPLAY_SNACKBAR_ADD_SUCCESS_ENTRY':
+            return {
+                ...state,
+                snackBarSuccessDisplay: action.payload
+            }
 
         // ----------****** ASYNC ACTIONS ******-----------
 
@@ -90,7 +95,8 @@ const entriesReducer = (state = initialState, action) => {
                 ...state,
                 fetching: false,
                 allEntries: [...state.allEntries, action.entry],
-                selectedStrainsEntries: [...sorted1]
+                selectedStrainsEntries: [...sorted1],
+                snackBarSuccessDisplay: true
                 // selectedStrain: action.strain
             }
 
@@ -121,7 +127,8 @@ const entriesReducer = (state = initialState, action) => {
                 ...state,
                 fetching: false,
                 allEntries: [...sortedAE],
-                selectedStrainsEntries: [...sorted]
+                selectedStrainsEntries: [...sorted],
+                snackBarSuccessDisplay: true
                 // [...state.allEntries, action.entry],
                 // selectedStrain: action.strain
             }

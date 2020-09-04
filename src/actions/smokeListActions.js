@@ -36,7 +36,7 @@ export const setSelectedStrainsSmokeLists = (smokeLists) => {
     return {
         type: 'SET_SELECTED_STRAINS_SMOKELISTS',
         smokeLists: smokeLists
-    }
+    } 
 }
 
 export const setEntriesForSmokeList = (entries) => {
@@ -136,7 +136,7 @@ export const patchSmokeListFailure = (error) => {
 
 export const patchSmokeList = (data, smokeListId, dispatch) => {
     dispatch(patchSmokeListRequest())
-    fetch(`http://localhost:3000/smokeLists/${smokeListId}`, {
+    fetch(`http://localhost:3000/smoke_lists/${smokeListId}`, {
         method: "PATCH",
         headers: headers(),
         body: JSON.stringify(data)
@@ -274,6 +274,7 @@ export const postSmokeListEntry = (data, dispatch) => {
                 dispatch(postSmokeListEntryFailure(data.error))
             } else {
                 dispatch(postSmokeListEntrySuccess(data))
+                // fetchSmokeLists(localStorage.userId, dispatch)
                 // dispatch(openSnackBarSmokeListEntryAdded())
             }
         })

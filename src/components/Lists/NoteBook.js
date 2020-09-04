@@ -21,6 +21,9 @@ import Menu from '@material-ui/core/Menu';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Tooltip from '@material-ui/core/Tooltip';
 import MenuItem from '@material-ui/core/MenuItem';
+import Modal from 'react-bootstrap/Modal';
+import ListForm from './ListForm'
+
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -35,6 +38,11 @@ const useStyles = makeStyles((theme) => ({
         width: 'auto',
 
     },
+    paper2: {
+        margin: theme.spacing(1),
+        height: '2 in',
+        width: '100%',
+    },
     svg: {
         width: 100,
         height: 100,
@@ -46,7 +54,37 @@ const useStyles = makeStyles((theme) => ({
     },
     grid: {
         padding: "30 px",
+    },
+    container2: {
+        display: 'inline-block',
+    },
+    title: {
+        position: 'relative',
+        top: '50%',
+        transform: 'translateY(-30 %)',
+        'font-size': '30px'
+    },
+    menuIcon: {
+        float: "right",
+        position: "relative",
+        // left: '95px',
+        // transform: 'translateX(90 %)',
+
+
+        // top: 0,
+        // width: '100px',
+        // bottom: 0,
+        // background: 'red',
+        // position: 'absolute',
+    },
+    description:{
+        'font-size': '18px',
+        position: 'relative',
+        'text-align': 'center',
+        
+
     }
+
 }));
 
 export const NoteBook = (props) => {
@@ -54,6 +92,7 @@ export const NoteBook = (props) => {
     const classes = useStyles();
     const [checked, setChecked] = React.useState(true);
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const [editSmokeList, setEditSmokeList] = React.useState(false)
 
     const { selectedSmokeList, onSetEntriesForSmokeList, onSetSelectedStrainsEntries, onDeleteSmokeList, onSetNotebook } = props
 
@@ -73,11 +112,11 @@ export const NoteBook = (props) => {
     const handleDeleteSmokeList = () => {
         onDeleteSmokeList(selectedSmokeList.id)
     }
-    
+
+
 
     useEffect(() => {
-        // onSetEntriesForSmokeList([])
-        // onSetSelectedStrainsEntries([])
+
     }
     )
 
@@ -99,29 +138,36 @@ export const NoteBook = (props) => {
                                     className={classes.grid}
                                 >
                                     <Grid item xs={24}>
-                                        <Paper className={classes.paper}>
-                                            {/* <BSContainer> */}
+                                        <Paper className={classes.paper2}>
+                                            <Container>
                                                 <Row >
-                                                    {selectedSmokeList.title}
-                                                </Row>
-                                                <Row>
-                                                    {selectedSmokeList.description}
-                                                    <Tooltip  interactive >
+                                                    <div className={classes.container2}>
+                                                    <div className={classes.title}>{selectedSmokeList.title}</div>
+                                                    <div className={classes.menuIcon}><Tooltip interactive >
                                                         <IconButton aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick} >
                                                             <MoreVertIcon style={{ display: 'align-right' }} />
                                                         </IconButton>
                                                     </Tooltip>
-                                                    <Menu
-                                                        id="simple-menu"
-                                                        anchorEl={anchorEl}
-                                                        keepMounted
-                                                        open={Boolean(anchorEl)}
-                                                        onClose={handleClose}
-                                                    >
-                                                        <MenuItem onClick={handleDeleteSmokeList}>Delete Smoke List</MenuItem>
-                                                    </Menu>
+                                                        <Menu
+                                                            id="simple-menu"
+                                                            anchorEl={anchorEl}
+                                                            keepMounted
+                                                            open={Boolean(anchorEl)}
+                                                            onClose={handleClose}
+                                                        >
+                                                            <MenuItem onClick={handleDeleteSmokeList}>Delete Smoke List</MenuItem>
+                                                            <MenuItem onClick={() => setEditSmokeList(true)}>Edit Smoke List</MenuItem>
+
+                                                        </Menu>
+                                                    </div>
+                                                    </div>
                                                 </Row>
-                                            {/* </BSContainer> */}
+                                                <Row>
+                                                    <div className={classes.container2}>
+                                                    <div className={classes.description}>{selectedSmokeList.description}</div>
+                                                    </div>
+                                                </Row>
+                                            </Container>
                                             <br></br>
                                         </Paper>
                                     </Grid>
@@ -130,6 +176,24 @@ export const NoteBook = (props) => {
                                     </Grid>
                                 </Grid>
                             </Typography>
+                            <Modal
+                                size="lg"
+                                show={editSmokeList}
+                                onHide={() => setEditSmokeList(false)}
+                                aria-labelledby="example-modal-sizes-title-lg"
+                            >
+                                <>
+                                    <Modal.Header closeButton>
+                                        <Modal.Title id="example-modal-sizes-title-lg">
+                                            Edit Entry
+                                    </Modal.Title>
+                                    </Modal.Header>
+                                    <Modal.Body>
+                                        <ListForm smokeList={selectedSmokeList} setForm={setEditSmokeList} />
+                                    </Modal.Body>
+                                </>
+
+                            </Modal>
                         </Container>
                     </Grow>
                 </div>}

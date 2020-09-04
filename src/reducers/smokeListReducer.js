@@ -37,12 +37,13 @@ const smokeListReducer = (state = initialState, action) => {
             }
         case 'POST_SMOKELISTENTRY_SUCCESS':
 
-            const dataSLE = [...state.selectedSmokeList.entries, action.smokeListEntry]
+            const dataSLE = [...state.selectedEntriesForSmokeList, action.smokeListEntry]
             const sortedSLE = dataSLE.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
-
+            
             return {
                 ...state,
-                selectedEntriesForSmokeList: [...sortedSLE]
+                // selectedEntriesForSmokeList: [...sortedSLE]
+                selectedEntriesForSmokeList: [...state.selectedEntriesForSmokeList, action.smokeListEntry]
             }
         case 'POST_SMOKELISTENTRY_REQUEST':
             return {
@@ -153,7 +154,7 @@ const smokeListReducer = (state = initialState, action) => {
             return {
                 ...state,
                 fetching: true
-            }
+            } 
         case 'PATCH_SMOKELIST_FAILURE':
 
             return {
@@ -162,7 +163,7 @@ const smokeListReducer = (state = initialState, action) => {
                 error: action.error
             }
         case 'PATCH_SMOKELIST_SUCCESS':
-            const data = [...[...state.selectedEntriesForSmokeList.filter(smokeList => smokeList.id != action.smokeList.id)], action.smokeList]
+            const data = action.smokeList.entries
 
             const sorted = data.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
 
@@ -170,7 +171,9 @@ const smokeListReducer = (state = initialState, action) => {
                 ...state,
                 fetching: false,
                 allSmokeLists: [...[...state.allSmokeLists.filter(smokeList => smokeList.id != action.smokeList.id)], action.smokeList],
-                selectedEntriesForSmokeList: [...sorted]
+                selectedEntriesForSmokeList: [...sorted],
+                selectedSmokeList: action.smokeList, 
+                showSmokeList: true
                 // [...state.allSmokeLists, action.smokeList],
                 // selectedStrain: action.strain
             }
@@ -181,6 +184,7 @@ const smokeListReducer = (state = initialState, action) => {
             state.selectedEntriesForSmokeList.forEach(entry => entry.id === action.entry.id && (add = true))
             
             if (add){
+                debugger
                 const dataa = [...[...state.selectedEntriesForSmokeList.filter(entry => entry.id != action.entry.id)], action.entry]
 
                 const sortedd = dataa.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
