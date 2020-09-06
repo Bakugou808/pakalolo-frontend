@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
@@ -14,6 +14,15 @@ import ChemChart from '../ChemChart'
 import Entries from '../Entries/Entries'
 import CommentComponent from '../Comments/CommentComponent'
 import { postLike, deleteLike } from '../../actions/likeActions'
+import Tooltip from '@material-ui/core/Tooltip';
+import IconButton from '@material-ui/core/IconButton';
+import Menu from '@material-ui/core/Menu';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import MenuItem from '@material-ui/core/MenuItem';
+import Modal from 'react-bootstrap/Modal';
+import { postTag } from '../../actions/tagActions'
+import TagComponent from './TagComponent'
+
 
 
 function TabPanel(props) {
@@ -83,43 +92,75 @@ function StrainPage(props) {
     const classes2 = useStyles2();
     const [value, setValue] = React.useState(0);
     const [comments, setComments] = useState(false)
-    const { collection, allComments, onPostLike, onDeleteLike } = props
+    const { collection, allComments, onPostLike, onDeleteLike, onPostTag } = props
     const [renderedComments, setRenderedComments] = useState([])
     const { strain } = collection
+    const [anchorEl, setAnchorEl] = React.useState(null);
     const [liked, setLiked] = React.useState(false)
     const [totalLikes, setTotalLikes] = React.useState(0)
+    const [title, setTitle] = React.useState('')
+    const [newTag, setNewTag] = React.useState(false)
+    const [edit, setEdit] = React.useState(false)
 
+    useEffect(() => {
 
-    useEffect(()=> {
-        
         strain.likes.length > 0 ? strain.likes.forEach(like => (like.user_id == localStorage.userId) ? setLiked(true) : setLiked(false)) : setLiked(false)
         setTotalLikes(strain.likes.length)
     }, [strain])
+
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+        setTitle('')
+        setAnchorEl(null);
+    };
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
 
+    const handleTitle = (event) => {
+        event.preventDefault()
+        setTitle(event.target.value)
+    }
+
+
     const handleLike = () => {
         console.log('liked strain')
-        let data = {likeable_type: "Strain", likeable_id: strain.id, user_id: localStorage.userId}
+        let data = { likeable_type: "Strain", likeable_id: strain.id, user_id: localStorage.userId }
         // !liked && (onPostLike(data) && setAddLike(true) && setLiked(true))
-        
-            onPostLike(data)
-            setLiked(true)
-            setTotalLikes((prev) => prev+1)
+
+        onPostLike(data)
+        setLiked(true)
+        setTotalLikes((prev) => prev + 1)
     }
 
     const handleUnlike = () => {
-        let data = {likeable_type: "Strain", likeable_id: strain.id, user_id: localStorage.userId}
-            
-            onDeleteLike(data) 
-            setLiked(false)
-            setTotalLikes((prev) => prev-1)
-        
+        let data = { likeable_type: "Strain", likeable_id: strain.id, user_id: localStorage.userId }
+
+        onDeleteLike(data)
+        setLiked(false)
+        setTotalLikes((prev) => prev - 1)
+
     }
-    
-    
+
+
+    const renderTags = () => {
+
+        return collection.tags.map(tag => {
+            return <TagComponent tag={tag} />
+        })
+    }
+
+    const handleTag = () => {
+        let data = { collection_id: collection.id, title: title }
+        onPostTag(data)
+        setNewTag(false)
+    }
+
+
+
 
 
     return (
@@ -142,10 +183,25 @@ function StrainPage(props) {
                 <div className={classes2.root}>
                     {strain &&
                         <Grid container spacing={3} >
-                            <Grid item xs={12} >    
+                            <Grid item xs={12} >
                                 <Paper className={classes2.root}>
                                     {`${strain.name}: Strain Details`}
-                                    <Chip label={`${totalLikes} Likes`} clickable onClick={liked ? handleUnlike : handleLike}/>
+                                    <Chip label={`${totalLikes} Likes`} clickable onClick={liked ? handleUnlike : handleLike} />
+                                    <Tooltip title="Menu" aria-label="Menu" interactive >
+                                        <IconButton aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick} >
+                                            <MoreVertIcon style={{ display: 'align-right' }} />
+                                        </IconButton>
+                                    </Tooltip>
+                                    <Menu
+                                        id="simple-menu"
+                                        anchorEl={anchorEl}
+                                        keepMounted
+                                        open={Boolean(anchorEl)}
+                                        onClose={handleClose}
+                                    >
+                                        <MenuItem onClick={() => setNewTag(true)}>Add Tag</MenuItem>
+                                        {/* <MenuItem onClick={handleUpVote}>UpVote This Comment</MenuItem> */}
+                                    </Menu>
                                 </Paper>
                             </Grid>
                             <Grid item xs={12} sm={6}>
@@ -184,25 +240,79 @@ function StrainPage(props) {
                                 </Paper>
                             </Grid>
                             <Grid item xs={12} >
-                                <Paper className={classes2.paper2} onClick={()=>setComments(!comments)}>
-                                    
-                                    {comments ? 'Hide Comments' : "View Comments"}
-                                
+                                <Paper className={classes2.paper}>
+                                    Tags: {collection.tags ? renderTags() : 'No Tags'}
                                 </Paper>
-                                {comments && 
-                                // <Paper className={classes2.paper}>
-                                //     {renderComments()}
-                                // </Paper>
-                                <CommentComponent type='Strain' commentable_id={strain.id}/>
-                                
+                            </Grid>
+                            <Grid item xs={12} >
+                                <Paper className={classes2.paper2} onClick={() => setComments(!comments)}>
+
+                                    {comments ? 'Hide Comments' : "View Comments"}
+
+                                </Paper>
+                                {comments &&
+                                    // <Paper className={classes2.paper}>
+                                    //     {renderComments()}
+                                    // </Paper>
+                                    <CommentComponent type='Strain' commentable_id={strain.id} />
+
                                 }
-                            </Grid>                           
+                            </Grid>
                         </Grid>}
                 </div>
             </TabPanel>
             <TabPanel value={value} index={1}>
                 <Entries collection={collection} />
             </TabPanel>
+            {newTag &&
+                <Modal
+                    size="lg"
+                    show={newTag}
+                    onHide={() => setNewTag(false)}
+                    aria-labelledby="example-modal-sizes-title-lg"
+                >
+                    {newTag &&
+                        (edit ?
+                            <>
+                                <Modal.Header closeButton>
+                                    <Modal.Title id="example-modal-sizes-title-lg">
+                                        Edit Tag
+                                    </Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body>
+                                    <form className="" onSubmit={handleTag}>
+
+                                        <div className="form-group">
+                                            <label>Title</label>
+                                            <input className="form-control" type="name" name="title" value={title} required onChange={handleTitle} />
+                                        </div>
+                                    </form>
+
+                                    <button className="btn btn-info" type="submit" onClick={handleTag}>Submit</button>
+                                </Modal.Body>
+                            </>
+                            :
+                            <>
+                                <Modal.Header closeButton>
+                                    <Modal.Title id="example-modal-sizes-title-lg">
+                                        Add Tag To Strain
+                                    </Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body>
+                                    <form className="" onSubmit={handleTag}>
+
+                                        <div className="form-group">
+                                            <label>Title</label>
+                                            <input className="form-control" type="name" name="title" value={title} required onChange={handleTitle} />
+                                        </div>
+                                    </form>
+
+                                    <button className="btn btn-info" type="submit" onClick={handleTag}>Submit</button>
+                                </Modal.Body>
+                            </>)
+                    }
+                </Modal>
+            }
         </div>
     );
 }
@@ -210,11 +320,12 @@ function StrainPage(props) {
 
 const mapStateToProps = (store) => ({
     collection: store.collection.selectedStrain
-    
+
 })
 
 const mapDispatchToProps = (dispatch) => ({
     onPostLike: (data) => postLike(data, dispatch),
-    onDeleteLike: (data) => deleteLike(data, dispatch)
+    onDeleteLike: (data) => deleteLike(data, dispatch),
+    onPostTag: (data) => postTag(data, dispatch),
 })
 export default connect(mapStateToProps, mapDispatchToProps)(StrainPage)

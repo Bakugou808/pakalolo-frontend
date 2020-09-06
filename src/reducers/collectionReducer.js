@@ -58,6 +58,36 @@ const collectionReducer = (state = initialState, action) => {
                 totalCollection: newCollection1
             }
 
+        case 'POST_TAG_SUCCESS':
+            let targetPostTag = state.selectedStrain
+            
+            let dataPostTag = [...targetPostTag.tags, action.tag]
+            const sortedPostTag = dataPostTag.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
+            targetPostTag.tags = sortedPostTag
+            const newCollectionTagPost = [...[...state.totalCollection.filter(collection => collection.id != targetPostTag.id)], targetPostTag]
+            
+            
+            return {
+                ...state,
+                totalCollection: newCollectionTagPost
+            }
+
+        case 'DELETE_TAG_SUCCESS':
+            let target2 = state.selectedStrain
+            
+            let tagData = [...target2.tags.filter(tag => tag.id != action.tagId)]
+            debugger
+            const sortedTags = tagData.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
+            target2.tags = sortedTags
+            const newCollectionTAGS = [...[...state.totalCollection.filter(collection => collection.id != target2.id)], target2]
+            
+            
+            return {
+                ...state,
+                totalCollection: newCollectionTAGS
+            }
+
+
         // ----------****** ASYNC ACTIONS ******-----------
         case 'FETCH_COLLECTION_REQUEST':
             return {

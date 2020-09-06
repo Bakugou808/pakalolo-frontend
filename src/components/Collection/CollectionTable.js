@@ -159,7 +159,7 @@ function CollectionTable(props) {
 
     useEffect(() => {
         setDisplay(collection)
-    })
+    }, [collection])
 
     const redirect = (path) => {
         console.log(path)
