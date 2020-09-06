@@ -13,6 +13,7 @@ import Chip from '@material-ui/core/Chip';
 import ChemChart from '../ChemChart'
 import Entries from '../Entries/Entries'
 import CommentComponent from '../Comments/CommentComponent'
+import { postLike, deleteLike } from '../../actions/likeActions'
 
 
 function TabPanel(props) {
@@ -82,14 +83,44 @@ function StrainPage(props) {
     const classes2 = useStyles2();
     const [value, setValue] = React.useState(0);
     const [comments, setComments] = useState(false)
-    const { collection, allComments } = props
+    const { collection, allComments, onPostLike, onDeleteLike } = props
     const [renderedComments, setRenderedComments] = useState([])
     const { strain } = collection
+    const [liked, setLiked] = React.useState(false)
+    const [totalLikes, setTotalLikes] = React.useState(0)
+
+
+    useEffect(()=> {
+        
+        strain.likes.length > 0 ? strain.likes.forEach(like => (like.user_id == localStorage.userId) ? setLiked(true) : setLiked(false)) : setLiked(false)
+        setTotalLikes(strain.likes.length)
+    }, [strain])
+
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
 
-  
+    const handleLike = () => {
+        console.log('liked strain')
+        let data = {likeable_type: "Strain", likeable_id: strain.id, user_id: localStorage.userId}
+        // !liked && (onPostLike(data) && setAddLike(true) && setLiked(true))
+        
+            onPostLike(data)
+            setLiked(true)
+            setTotalLikes((prev) => prev+1)
+    }
+
+    const handleUnlike = () => {
+        let data = {likeable_type: "Strain", likeable_id: strain.id, user_id: localStorage.userId}
+            
+            onDeleteLike(data) 
+            setLiked(false)
+            setTotalLikes((prev) => prev-1)
+        
+    }
+    
+    
+
 
     return (
         <div className={classes.root}>
@@ -114,6 +145,7 @@ function StrainPage(props) {
                             <Grid item xs={12} >    
                                 <Paper className={classes2.root}>
                                     {`${strain.name}: Strain Details`}
+                                    <Chip label={`${totalLikes} Likes`} clickable onClick={liked ? handleUnlike : handleLike}/>
                                 </Paper>
                             </Grid>
                             <Grid item xs={12} sm={6}>
@@ -176,14 +208,13 @@ function StrainPage(props) {
 }
 
 
-const mapStateToProps = (store) => {
-    return {
-        collection: store.collection.selectedStrain
-    }
-}
-const mapDispatchToProps = (store) => {
-    return {
+const mapStateToProps = (store) => ({
+    collection: store.collection.selectedStrain
+    
+})
 
-    }
-}
+const mapDispatchToProps = (dispatch) => ({
+    onPostLike: (data) => postLike(data, dispatch),
+    onDeleteLike: (data) => deleteLike(data, dispatch)
+})
 export default connect(mapStateToProps, mapDispatchToProps)(StrainPage)

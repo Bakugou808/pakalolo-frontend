@@ -69,7 +69,7 @@ export const postLikeFailure = (error) => {
 
 // -------***** POST FETCH REQUEST *****------------------*******************-------------
 
-export const postLike = (data, dispatch) => {
+export const postLike = (data, dispatch, type) => {
     dispatch(postLikeRequest())
     fetch(`http://localhost:3000/likes`, {
         method: "POST",
@@ -126,7 +126,6 @@ export const patchLike = (data, likeId, dispatch) => {
                 dispatch(patchLikeFailure(data.error))
             } else {
                 dispatch(patchLikeSuccess(data))
-                dispatch(openSnackBarEntryAdded())
             }
         })
 }
@@ -156,20 +155,22 @@ export const deleteLikeFailure = (error) => {
 
 // --------DELETE ENTRY FETCH FUNCTION---------  ********************************
 
-export const deleteLike = (likeId, dispatch) => {
+export const deleteLike = (data, dispatch) => {
     dispatch(deleteLikeRequest())
-    console.log(likeId)
-    fetch(`http://localhost:3000/likes/${likeId}`, {
-        method: 'DELETE',
+    console.log(data)
+    fetch(`http://localhost:3000/delete_like`, {
+        method: 'POST',
         headers: headers(),
+        body: JSON.stringify(data)
     })
         .then(res=>res.json())
         .then(data => {
             if (data.error){
                 dispatch(deleteLikeFailure(data.error))
             } else {
-                console.log('indelete success')
-                dispatch(deleteLikeSuccess(data))
+                console.log('indelete success', data)
+                
+                // dispatch(deleteLikeSuccess(data))
             }
         }) 
 }

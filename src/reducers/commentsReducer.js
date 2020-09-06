@@ -117,6 +117,41 @@ const commentsReducer = (state = initialState, action) => {
                 return subComments()
             }
             
+        
+        // ----------ADD LIKE TO COMMENT-------  *****************************
+
+        case 'POST_LIKE_SUCCESS':
+
+            let likeType = action.like.likeable_type
+            
+            if (likeType === "Strain"){
+                return {
+                    ...state,
+                    // fetching: false,
+                    // allComments: [...state.allComments, action.comment],
+                    // selectedStrainsComments: [...sorted1]
+                    // selectedStrain: action.strain
+                }
+            } else if (likeType === "Comment"){
+                
+                const subCommentsLikes = () => {
+                    const selectedComment = state.selectedStrainsComments.filter(comment => comment.id === action.like.likeable_id)[0]
+                    const newCommentLikes = [...selectedComment.likes, action.like]
+                    selectedComment.likes = newCommentLikes
+                    const newCommentsData = [...state.selectedStrainsComments.filter(comment => comment.id != selectedComment.id), selectedComment]
+                    
+                    let sortedLikeData = newCommentsData.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+                    
+                    return {
+                        ...state,
+                        fetching: false,
+                        // allComments: [...sortedData],
+                        selectedStrainsComments: [...sortedLikeData]
+                    }
+                }
+
+                return subCommentsLikes()
+            }
 
         // ----------PATCH ENTRY-------  *****************************
 
