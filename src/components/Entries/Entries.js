@@ -9,7 +9,7 @@ import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import { setEntryDisplay, patchEntry, deleteEntry, fetchEntries, closeSnackBarEntryAdded } from '../../actions/entriesActions'
 import { fetchCollection } from '../../actions/collectionActions'
-import { postSmokeListEntry, deleteSmokeListEntry, setEntriesForSmokeList } from '../../actions/smokeListActions'
+import { postSmokeListEntry, deleteSmokeListEntry, setEntriesForSmokeList, fetchSmokeLists, setSmokeListDisplay } from '../../actions/smokeListActions'
 import { postStrainToCollection, setStrainDisplay, closeSnackBarAddedToCollection } from '../../actions/collectionActions'
 
 import EntryForm from './EntryForm'
@@ -43,6 +43,11 @@ import Grow from '@material-ui/core/Grow';
 import AddEntryToList from '../Lists/AddEntryToList'
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import SpaIcon from '@material-ui/icons/Spa';
 
 
 
@@ -152,7 +157,7 @@ const useToolbarStyles = makeStyles((theme) => ({
 
 const EnhancedTableToolbar = (props) => {
     const classes = useToolbarStyles();
-    const { numSelected, setForm, handleDelete, handleEdit, entriesPage, smokeListPage, onFetchCollection, handleAddEntryToSmokeList, onSetEntriesForSmokeList, onFetchEntries } = props;
+    const { numSelected, setForm, handleDelete, handleEdit, entriesPage, smokeListPage, onFetchCollection, handleAddEntryToSmokeList, onSetEntriesForSmokeList, onFetchEntries, checkSelectedSmokeList } = props;
 
     const showForm = () => {
         setForm(true)
@@ -168,11 +173,11 @@ const EnhancedTableToolbar = (props) => {
             })}
         >
             {numSelected > 0 ? (
-                <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
+                <Typography className={classes.title} color="inherit" variant="subtitle1" component="span">
                     {numSelected} selected
                 </Typography>
             ) : (
-                    <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
+                    <Typography className={classes.title} variant="h6" id="tableTitle" component="span">
                         {smokeListPage ? 'Smoke List' : 'Entries'}
                     </Typography>
                 )}
@@ -187,7 +192,7 @@ const EnhancedTableToolbar = (props) => {
                         </Tooltip>
                         {(!smokeListPage) && <Tooltip title="Add To Smoke List">
                             <IconButton aria-label="addToSmokeList" >
-                                <AddIcon onClick={handleAddEntryToSmokeList} />
+                                <AddIcon onClick={checkSelectedSmokeList} />
                             </IconButton>
                         </Tooltip>}
                     </>
@@ -206,7 +211,7 @@ const EnhancedTableToolbar = (props) => {
                             {!smokeListPage &&
                                 <Tooltip title="Add To Smoke List">
                                     <IconButton aria-label="addToSmokeList">
-                                        <AddIcon onClick={handleAddEntryToSmokeList} />
+                                        <AddIcon onClick={checkSelectedSmokeList} />
                                     </IconButton>
                                 </Tooltip>}
                         </>
@@ -221,6 +226,7 @@ const EnhancedTableToolbar = (props) => {
                     </Tooltip>
                 )}
         </Toolbar>
+
     );
 };
 
@@ -262,7 +268,7 @@ const useStyles = makeStyles((theme) => ({
 
 function EntriesTable(props) {
     const classes = useStyles();
-    const { onSetEntry, entriesForStrain, collection, onEditEntry, onDeleteEntry, entriesPage, onFetchEntries, smokeListPage, onFetchCollection, collectionEntries, selectedSmokeList, onPostSmokeListEntry, onSetEntriesForSmokeList, selectedEntriesForSmokeList, onDeleteSmokeListEntry, totalCollection, subEntryTable, allEntries, selectedEntry, snackBarEntrySuccessDisplay, onCloseSnackBar } = props
+    const { onSetEntry, entriesForStrain, collection, onEditEntry, onDeleteEntry, entriesPage, onFetchEntries, smokeListPage, onFetchCollection, collectionEntries, selectedSmokeList, onPostSmokeListEntry, onSetEntriesForSmokeList, selectedEntriesForSmokeList, onDeleteSmokeListEntry, totalCollection, subEntryTable, allEntries, selectedEntry, snackBarEntrySuccessDisplay, onCloseSnackBar, allSmokeLists, onFetchSmokeLists, onSetSmokeListDisplay } = props
     const [open, setOpen] = React.useState({ 0: false });
     const [form, setForm] = React.useState(false);
     const [order, setOrder] = React.useState('asc');
@@ -277,6 +283,8 @@ function EntriesTable(props) {
     const [rowCount, setRowCount] = React.useState(0)
     const [selectedStrain, setSelectedStrain] = React.useState('selectedStrain')
     const [selectedEntries, setSelectedEntries] = React.useState([])
+    const [SLForm, setSLForm] = React.useState(false)
+    const [selectedSL, setSelectedSL] = React.useState(null)
 
     useEffect(() => {
         const userId = localStorage.userId
@@ -309,10 +317,11 @@ function EntriesTable(props) {
     const handleClick = (event, index, row) => {
         setSelectedStrain(row)
         const selectedIndex = selected.indexOf(index);
-        const data = { entry_id: row.id, smoke_list_id: selectedSmokeList.id }
+        // const data = { entry_id: row.id, smoke_list_id: selectedSmokeList.id }
+        // while on collections page, the smokelikst needs to be selected not in state.
         let newSelected = [];
         let newSelectedEntries = []
- 
+
         if (selectedIndex === -1) {
             newSelected = newSelected.concat(selected, index);
         } else if (selectedIndex === 0) {
@@ -376,7 +385,8 @@ function EntriesTable(props) {
         } else {
             selectedEntries.forEach((entry, index) => {
                 onDeleteEntry(entry.id)
-             })}
+            })
+        }
         setSelected([])
     }
 
@@ -384,8 +394,32 @@ function EntriesTable(props) {
 
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, entriesForStrain.length - page * rowsPerPage);
 
-    const handleAddEntryToSmokeList = () => {
-        collectionEntries.forEach((entry, index) => {
+    const checkSelectedSmokeList = () => {
+        // (selectedSmokeList || selectedSL) ? handleAddEntryToSmokeList() : (onFetchSmokeLists(localStorage.userId) && setSLForm(true))  
+        if (selectedSmokeList || selectedSL){
+            handleAddEntryToSmokeList()
+        } else {
+            onFetchSmokeLists(localStorage.userId)
+            setSLForm(true)
+        }
+    }
+
+    const handleScroll = () => {
+
+        document.querySelector('body').style = ''
+        document.querySelector('body').classList.remove('modal-open')
+    }
+
+    const handleSelectSL = (smokeList) => {
+        setSelectedSL(smokeList)
+        setSLForm(false)
+        handleAddEntryToSmokeList(smokeList)
+    }
+    
+
+    const handleAddEntryToSmokeList = (SL=null) => {
+
+        if (selectedSmokeList) {collectionEntries.forEach((entry, index) => {
             selected.forEach((ind) => {
                 if (index === ind) {
                     console.log(entry, 'inhandleentrytosmokelist')
@@ -393,7 +427,17 @@ function EntriesTable(props) {
                     onPostSmokeListEntry(data)
                 }
             })
-        })
+        })} else if (SL!=null){
+            collectionEntries.forEach((entry, index) => {
+                selected.forEach((ind) => {
+                    if (index === ind) {
+                        console.log(entry, 'inhandleentrytosmokelist')
+                        let data = { entry_id: entry.id, smoke_list_id: SL.id }
+                        onPostSmokeListEntry(data)
+                    }
+                })
+            })
+        }
         setSelected([])
     }
 
@@ -461,7 +505,7 @@ function EntriesTable(props) {
                             <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
                                 <Collapse in={open[index]} timeout="auto" unmountOnExit>
                                     <Box margin={1}>
-                                        <Typography variant="h6" gutterBottom component="div">
+                                        <Typography variant="h6" gutterBottom component="span">
                                             {row.strain.name} by {row.vendor.name} - Review
                     </Typography>
                                         {row.review}
@@ -480,7 +524,7 @@ function EntriesTable(props) {
         <div className={classes.root}>
             <Grow in={grow}>
                 <Paper className={classes.paper}>
-                    <EnhancedTableToolbar handleAddEntryToSmokeList={handleAddEntryToSmokeList} entriesPage={entriesPage} onFetchCollection={onFetchCollection} smokeListPage={smokeListPage} numSelected={selected.length} handleDelete={handleDelete} handleEdit={handleEdit} setForm={setForm} onSetEntriesForSmokeList={onSetEntriesForSmokeList} onFetchEntries={onFetchEntries} />
+                    <EnhancedTableToolbar handleAddEntryToSmokeList={handleAddEntryToSmokeList} entriesPage={entriesPage} onFetchCollection={onFetchCollection} smokeListPage={smokeListPage} numSelected={selected.length} handleDelete={handleDelete} handleEdit={handleEdit} setForm={setForm} onSetEntriesForSmokeList={onSetEntriesForSmokeList} onFetchEntries={onFetchEntries} checkSelectedSmokeList={checkSelectedSmokeList}/>
                     <TableContainer>
                         <Table
                             className={classes.table}
@@ -532,10 +576,6 @@ function EntriesTable(props) {
                     />
                 </Paper>
             </Grow>
-            {/* <FormControlLabel
-                control={<Switch checked={dense} onChange={handleChangeDense} />}
-                label="Dense padding"
-            /> */}
             {form &&
                 <Modal
                     size="lg"
@@ -598,6 +638,36 @@ function EntriesTable(props) {
                     Your Entry was successfully added!
                 </Alert>
             </Snackbar>}
+
+            {SLForm &&
+                <Modal
+                    size="lg"
+                    show={SLForm}
+                    onHide={() => setSLForm(false)}
+                    aria-labelledby="example-modal-sizes-title-lg"
+
+                >
+                    <>
+                        <Modal.Header closeButton>
+                            <Modal.Title id="example-modal-sizes-title-lg">
+                                Select SmokeList
+                            </Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body >
+                            <Paper className={classes.paper}>
+                                <List>
+                                    {allSmokeLists.map((smokeList, index) => (
+                                        <ListItem button key={smokeList.id} onClick={()=>handleSelectSL(smokeList)}>
+                                            <ListItemIcon><SpaIcon /></ListItemIcon>
+                                            <ListItemText primary={smokeList.title} />
+                                        </ListItem>
+                                    ))}
+                                </List>
+                            </Paper>
+                        </Modal.Body>
+                    </>
+                </Modal>
+            }
         </div >
     );
 }
@@ -611,6 +681,7 @@ const mapStateToProps = (store) => ({
     selectedEntriesForSmokeList: store.smokeLists.selectedEntriesForSmokeList,
     totalCollection: store.collection.totalCollection,
     snackBarEntrySuccessDisplay: store.entries.snackBarSuccessDisplay,
+    allSmokeLists: store.smokeLists.allSmokeLists,
 
 })
 
@@ -624,7 +695,8 @@ const mapDispatchToProps = (dispatch) => ({
     onDeleteSmokeListEntry: (data) => deleteSmokeListEntry(data, dispatch),
     onSetEntriesForSmokeList: (entries) => dispatch(setEntriesForSmokeList(entries)),
     onCloseSnackBar: () => dispatch(closeSnackBarEntryAdded()),
-
+    onFetchSmokeLists: (userId) => fetchSmokeLists(userId, dispatch),
+    // onSetSmokeListDisplay: (smokeList) => dispatch(setSmokeListDisplay(smokeList)),
 })
 
 

@@ -38,7 +38,7 @@ function TabPanel(props) {
         >
             {value === index && (
                 <Box p={3}>
-                    <Typography>{children}</Typography>
+                    <Typography component={'span'}>{children}</Typography>
                 </Box>
             )}
         </div>
@@ -68,6 +68,7 @@ const useStyles = makeStyles((theme) => ({
 const useStyles2 = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
+
     },
     paper: {
         padding: theme.spacing(2),
@@ -81,6 +82,9 @@ const useStyles2 = makeStyles((theme) => ({
         color: theme.palette.text.secondary,
         cursor: 'pointer'
     },
+    modal: {
+        overflow: 'auto'
+    }
 }));
 
 
@@ -101,12 +105,15 @@ function StrainPage(props) {
     const [title, setTitle] = React.useState('')
     const [newTag, setNewTag] = React.useState(false)
     const [edit, setEdit] = React.useState(false)
+    const [tags, setTags] = React.useState([])
 
     useEffect(() => {
-
+        console.log('rerendering strainpage')
         strain.likes.length > 0 ? strain.likes.forEach(like => (like.user_id == localStorage.userId) ? setLiked(true) : setLiked(false)) : setLiked(false)
         setTotalLikes(strain.likes.length)
-    }, [strain])
+        collection.tags.length > 0 && setTags(collection.tags)
+
+    }, [strain, collection])
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -145,11 +152,16 @@ function StrainPage(props) {
 
     }
 
+    const handleForm = () => {
+        handleClose()
+        setNewTag(true)
+        handleScroll()
+    }
 
     const renderTags = () => {
 
-        return collection.tags.map(tag => {
-            return <TagComponent tag={tag} />
+        return tags.map((tag, index) => {
+            return <TagComponent key={index} tag={tag} handleForm={handleClose} setTags={setTags} />
         })
     }
 
@@ -157,175 +169,182 @@ function StrainPage(props) {
         let data = { collection_id: collection.id, title: title }
         onPostTag(data)
         setNewTag(false)
+        handleScroll()
+        setTags(prev => [...prev, data])
+    }
+
+    const handleScroll = () => {
+       
+            document.querySelector('body').style = ''
+            document.querySelector('body').classList.remove('modal-open')
     }
 
 
 
 
+        return (
+            <div className={classes.root}>
+                
+                <Typography variant="h3" gutterBottom component="span">
+                    <Paper className={classes2.root}>
+                        {`${strain.name}: Strain Details`}
+                    </Paper>
 
-    return (
-        <div className={classes.root}>
-            <Typography variant="h3" gutterBottom component="div">
-                <Paper className={classes2.root}>
-                    {`${strain.name}: Strain Details`}
-                </Paper>
+                </Typography>
+                <AppBar position="static">
+                    <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
+                        <Tab label="Description" {...a11yProps(0)} />
+                        <Tab label="Entries" {...a11yProps(1)} />
+                        {/* <Tab label="Terpene Profile" {...a11yProps(2)} /> */}
+                    </Tabs>
+                </AppBar>
+                {/* Tab 1: Strain Description*/}
+                <TabPanel value={value} index={0}>
+                    <div className={classes2.root}>
+                        {strain &&
+                            <Grid container spacing={3} >
+                                <Grid item xs={12} >
+                                    <Paper className={classes2.root}>
+                                        {`${strain.name}: Strain Details`}
+                                        <Chip label={`${totalLikes} Likes`} clickable onClick={liked ? handleUnlike : handleLike} />
+                                        <Tooltip title="Menu" aria-label="Menu" interactive >
+                                            <IconButton aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick} >
+                                                <MoreVertIcon style={{ display: 'align-right' }} />
+                                            </IconButton>
+                                        </Tooltip>
+                                        <Menu
+                                            id="simple-menu"
+                                            anchorEl={anchorEl}
+                                            keepMounted
+                                            open={Boolean(anchorEl)}
+                                            onClose={handleClose}
+                                        >
+                                            <MenuItem onClick={handleForm} >Add Tag</MenuItem>
+                                            {/* <MenuItem onClick={handleUpVote}>UpVote This Comment</MenuItem> */}
+                                        </Menu>
+                                    </Paper>
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <Paper className={classes2.paper}>
+                                        <ChemChart data={strain.cannabinoidList} cannabinoids={true} />
+                                    </Paper>
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <Paper className={classes2.paper}>
+                                        <ChemChart data={strain.terpeneList} cannabinoids={false} />
+                                    </Paper>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Paper className={classes2.paper}>
+                                        {strain.description}
+                                    </Paper>
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <Paper className={classes2.paper}>
+                                        Flavors: {strain.flavorList}
+                                    </Paper>
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <Paper className={classes2.paper}>
+                                        Positive: {strain.effects.positive.join(', ')}
+                                    </Paper>
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <Paper className={classes2.paper}>
+                                        Negative: {strain.effects.negative.join(', ')}
+                                    </Paper>
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <Paper className={classes2.paper}>
+                                        Medical/Treats: {strain.effects.medical.join(', ')}
+                                    </Paper>
+                                </Grid>
+                                <Grid item xs={12} >
+                                    <Paper className={classes2.paper}>
+                                        Tags: {collection.tags ? renderTags() : 'No Tags'}
+                                    </Paper>
+                                </Grid>
+                                <Grid item xs={12} >
+                                    <Paper className={classes2.paper2} onClick={() => setComments(!comments)}>
 
-            </Typography>
-            <AppBar position="static">
-                <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
-                    <Tab label="Description" {...a11yProps(0)} />
-                    <Tab label="Entries" {...a11yProps(1)} />
-                    {/* <Tab label="Terpene Profile" {...a11yProps(2)} /> */}
-                </Tabs>
-            </AppBar>
-            {/* Tab 1: Strain Description*/}
-            <TabPanel value={value} index={0}>
-                <div className={classes2.root}>
-                    {strain &&
-                        <Grid container spacing={3} >
-                            <Grid item xs={12} >
-                                <Paper className={classes2.root}>
-                                    {`${strain.name}: Strain Details`}
-                                    <Chip label={`${totalLikes} Likes`} clickable onClick={liked ? handleUnlike : handleLike} />
-                                    <Tooltip title="Menu" aria-label="Menu" interactive >
-                                        <IconButton aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick} >
-                                            <MoreVertIcon style={{ display: 'align-right' }} />
-                                        </IconButton>
-                                    </Tooltip>
-                                    <Menu
-                                        id="simple-menu"
-                                        anchorEl={anchorEl}
-                                        keepMounted
-                                        open={Boolean(anchorEl)}
-                                        onClose={handleClose}
-                                    >
-                                        <MenuItem onClick={() => setNewTag(true)}>Add Tag</MenuItem>
-                                        {/* <MenuItem onClick={handleUpVote}>UpVote This Comment</MenuItem> */}
-                                    </Menu>
-                                </Paper>
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <Paper className={classes2.paper}>
-                                    <ChemChart data={strain.cannabinoidList} cannabinoids={true} />
-                                </Paper>
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <Paper className={classes2.paper}>
-                                    <ChemChart data={strain.terpeneList} cannabinoids={false} />
-                                </Paper>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Paper className={classes2.paper}>
-                                    {strain.description}
-                                </Paper>
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <Paper className={classes2.paper}>
-                                    Flavors: {strain.flavorList}
-                                </Paper>
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <Paper className={classes2.paper}>
-                                    Positive: {strain.effects.positive.join(', ')}
-                                </Paper>
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <Paper className={classes2.paper}>
-                                    Negative: {strain.effects.negative.join(', ')}
-                                </Paper>
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <Paper className={classes2.paper}>
-                                    Medical/Treats: {strain.effects.medical.join(', ')}
-                                </Paper>
-                            </Grid>
-                            <Grid item xs={12} >
-                                <Paper className={classes2.paper}>
-                                    Tags: {collection.tags ? renderTags() : 'No Tags'}
-                                </Paper>
-                            </Grid>
-                            <Grid item xs={12} >
-                                <Paper className={classes2.paper2} onClick={() => setComments(!comments)}>
+                                        {comments ? 'Hide Comments' : "View Comments"}
 
-                                    {comments ? 'Hide Comments' : "View Comments"}
+                                    </Paper>
+                                    {comments &&
+                                     
+                                        <CommentComponent type='Strain' commentable_id={strain.id} />
 
-                                </Paper>
-                                {comments &&
-                                    // <Paper className={classes2.paper}>
-                                    //     {renderComments()}
-                                    // </Paper>
-                                    <CommentComponent type='Strain' commentable_id={strain.id} />
-
-                                }
-                            </Grid>
-                        </Grid>}
-                </div>
-            </TabPanel>
-            <TabPanel value={value} index={1}>
-                <Entries collection={collection} />
-            </TabPanel>
-            {newTag &&
-                <Modal
-                    size="lg"
-                    show={newTag}
-                    onHide={() => setNewTag(false)}
-                    aria-labelledby="example-modal-sizes-title-lg"
-                >
-                    {newTag &&
-                        (edit ?
-                            <>
-                                <Modal.Header closeButton>
-                                    <Modal.Title id="example-modal-sizes-title-lg">
-                                        Edit Tag
+                                    }
+                                </Grid>
+                            </Grid>}
+                    </div>
+                </TabPanel>
+                <TabPanel value={value} index={1}>
+                    <Entries collection={collection} />
+                </TabPanel>
+                {newTag &&
+                    <Modal
+                        size="lg"
+                        show={newTag}
+                        onHide={() => setNewTag(false)}
+                        aria-labelledby="example-modal-sizes-title-lg"
+                        onFocus={handleScroll}
+                    >
+                        {newTag &&
+                            (edit ?
+                                <>
+                                    <Modal.Header closeButton>
+                                        <Modal.Title id="example-modal-sizes-title-lg">
+                                            Edit Tag
                                     </Modal.Title>
-                                </Modal.Header>
-                                <Modal.Body>
-                                    <form className="" onSubmit={handleTag}>
+                                    </Modal.Header>
+                                    <Modal.Body >
+                                        <form className="" onSubmit={handleTag}>
 
-                                        <div className="form-group">
-                                            <label>Title</label>
-                                            <input className="form-control" type="name" name="title" value={title} required onChange={handleTitle} />
-                                        </div>
-                                    </form>
+                                            <div className="form-group">
+                                                <label>Title</label>
+                                                <input className="form-control" type="name" name="title" value={title} required onChange={handleTitle} />
+                                            </div>
+                                        </form>
 
-                                    <button className="btn btn-info" type="submit" onClick={handleTag}>Submit</button>
-                                </Modal.Body>
-                            </>
-                            :
-                            <>
-                                <Modal.Header closeButton>
-                                    <Modal.Title id="example-modal-sizes-title-lg">
-                                        Add Tag To Strain
+                                        <button className="btn btn-info" type="submit" onClick={handleTag}>Submit</button>
+                                    </Modal.Body>
+                                </>
+                                :
+                                <>
+                                    <Modal.Header closeButton>
+                                        <Modal.Title id="example-modal-sizes-title-lg">
+                                            Add Tag To Strain
                                     </Modal.Title>
-                                </Modal.Header>
-                                <Modal.Body>
-                                    <form className="" onSubmit={handleTag}>
+                                    </Modal.Header>
+                                    <Modal.Body >
+                                        <form className="" onSubmit={handleTag}>
 
-                                        <div className="form-group">
-                                            <label>Title</label>
-                                            <input className="form-control" type="name" name="title" value={title} required onChange={handleTitle} />
-                                        </div>
-                                    </form>
+                                            <div className="form-group">
+                                                <label>Title</label>
+                                                <input className="form-control" type="name" name="title" value={title} required onChange={handleTitle} />
+                                            </div>
+                                        </form>
 
-                                    <button className="btn btn-info" type="submit" onClick={handleTag}>Submit</button>
-                                </Modal.Body>
-                            </>)
-                    }
-                </Modal>
-            }
-        </div>
-    );
-}
+                                        <button className="btn btn-info" type="submit" onClick={handleTag}>Submit</button>
+                                    </Modal.Body>
+                                </>)
+                        }
+                    </Modal>
+                }
+            </div>
+        );
+    }
 
 
-const mapStateToProps = (store) => ({
-    collection: store.collection.selectedStrain
+    const mapStateToProps = (store) => ({
+        collection: store.collection.selectedStrain
 
-})
+    })
 
-const mapDispatchToProps = (dispatch) => ({
-    onPostLike: (data) => postLike(data, dispatch),
-    onDeleteLike: (data) => deleteLike(data, dispatch),
-    onPostTag: (data) => postTag(data, dispatch),
-})
-export default connect(mapStateToProps, mapDispatchToProps)(StrainPage)
+    const mapDispatchToProps = (dispatch) => ({
+        onPostLike: (data) => postLike(data, dispatch),
+        onDeleteLike: (data) => deleteLike(data, dispatch),
+        onPostTag: (data) => postTag(data, dispatch),
+    })
+    export default connect(mapStateToProps, mapDispatchToProps)(StrainPage)

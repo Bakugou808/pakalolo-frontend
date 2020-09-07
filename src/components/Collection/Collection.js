@@ -15,6 +15,7 @@ import StrainPage from './StrainPage'
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
+        
     },
     root2: {
         width: '100%',

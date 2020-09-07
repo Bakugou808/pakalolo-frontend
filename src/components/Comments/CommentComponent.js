@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react'
+import React, { Component, useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import Comment from './Comment'
 import CommentBar from './CommentBar'
@@ -33,12 +33,16 @@ const useStyles = makeStyles((theme) => ({
 export const CommentComponent = (props) => {
 
     // const [leaveComment, setLeaveComment] = useState(false)
-    // const [comment, setComment] = useState('')
-    const { strainComments, type, commentable_id } = props
+    const [comments, setComments] = useState(null)
+    const { strainComments, type, commentable_id, setSubComments } = props
+
+    useEffect(()=> {
+        strainComments.length > 0 && setComments(strainComments)
+    }, [strainComments])
 
     const renderComments = () => {
 
-            return strainComments.map(comment => <Comment comment={comment} />)
+            return comments.map(comment => <Comment key={comment.id} comment={comment} />)
         
 
     }
@@ -48,12 +52,12 @@ export const CommentComponent = (props) => {
     return (
 
         <Paper >
-            {(strainComments && type === 'Strain') &&
+            {(comments && type === 'Strain') &&
                
                     renderComments()
                 
             }
-            <CommentBar type={type} commentable_id={commentable_id} />
+            <CommentBar type={type} commentable_id={commentable_id} setComments={setComments} setSubComments={setSubComments} />
         </Paper>
     )   
 }
@@ -62,8 +66,8 @@ const mapStateToProps = (store) => ({
     strainComments: store.comments.selectedStrainsComments
 })
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch) => ({
 
-}
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(CommentComponent)

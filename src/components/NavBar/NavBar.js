@@ -101,15 +101,6 @@ function NavBar(props) {
           </ListItem>
         ))}
       </List>
-      {/* <Divider />
-      <List>
-        {['All mail', 'Trash', 'Spam'].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
-      </List> */}
     </div>
   );
 
@@ -117,21 +108,21 @@ function NavBar(props) {
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
-          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-            {props.auth && <MenuIcon onClick={toggleDrawer('left', true)} />}
+          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={toggleDrawer('left', true)}>
+            {props.auth && <MenuIcon  />}
           </IconButton>
           <Typography variant="h6" className={classes.title}>
             <Link href="/" color='inherit'>
               Pakalolo
             </Link>
           </Typography>
-          {props.auth ? <Typography variant="h9" className={classes.login}>
+          {props.auth ? <Typography variant="subtitle1" className={classes.login}>
             <Link className={classes.link} onClick={onLogout} color='inherit'>
               Sign Out
             </Link>
           </Typography>
             :
-            <Typography variant="h9" className={classes.login}>
+            <Typography variant="subtitle1" className={classes.login}>
               <Link href="/signin" color='inherit'>
                 Sign In
             </Link>

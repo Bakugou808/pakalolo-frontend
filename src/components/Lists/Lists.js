@@ -118,7 +118,7 @@ export const Lists = (props) => {
             <Divider />
             <List>
                 {allSmokeLists.map((smokeList, index) => (
-                    <ListItem button key={index} onClick={()=>handleSmokeList(smokeList)}>
+                    <ListItem button key={smokeList.id} onClick={()=>handleSmokeList(smokeList)}>
                         <ListItemIcon><SpaIcon /></ListItemIcon>
                         <ListItemText primary={smokeList.title} />
                     </ListItem>

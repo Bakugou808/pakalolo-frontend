@@ -6,7 +6,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import MenuItem from '@material-ui/core/MenuItem';import { connect } from 'react-redux'
 
 
-const TagComponent = ({ tag, onDeleteTag }) => {
+const TagComponent = ({ tag, onDeleteTag, handleForm, setTags }) => {
     const [anchorEl, setAnchorEl] = React.useState(null);
 
     const handleTagOptions = () => {
@@ -22,6 +22,9 @@ const TagComponent = ({ tag, onDeleteTag }) => {
     const handleRemoveTag = () => {
         onDeleteTag(tag.id)
         handleClose()
+        handleForm()
+    
+        setTags(prev => prev.filter(tag0 => tag0.title != tag.title))
     }
     
     return (

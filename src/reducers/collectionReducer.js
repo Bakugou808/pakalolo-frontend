@@ -76,7 +76,6 @@ const collectionReducer = (state = initialState, action) => {
             let target2 = state.selectedStrain
             
             let tagData = [...target2.tags.filter(tag => tag.id != action.tagId)]
-            debugger
             const sortedTags = tagData.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
             target2.tags = sortedTags
             const newCollectionTAGS = [...[...state.totalCollection.filter(collection => collection.id != target2.id)], target2]

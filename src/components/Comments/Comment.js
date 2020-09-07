@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -54,10 +54,12 @@ const Comment = ({ comment, onPostLike, onDeleteLike }) => {
     const [open, setOpen] = React.useState(false);
     const [liked, setLiked] = React.useState(false)
     const [totalLikes, setTotalLikes] = React.useState(0)
+    const [subComments, setSubComments] = React.useState([])
 
-    useEffect(()=> {
+    useEffect(() => {
         comment.likes.forEach(like => like.user_id == localStorage.userId && setLiked(true))
         setTotalLikes(comment.likes.length)
+        comment.comments.length > 0 && setSubComments(comment.comments)
     }, [])
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -72,41 +74,41 @@ const Comment = ({ comment, onPostLike, onDeleteLike }) => {
     }
 
     const handleUpVote = () => {
-        let data = {likeable_type: "Comment", likeable_id: comment.id, user_id: localStorage.userId}
+        let data = { likeable_type: "Comment", likeable_id: comment.id, user_id: localStorage.userId }
 
         onPostLike(data)
         setLiked(true)
-        setTotalLikes((prev) => prev +1)
+        setTotalLikes((prev) => prev + 1)
     }
 
-    const handleDownVote = () =>{
-        let data = {likeable_type: "Comment", likeable_id: comment.id, user_id: localStorage.userId}
+    const handleDownVote = () => {
+        let data = { likeable_type: "Comment", likeable_id: comment.id, user_id: localStorage.userId }
 
-        onDeleteLike(data) 
+        onDeleteLike(data)
         setLiked(false)
-        setTotalLikes((prev) => prev -1)
+        setTotalLikes((prev) => prev - 1)
     }
-    
-    const renderSubComments = (comments) => {
-        return comments.map(comment => {
-            
-         return   <>
+
+    const renderSubComments = (subComments) => {
+        return subComments.map(comment => {
+
+            return <div key={comment.id}>
                 <Paper className={classes.paper2}>
                     <Col md={3}>
                         <Chip label={comment.username} />
                         <br />
-                        {(comment.rating != null) && <Chip label={`Strain Rating: ${comment.rating === null ? 'Not Rated' : comment.rating}`} />}
+                        {(comment.rating != false) && <Chip label={`Strain Rating: ${comment.rating === null ? 'Not Rated' : comment.rating}`} />}
                     </Col>
                     <Col>
                         <Row>"{comment.comment}"</Row>
                     </Col>
                 </Paper>
-            </>
+            </div>
         })
     }
 
     return (
-    
+
         <Paper className={classes.paper} elevation={2}>
             <Container>
                 <Row>
@@ -120,37 +122,21 @@ const Comment = ({ comment, onPostLike, onDeleteLike }) => {
                     </Col>
                     <Col>
                         <>
-                            {/* <Tooltip title="Menu" aria-label="Menu" interactive >
-                                <IconButton aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick} >
-                                    <MoreVertIcon style={{ display: 'align-right' }} />
-                                </IconButton>
-                            </Tooltip>
-                            <Menu
-                                id="simple-menu"
-                                anchorEl={anchorEl}
-                                keepMounted
-                                open={Boolean(anchorEl)}
-                                onClose={handleClose}
-                            >
-                                <MenuItem onClick={handleReply}>Reply To Comment</MenuItem>
-                                <MenuItem onClick={handleUpVote}>UpVote This Comment</MenuItem>
-                            </Menu> */}
-               
-                               <Chip label={`${totalLikes} UpVotes`} clickable onClick={ liked ? handleDownVote : handleUpVote}/>
-                              <Chip label={`${comment.comments.length} Replies`} clickable onClick={handleReply}/>
-                            
+                            <Chip label={`${totalLikes} UpVotes`} clickable onClick={liked ? handleDownVote : handleUpVote} />
+                            <Chip label={`${subComments.length} Replies`} clickable onClick={handleReply} />
+
                         </>
                     </Col>
                 </Row>
                 <Row>
 
                     {open &&
-                    
+
                         <Collapse in={open} timeout="auto" unmountOnExit>
                             <Box margin={1}>
-                                {renderSubComments(comment.comments)}
+                                {renderSubComments(subComments)}
 
-                                <CommentComponent type='Comment' commentable_id={comment.id} />
+                                <CommentComponent type='Comment' commentable_id={comment.id} setSubComments={setSubComments} />
                             </Box>
                         </Collapse>}
                 </Row>
@@ -165,7 +151,7 @@ const mapStateToProps = (store) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-    onPostLike: (data) => postLike(data, dispatch), 
+    onPostLike: (data) => postLike(data, dispatch),
     onDeleteLike: (data) => deleteLike(data, dispatch)
 })
 

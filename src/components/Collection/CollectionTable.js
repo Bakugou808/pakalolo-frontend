@@ -182,7 +182,7 @@ function CollectionTable(props) {
                 <Grid item xs={6} sm={3}>
 
                 </Grid>
-                <Grid item xs={16}>
+                <Grid item xs={12}>
                     <div className={classes.block}>
                         <Select
                             labelId="demo-simple-select-label"
@@ -197,12 +197,9 @@ function CollectionTable(props) {
 
                         </Select>
                         <TextField
-                            // hintText="Query"
-                            // floatingLabelText="Query"
                             value={query}
                             onChange={handleSearch}
-                            floatingLabelFixed
-                            // className={classes.block}
+                            floatinglabelfixed='true'
                         />
                         <FormGroup >
                             <FormControlLabel

@@ -12,7 +12,7 @@ const CommentBar = (props) => {
 
     const [comment, setComment] = useState('')
     const [rating, setRating] = useState('')
-    const { type, commentable_id, onPostComment } = props
+    const { type, commentable_id, onPostComment, setComments, setSubComments } = props
 
 
     const handleChange = (e) => {
@@ -29,11 +29,13 @@ const CommentBar = (props) => {
 
     const handleSubmit = () => {
 
-        let data = { user_id: localStorage.userId, username: localStorage.userName, commentable_type: type, commentable_id: commentable_id, rating: rating, comment: comment }
+        let data = { user_id: localStorage.userId, username: localStorage.userName, commentable_type: type, commentable_id: commentable_id, rating: rating, comment: comment, likes: [], comments:[] }
         console.log('submitting comment', data)
 
         onPostComment(data)
         setLeaveComment(false)
+        type === 'Strain' ? setComments(prev => [...prev, data]) : setSubComments(prev => [...prev, data])
+        
     }
 
     return (
@@ -61,12 +63,12 @@ const CommentBar = (props) => {
                         />
 
                         <Chip label='Leave Comment' onClick={handleSubmit} />
-                        <Chip label='Cancel' icon={AddCommentIcon} color='green' variant='outlined' clickable onClick={() => setLeaveComment(false)} >
+                        <Chip label='Cancel' color='primary' variant='outlined' clickable onClick={() => setLeaveComment(false)} >
                         </Chip>
                     </>
                     :
                     <>
-                        <Chip label='Add Comment' icon={AddCommentIcon} color='green' variant='outlined' clickable onClick={() => setLeaveComment(true)} >
+                        <Chip label='Add Comment' color='primary' variant='outlined' clickable onClick={() => setLeaveComment(true)} >
                         </Chip>
                     </>}
             </Paper>

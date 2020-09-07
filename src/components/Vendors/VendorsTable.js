@@ -22,10 +22,6 @@ function VendorsTable(props) {
 
     const { vendors, onPostVendor, onPatchVendor, onDeleteVendor, onFetchVendors } = props
 
-    // const vendorData = (body) => {
-    //     let data = body.map(vendor => ({ id: vendor.id, name: vendor.name, rating: vendor.rating }))
-    //     return data
-    // }
     const [state, setState] = React.useState({
         columns: [
             { title: 'Name', field: 'name' },
