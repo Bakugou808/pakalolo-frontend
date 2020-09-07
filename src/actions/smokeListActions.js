@@ -245,10 +245,11 @@ export const postSmokeListEntryRequest = () => {
     }
 }
 
-export const postSmokeListEntrySuccess = (smokeListEntry) => {
+export const postSmokeListEntrySuccess = (smokeListEntry, page) => {
     return {
         type: 'POST_SMOKELISTENTRY_SUCCESS',
         smokeListEntry: smokeListEntry, 
+        page: page
     }
 }
 
@@ -261,7 +262,7 @@ export const postSmokeListEntryFailure = (error) => {
 
 // -------***** POST SmokeListEntry FETCH REQUEST *****------------------*******************-------------
 
-export const postSmokeListEntry = (data, dispatch) => {
+export const postSmokeListEntry = (data, dispatch, page=null) => {
     dispatch(postSmokeListEntryRequest())
     fetch(`http://localhost:3000/smoke_lists/new_entry`, {
         method: "POST",
@@ -273,7 +274,7 @@ export const postSmokeListEntry = (data, dispatch) => {
             if (data.error) {
                 dispatch(postSmokeListEntryFailure(data.error))
             } else {
-                dispatch(postSmokeListEntrySuccess(data))
+                dispatch(postSmokeListEntrySuccess(data, page))
                 // fetchSmokeLists(localStorage.userId, dispatch)
                 // dispatch(openSnackBarSmokeListEntryAdded())
             }

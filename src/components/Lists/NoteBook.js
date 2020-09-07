@@ -129,7 +129,7 @@ export const NoteBook = (props) => {
                     <Grow in={checked}>
                         {/* <CssBaseline /> */}
                         <Container maxWidth="md">
-                            <Typography component="span" style={{ backgroundColor: '#cfe8fc', height: '120vh', width: 'auto', overflow: 'hidden' }} >
+                            <Typography component="div" style={{ backgroundColor: '#cfe8fc', height: '120vh', width: 'auto', overflow: 'hidden' }} >
                                 <Grid
                                     container
                                     direction="column"

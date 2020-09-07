@@ -418,7 +418,7 @@ function EntriesTable(props) {
     
 
     const handleAddEntryToSmokeList = (SL=null) => {
-
+        
         if (selectedSmokeList) {collectionEntries.forEach((entry, index) => {
             selected.forEach((ind) => {
                 if (index === ind) {
@@ -428,12 +428,12 @@ function EntriesTable(props) {
                 }
             })
         })} else if (SL!=null){
-            collectionEntries.forEach((entry, index) => {
+            entriesForStrain.forEach((entry, index) => {
                 selected.forEach((ind) => {
                     if (index === ind) {
                         console.log(entry, 'inhandleentrytosmokelist')
                         let data = { entry_id: entry.id, smoke_list_id: SL.id }
-                        onPostSmokeListEntry(data)
+                        onPostSmokeListEntry(data, 'entries page')
                     }
                 })
             })
@@ -505,7 +505,7 @@ function EntriesTable(props) {
                             <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
                                 <Collapse in={open[index]} timeout="auto" unmountOnExit>
                                     <Box margin={1}>
-                                        <Typography variant="h6" gutterBottom component="span">
+                                        <Typography variant="h6" gutterBottom component="div">
                                             {row.strain.name} by {row.vendor.name} - Review
                     </Typography>
                                         {row.review}
@@ -691,7 +691,7 @@ const mapDispatchToProps = (dispatch) => ({
     onDeleteEntry: (entryId) => deleteEntry(entryId, dispatch),
     onFetchEntries: (userId, smokeListPage = false) => fetchEntries(userId, dispatch, smokeListPage),
     onFetchCollection: (userId) => fetchCollection(userId, dispatch),
-    onPostSmokeListEntry: (data) => postSmokeListEntry(data, dispatch),
+    onPostSmokeListEntry: (data, page) => postSmokeListEntry(data, dispatch, page),
     onDeleteSmokeListEntry: (data) => deleteSmokeListEntry(data, dispatch),
     onSetEntriesForSmokeList: (entries) => dispatch(setEntriesForSmokeList(entries)),
     onCloseSnackBar: () => dispatch(closeSnackBarEntryAdded()),

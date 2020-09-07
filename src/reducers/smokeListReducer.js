@@ -39,12 +39,11 @@ const smokeListReducer = (state = initialState, action) => {
 
             const dataSLE = [...state.selectedEntriesForSmokeList, action.smokeListEntry]
             const sortedSLE = dataSLE.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
-            
+            if (action.page != 'entries page') {
             return {
                 ...state,
-                // selectedEntriesForSmokeList: [...sortedSLE]
                 selectedEntriesForSmokeList: [...state.selectedEntriesForSmokeList, action.smokeListEntry]
-            }
+            }}
         case 'POST_SMOKELISTENTRY_REQUEST':
             return {
                 ...state,

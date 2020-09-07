@@ -7,6 +7,7 @@ import Link from '@material-ui/core/Link';
 
 import { connect } from 'react-redux';
 import { signOutUser } from '../../actions/userActions'
+import { setEntriesForSmokeList } from '../../actions/smokeListActions'
 
 import clsx from 'clsx';
 import Button from '@material-ui/core/Button';
@@ -56,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
 
 function NavBar(props) {
   const classes = useStyles();
-
+  const { onSetEntriesForSmokeList } = props
   const onLogout = () => {
     const { onSignOutUser, user } = props
     onSignOutUser(user.id)
@@ -80,6 +81,7 @@ function NavBar(props) {
 
   const redirect = (path) => {
     console.log(path)
+    path === "collection" && onSetEntriesForSmokeList([])
     props.history.push(`/${path}`)
   }
   
@@ -147,8 +149,7 @@ const mapStateToProps = (store) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     onSignOutUser: (userId) => dispatch(signOutUser(userId)),
-    // the above is for api/async calls 
-    // onChangeData: (newData) => dispatch(dataChangeAction(newData))   ---> this is for normal state changes, dispatch the outcome of an action creator, just to modify state
+    onSetEntriesForSmokeList: (data) => dispatch(setEntriesForSmokeList(data))
   }
 }
 
