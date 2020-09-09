@@ -1,4 +1,7 @@
+import { fetchCollection } from '../actions/collectionActions'
+
 const token = () => localStorage.getItem("token");
+
 
 
 export const headers = () => {
@@ -83,6 +86,7 @@ export const postEntry = (data, dispatch) => {
             } else {
                 dispatch(postEntrySuccess(data))
                 dispatch(openSnackBarEntryAdded())
+                fetchCollection(localStorage.userId, dispatch)
             }
         })
 }
@@ -144,9 +148,11 @@ export const patchEntry = (data, entryId, dispatch, type='') => {
                 dispatch(openSnackBarEntryAdded())
                 if (type === 'smokeList'){
                     dispatch(patchEntryInSmokeList(data))
+                    fetchCollection(localStorage.userId, dispatch)
                 } else if (type === 'subEntryTable'){
                     dispatch(patchEntryInSubEntryTable(data))
                     dispatch(patchEntryInSmokeList(data))
+                    fetchCollection(localStorage.userId, dispatch)
                 }
             }
         })
@@ -191,6 +197,8 @@ export const deleteEntry = (entryId, dispatch) => {
             } else {
                 console.log('indelete success')
                 dispatch(deleteEntrySuccess(data))
+                fetchCollection(localStorage.userId, dispatch)
+
             }
         }) 
 }

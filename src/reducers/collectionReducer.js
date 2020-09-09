@@ -4,6 +4,7 @@ const initialState = {
     error: false,
     selectedStrain: null,
     snackBarSuccessDisplay: false,
+    reRender: false
 }
 
 const collectionReducer = (state = initialState, action) => {
@@ -33,31 +34,41 @@ const collectionReducer = (state = initialState, action) => {
             }
         case 'POST_ENTRY_SUCCESS':
             let target = state.totalCollection.filter(collection => collection.id === action.entry.collection.id)[0]
-            
+            let container = target
             let data = [...target.entries, action.entry]
             const sorted = data.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
             target.entries = sorted
-            const newCollection = [...[...state.totalCollection.filter(collection => collection.id != target.id)], target]
-            
+            // const newCollection = [...[...state.totalCollection.filter(collection => collection.id != target.id)], target]
+            let idx = state.totalCollection.indexOf(container)
+            const newCollection = state.totalCollection
+            newCollection[idx].entries = sorted 
+            // const newCollection = state.totalCollection[idx].entries = sorted 
             
             return {
                 ...state,
-                totalCollection: newCollection
+                totalCollection: newCollection,
+                reRender: true
             }
         case 'ADD_ENTRY_TO_SUB_ENTRY_TABLE_PATCH':
             let target1 = state.totalCollection.filter(collection => collection.id === action.entry.collection.id)[0]
-            
+            let container1 = target1
             let data1 = [...target1.entries.filter(entry => entry.id != action.entry.id), action.entry]
             const sorted1 = data1.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
             target1.entries = sorted1
-            const newCollection1 = [...[...state.totalCollection.filter(collection => collection.id != target1.id)], target1]
+            let idx1 = state.totalCollection.indexOf(container1)
+
+            const newCollection1 = state.totalCollection 
+            newCollection1[idx1].entries = sorted1
             
             
             return {
                 ...state,
-                totalCollection: newCollection1
+                totalCollection: newCollection1,
+                reRender: true
+
             }
 
+ 
         case 'POST_TAG_SUCCESS':
             let targetPostTag = state.selectedStrain
             

@@ -183,7 +183,7 @@ const smokeListReducer = (state = initialState, action) => {
             state.selectedEntriesForSmokeList.forEach(entry => entry.id === action.entry.id && (add = true))
             
             if (add){
-                debugger
+                
                 const dataa = [...[...state.selectedEntriesForSmokeList.filter(entry => entry.id != action.entry.id)], action.entry]
 
                 const sortedd = dataa.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))

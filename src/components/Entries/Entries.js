@@ -268,7 +268,7 @@ const useStyles = makeStyles((theme) => ({
 
 function EntriesTable(props) {
     const classes = useStyles();
-    const { onSetEntry, entriesForStrain, collection, onEditEntry, onDeleteEntry, entriesPage, onFetchEntries, smokeListPage, onFetchCollection, collectionEntries, selectedSmokeList, onPostSmokeListEntry, onSetEntriesForSmokeList, selectedEntriesForSmokeList, onDeleteSmokeListEntry, totalCollection, subEntryTable, allEntries, selectedEntry, snackBarEntrySuccessDisplay, onCloseSnackBar, allSmokeLists, onFetchSmokeLists, onSetSmokeListDisplay } = props
+    const { onSetEntry, entriesForStrain, collection, onEditEntry, onDeleteEntry, entriesPage, onFetchEntries, smokeListPage, onFetchCollection, collectionEntries, selectedSmokeList, onPostSmokeListEntry, onSetEntriesForSmokeList, selectedEntriesForSmokeList, onDeleteSmokeListEntry, totalCollection, subEntryTable, allEntries, selectedEntry, snackBarEntrySuccessDisplay, onCloseSnackBar, allSmokeLists, onFetchSmokeLists, onSetSmokeListDisplay, reRender } = props
     const [open, setOpen] = React.useState({ 0: false });
     const [form, setForm] = React.useState(false);
     const [order, setOrder] = React.useState('asc');
@@ -285,6 +285,7 @@ function EntriesTable(props) {
     const [selectedEntries, setSelectedEntries] = React.useState([])
     const [SLForm, setSLForm] = React.useState(false)
     const [selectedSL, setSelectedSL] = React.useState(null)
+    const useForceUpdate = () => useState()[1]
 
     useEffect(() => {
         const userId = localStorage.userId
@@ -297,7 +298,7 @@ function EntriesTable(props) {
             onFetchEntries(userId, smokeListPage)
         }
         setRowCount(handleRowCount())
-    }, [])
+    }, [totalCollection])
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -682,7 +683,7 @@ const mapStateToProps = (store) => ({
     totalCollection: store.collection.totalCollection,
     snackBarEntrySuccessDisplay: store.entries.snackBarSuccessDisplay,
     allSmokeLists: store.smokeLists.allSmokeLists,
-
+    reRender: store.collection.reRender
 })
 
 const mapDispatchToProps = (dispatch) => ({

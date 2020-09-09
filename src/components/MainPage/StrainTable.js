@@ -228,7 +228,7 @@ function CollapsibleTable(props) {
 
     useEffect(() => {
         collection ? setDisplay(collection) : setDisplay(strains)
-    })
+    }, [collection])
 
     return (
         <div>
