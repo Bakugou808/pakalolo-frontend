@@ -108,7 +108,6 @@ function StrainPage(props) {
     const [tags, setTags] = React.useState([])
 
     useEffect(() => {
-        console.log('rerendering strainpage')
         strain.likes.length > 0 ? strain.likes.forEach(like => (like.user_id == localStorage.userId) ? setLiked(true) : setLiked(false)) : setLiked(false)
         setTotalLikes(strain.likes.length)
         collection.tags.length > 0 && setTags(collection.tags)

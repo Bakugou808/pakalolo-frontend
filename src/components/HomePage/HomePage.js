@@ -8,7 +8,9 @@ import Container from '@material-ui/core/Container';
 import { fetchAllTags, fetchAllStrainsWithTag } from '../../actions/tagActions'
 import Chip from '@material-ui/core/Chip';
 import EcoIcon from '@material-ui/icons/Eco';
-import StrainTable from '../MainPage/StrainTable'
+import MatchedStrainsTable from './MatchedStrainsTable'
+
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
 function HomePage(props) {
   const { onFetchTags, tags, onFetchAllStrainsWithTag, matchedStrains } = props 
   const classes = useStyles();
+  const [showTable, setShowTable] = React.useState(false)
 
   useEffect(()=> {
     onFetchTags(localStorage.userId)
@@ -45,9 +48,18 @@ function HomePage(props) {
     })
   }
 
+  const handleTableOpen = () => {
+      setShowTable(true)
+  }
+
+  const handleTableClose = () => {
+      setShowTable(false)
+  }
+  
+  
   const handleTagClick = (title)=> {
-    
     onFetchAllStrainsWithTag(title, localStorage.userId)
+    handleTableOpen()
   }
 
   return (
@@ -62,7 +74,7 @@ function HomePage(props) {
       </Grid>
       <Grid item xs={12} >
         <Paper className={classes.paper}>
-          {matchedStrains && <StrainTable collection={matchedStrains}/>}
+          {(matchedStrains && showTable) && <MatchedStrainsTable handleTableClose={handleTableClose} collection={matchedStrains} />}
         </Paper>
       </Grid>
       <Grid item xs={12} >

@@ -268,7 +268,7 @@ const useStyles = makeStyles((theme) => ({
 
 function EntriesTable(props) {
     const classes = useStyles();
-    const { onSetEntry, entriesForStrain, collection, onEditEntry, onDeleteEntry, entriesPage, onFetchEntries, smokeListPage, onFetchCollection, collectionEntries, selectedSmokeList, onPostSmokeListEntry, onSetEntriesForSmokeList, selectedEntriesForSmokeList, onDeleteSmokeListEntry, totalCollection, subEntryTable, allEntries, selectedEntry, snackBarEntrySuccessDisplay, onCloseSnackBar, allSmokeLists, onFetchSmokeLists, onSetSmokeListDisplay, reRender } = props
+    const { onSetEntry, entriesForStrain, collection, onEditEntry, onDeleteEntry, entriesPage, onFetchEntries, smokeListPage, onFetchCollection, collectionEntries, selectedSmokeList, onPostSmokeListEntry, onSetEntriesForSmokeList, selectedEntriesForSmokeList, onDeleteSmokeListEntry, totalCollection, subEntryTable, allEntries, selectedEntry, snackBarEntrySuccessDisplay, onCloseSnackBar, allSmokeLists, onFetchSmokeLists, tagEntries } = props
     const [open, setOpen] = React.useState({ 0: false });
     const [form, setForm] = React.useState(false);
     const [order, setOrder] = React.useState('asc');
@@ -397,7 +397,7 @@ function EntriesTable(props) {
 
     const checkSelectedSmokeList = () => {
         // (selectedSmokeList || selectedSL) ? handleAddEntryToSmokeList() : (onFetchSmokeLists(localStorage.userId) && setSLForm(true))  
-        if (selectedSmokeList || selectedSL){
+        if (selectedSmokeList || selectedSL) {
             handleAddEntryToSmokeList()
         } else {
             onFetchSmokeLists(localStorage.userId)
@@ -416,19 +416,21 @@ function EntriesTable(props) {
         setSLForm(false)
         handleAddEntryToSmokeList(smokeList)
     }
-    
 
-    const handleAddEntryToSmokeList = (SL=null) => {
-        
-        if (selectedSmokeList) {collectionEntries.forEach((entry, index) => {
-            selected.forEach((ind) => {
-                if (index === ind) {
-                    console.log(entry, 'inhandleentrytosmokelist')
-                    let data = { entry_id: entry.id, smoke_list_id: selectedSmokeList.id }
-                    onPostSmokeListEntry(data)
-                }
+
+    const handleAddEntryToSmokeList = (SL = null) => {
+
+        if (selectedSmokeList) {
+            collectionEntries.forEach((entry, index) => {
+                selected.forEach((ind) => {
+                    if (index === ind) {
+                        console.log(entry, 'inhandleentrytosmokelist')
+                        let data = { entry_id: entry.id, smoke_list_id: selectedSmokeList.id }
+                        onPostSmokeListEntry(data)
+                    }
+                })
             })
-        })} else if (SL!=null){
+        } else if (SL != null) {
             entriesForStrain.forEach((entry, index) => {
                 selected.forEach((ind) => {
                     if (index === ind) {
@@ -523,9 +525,9 @@ function EntriesTable(props) {
     return (
 
         <div className={classes.root}>
-            <Grow in={grow}>
+            {!tagEntries ? <Grow in={grow}>
                 <Paper className={classes.paper}>
-                    <EnhancedTableToolbar handleAddEntryToSmokeList={handleAddEntryToSmokeList} entriesPage={entriesPage} onFetchCollection={onFetchCollection} smokeListPage={smokeListPage} numSelected={selected.length} handleDelete={handleDelete} handleEdit={handleEdit} setForm={setForm} onSetEntriesForSmokeList={onSetEntriesForSmokeList} onFetchEntries={onFetchEntries} checkSelectedSmokeList={checkSelectedSmokeList}/>
+                    <EnhancedTableToolbar handleAddEntryToSmokeList={handleAddEntryToSmokeList} entriesPage={entriesPage} onFetchCollection={onFetchCollection} smokeListPage={smokeListPage} numSelected={selected.length} handleDelete={handleDelete} handleEdit={handleEdit} setForm={setForm} onSetEntriesForSmokeList={onSetEntriesForSmokeList} onFetchEntries={onFetchEntries} checkSelectedSmokeList={checkSelectedSmokeList} />
                     <TableContainer>
                         <Table
                             className={classes.table}
@@ -558,6 +560,7 @@ function EntriesTable(props) {
                                         )
                                     )
                                 }
+                                {tagEntries && renderRows(tagEntries)}
                                 {emptyRows > 0 && (
                                     <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
                                         <TableCell colSpan={6} />
@@ -576,7 +579,61 @@ function EntriesTable(props) {
                         onChangeRowsPerPage={handleChangeRowsPerPage}
                     />
                 </Paper>
-            </Grow>
+            </Grow> :
+
+                <Paper className={classes.paper}>
+                    <EnhancedTableToolbar handleAddEntryToSmokeList={handleAddEntryToSmokeList} entriesPage={entriesPage} onFetchCollection={onFetchCollection} smokeListPage={smokeListPage} numSelected={selected.length} handleDelete={handleDelete} handleEdit={handleEdit} setForm={setForm} onSetEntriesForSmokeList={onSetEntriesForSmokeList} onFetchEntries={onFetchEntries} checkSelectedSmokeList={checkSelectedSmokeList} />
+                    <TableContainer>
+                        <Table
+                            className={classes.table}
+                            aria-labelledby="tableTitle"
+                            size={dense ? 'small' : 'medium'}
+                            aria-label="enhanced table"
+                        >
+                            <EnhancedTableHead
+                                classes={classes}
+                                numSelected={selected.length}
+                                order={order}
+                                orderBy={orderBy}
+                                onSelectAllClick={handleSelectAllClick}
+                                onRequestSort={handleRequestSort}
+                                rowCount={handleRowCount()}
+                            />
+                            <TableBody>
+                                {(selectedEntriesForSmokeList.length > 0 && !subEntryTable) ?
+
+                                    renderRows(selectedEntriesForSmokeList)
+                                    :
+                                    (subEntryTable ?
+                                        renderRows(collectionEntries)
+                                        :
+                                        (entriesPage ? allEntries &&
+                                            renderRows(allEntries)
+                                            :
+                                            entriesForStrain &&
+                                            renderRows(entriesForStrain)
+                                        )
+                                    )
+                                }
+                                {tagEntries && renderRows(tagEntries)}
+                                {emptyRows > 0 && (
+                                    <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
+                                        <TableCell colSpan={6} />
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    <TablePagination
+                        rowsPerPageOptions={[5, 10, 25]}
+                        component="div"
+                        count={handleRowCount()}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onChangePage={handleChangePage}
+                        onChangeRowsPerPage={handleChangeRowsPerPage}
+                    />
+                </Paper>}
             {form &&
                 <Modal
                     size="lg"
@@ -658,7 +715,7 @@ function EntriesTable(props) {
                             <Paper className={classes.paper}>
                                 <List>
                                     {allSmokeLists.map((smokeList, index) => (
-                                        <ListItem button key={smokeList.id} onClick={()=>handleSelectSL(smokeList)}>
+                                        <ListItem button key={smokeList.id} onClick={() => handleSelectSL(smokeList)}>
                                             <ListItemIcon><SpaIcon /></ListItemIcon>
                                             <ListItemText primary={smokeList.title} />
                                         </ListItem>
@@ -669,6 +726,7 @@ function EntriesTable(props) {
                     </>
                 </Modal>
             }
+
         </div >
     );
 }
