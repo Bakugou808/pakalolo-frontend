@@ -90,7 +90,7 @@ const headCells = [
 ];
 
 function EnhancedTableHead(props) {
-    const { classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
+    const { classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, tags } = props;
     const createSortHandler = (property) => (event) => {
         onRequestSort(event, property);
     };
@@ -98,7 +98,30 @@ function EnhancedTableHead(props) {
     return (
         <TableHead>
             <TableRow>
-                {headCells.map((headCell) => (
+                {tags ? headCells.slice(1).map((headCell) => (
+                    <TableCell
+                        key={headCell.id}
+                        // align={headCell.numeric ? 'right' : 'left'}
+                        align={'left'}
+                        padding={headCell.disablePadding ? 'none' : 'default'}
+                        sortDirection={orderBy === headCell.id ? order : false}
+                    >
+                        <TableSortLabel
+                            active={orderBy === headCell.id}
+                            direction={orderBy === headCell.id ? order : 'asc'}
+                            onClick={createSortHandler(headCell.id)}
+                        >
+                            {headCell.label}
+                            {orderBy === headCell.id ? (
+                                <span className={classes.visuallyHidden}>
+                                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                                </span>
+                            ) : null}
+                        </TableSortLabel>
+                    </TableCell>
+                )) 
+                : 
+                headCells.map((headCell) => (
                     <TableCell
                         key={headCell.id}
                         // align={headCell.numeric ? 'right' : 'left'}
@@ -157,7 +180,7 @@ const useToolbarStyles = makeStyles((theme) => ({
 
 const EnhancedTableToolbar = (props) => {
     const classes = useToolbarStyles();
-    const { numSelected, setForm, handleDelete, handleEdit, entriesPage, smokeListPage, onFetchCollection, handleAddEntryToSmokeList, onSetEntriesForSmokeList, onFetchEntries, checkSelectedSmokeList } = props;
+    const { numSelected, setForm, handleDelete, handleEdit, entriesPage, smokeListPage, onFetchCollection, handleAddEntryToSmokeList, onSetEntriesForSmokeList, onFetchEntries, checkSelectedSmokeList, tagEntries } = props;
 
     const showForm = () => {
         setForm(true)
@@ -485,13 +508,13 @@ function EntriesTable(props) {
                             key={row.name}
                             selected={isItemSelected}
                         >
-                            <TableCell padding="checkbox" >
+                            {!tagEntries && <TableCell padding="checkbox" >
                                 <Checkbox
                                     checked={isItemSelected}
                                     inputProps={{ 'aria-labelledby': labelId }}
                                     onClick={(event) => handleClick(event, index, row)}
                                 />
-                            </TableCell>
+                            </TableCell>}
                             <TableCell>
                                 <IconButton aria-label="expand row" size="small" onClick={() => setCollapse(index)}>
                                     {open[index] ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
@@ -582,7 +605,7 @@ function EntriesTable(props) {
             </Grow> :
 
                 <Paper className={classes.paper}>
-                    <EnhancedTableToolbar handleAddEntryToSmokeList={handleAddEntryToSmokeList} entriesPage={entriesPage} onFetchCollection={onFetchCollection} smokeListPage={smokeListPage} numSelected={selected.length} handleDelete={handleDelete} handleEdit={handleEdit} setForm={setForm} onSetEntriesForSmokeList={onSetEntriesForSmokeList} onFetchEntries={onFetchEntries} checkSelectedSmokeList={checkSelectedSmokeList} />
+                    {/* <EnhancedTableToolbar handleAddEntryToSmokeList={handleAddEntryToSmokeList} entriesPage={entriesPage} onFetchCollection={onFetchCollection} smokeListPage={smokeListPage} numSelected={selected.length} handleDelete={handleDelete} handleEdit={handleEdit} setForm={setForm} onSetEntriesForSmokeList={onSetEntriesForSmokeList} onFetchEntries={onFetchEntries} checkSelectedSmokeList={checkSelectedSmokeList} tagEntries={tagEntries} /> */}
                     <TableContainer>
                         <Table
                             className={classes.table}
@@ -598,6 +621,7 @@ function EntriesTable(props) {
                                 onSelectAllClick={handleSelectAllClick}
                                 onRequestSort={handleRequestSort}
                                 rowCount={handleRowCount()}
+                                tags={true}
                             />
                             <TableBody>
                                 {(selectedEntriesForSmokeList.length > 0 && !subEntryTable) ?
