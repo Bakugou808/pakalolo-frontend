@@ -140,26 +140,83 @@ export const deleteTag = (tag, dispatch) => {
         }) 
 }
 
-// // -------***** ALL COMMENTS GET REQUEST ACTIONS *****------------------*******************-------------
-// // -------***** ALL COMMENTS GET REQUEST ACTIONS *****------------------*******************-------------
+// -------***** ALL TAGS GET REQUEST ACTIONS *****------------------*******************-------------
+// -------***** ALL TAGS GET REQUEST ACTIONS *****------------------*******************-------------
 
-// export const fetchTagsRequest = () => {
-//     return {
-//         type: 'FETCH_TAGS_REQUEST'
-//     }
-// }
+export const fetchTagsRequest = () => {
+    return {
+        type: 'FETCH_TAGS_REQUEST'
+    }
+}
 
-// export const fetchTagsSuccess = (tags) => {
-//     return {
-//         type: 'FETCH_TAGS_SUCCESS',
-//         tags: tags,
-//     }
-// }
+export const fetchTagsSuccess = (tags) => {
+    return {
+        type: 'FETCH_TAGS_SUCCESS',
+        tags: tags,
+    }
+}
 
-// export const fetchTagsFailure = (error) => {
-//     return {
-//         type: 'FETCH_TAGS_FAILURE',
-//         error: error,
-//     }
-// }
+export const fetchTagsFailure = (error) => {
+    return {
+        type: 'FETCH_TAGS_FAILURE',
+        error: error,
+    }
+}
 
+export const fetchAllTags = (userId, dispatch) => {
+    dispatch(fetchTagsRequest())
+    fetch(`http://localhost:3000/tags/users_tags/${userId}`, {
+        headers: headers()
+    })
+        .then(res=>res.json())
+        .then(data => {
+            
+            if (data.error){
+                dispatch(fetchTagsFailure(data.error))
+            } else {
+                console.log('infetch success', data)
+                
+                dispatch(fetchTagsSuccess(data))
+            }
+        }) 
+}
+
+// Fetch Strain Collection with Matching Tag
+
+export const fetchStrainsWithTagRequest = () => {
+    return {
+        type: 'FETCH_STRAINS_WITH_TAG_REQUEST'
+    }
+}
+
+export const fetchStrainsWithTagSuccess = (tags) => {
+    return {
+        type: 'FETCH_STRAINS_WITH_TAG_SUCCESS',
+        tags: tags,
+    }
+}
+
+export const fetchStrainsWithTagFailure = (error) => {
+    return {
+        type: 'FETCH_STRAINS_WITH_TAG_FAILURE',
+        error: error,
+    }
+}
+
+export const fetchAllStrainsWithTag = (title, dispatch, userId) => {
+    dispatch(fetchStrainsWithTagRequest())
+    fetch(`http://localhost:3000/tags/strains_with_tag/${title}/${userId}`, {
+        headers: headers()
+    })
+        .then(res=>res.json())
+        .then(data => {
+            
+            if (data.error){
+                dispatch(fetchStrainsWithTagFailure(data.error))
+            } else {
+                console.log('infetch success', data)
+                
+                dispatch(fetchStrainsWithTagSuccess(data))
+            }
+        }) 
+}

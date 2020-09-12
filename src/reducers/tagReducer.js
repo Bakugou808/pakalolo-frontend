@@ -3,6 +3,7 @@ const initialState = {
     error: false,
     allTags: [],
     selectedStrainsTags: [],
+    matchingStrains: []
 }
 
 const tagsReducer = (state = initialState, action) => {
@@ -25,6 +26,30 @@ const tagsReducer = (state = initialState, action) => {
 
         // ----------****** ASYNC ACTIONS ******-----------
 
+
+        // ----------FETCH STRAINS WITH TAG-------  *****************************
+
+        case 'FETCH_STRAINS_WITH_TAG_REQUEST':
+            return {
+                ...state,
+                fetching: true
+            }
+        case 'FETCH_STRAINS_WITH_TAG_SUCCESS':
+            const data0 = action.tags 
+            const sorted0 = data0.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+            return {
+                ...state,
+                fetching: false,
+                matchingStrains: [...sorted0]
+            }
+        case 'FETCH_STRAINS_WITH_TAG_FAILURE':
+
+            return {
+                ...state,
+                fetching: false,
+                error: action.error
+            }
+
         // ----------FETCH TAGS-------  *****************************
 
         case 'FETCH_TAGS_REQUEST':
@@ -33,13 +58,13 @@ const tagsReducer = (state = initialState, action) => {
                 fetching: true
             }
         case 'FETCH_TAGS_SUCCESS':
-            const data0 = action.tags 
-            const sorted0 = data0.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+            const data00 = action.tags 
+            const sorted00 = data00.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
             return {
                 ...state,
                 fetching: false,
                 allTags: action.tags,
-                selectedStrainsTags: [...sorted0]
+                selectedStrainsTags: [...sorted00]
             }
         case 'FETCH_TAGS_FAILURE':
 

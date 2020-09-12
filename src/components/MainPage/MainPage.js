@@ -30,7 +30,7 @@ class MainPage extends Component {
                 <Container maxWidth="md">
                 {this.props.strains && <StrainTable strains={this.props.strains} />}
                 </Container>
-            </React.Fragment>
+            </React.Fragment> 
         )
     }
 }
