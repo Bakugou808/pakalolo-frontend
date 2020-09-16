@@ -1,12 +1,14 @@
 
 import React from 'react';
-import Icon from '@ant-design/icons';
+import RoomTwoToneIcon from '@material-ui/icons/RoomTwoTone';
+import { green } from '@material-ui/core/colors';
+import SvgIcon from '@material-ui/core/SvgIcon';
 
 const MapMarker = (({ name, key }) => {
   return (
     <div key={key}>
       <span className="brand-red">{name}</span>
-      <Icon className="font-1-5" type="environment" theme="twoTone" twoToneColor="#fd0000" />
+      <RoomTwoToneIcon style={{color: green[500]}} />
     </div>
   );
 });

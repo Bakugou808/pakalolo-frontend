@@ -34,7 +34,6 @@ function HomePage(props) {
   const [showTable, setShowTable] = React.useState(false)
 
   // google maps api things
-  const [apiState, setApiState] = React.useState({})
   const [location, setLocation] = React.useState(null)
   // default set to NYC
   const [defaultLocation, setDefaultLocation] = React.useState({ lat: 40.7128, lng: -74.0060 })
@@ -106,7 +105,7 @@ function HomePage(props) {
             </Paper>
           </Grid>
           <Grid item xs={12} >
-            <Paper className={classes.paper}> <div>Store Locator </div><MapContainer setApiState={setApiState} location={location} defaultLocation={defaultLocation} /></Paper>
+            <Paper className={classes.paper}> <div>Store Locator </div>{location && <MapContainer location={location} defaultLocation={defaultLocation} />}</Paper>
           </Grid>
           <Grid item xs={12} >
             <Paper className={classes.paper}>
