@@ -120,14 +120,11 @@ function MapsContainer(props) {
 
   // geocode 2
   async function geoCode(array){
-    const holderArray = markers
-    // console.log(holderArray, 'holderArray1')
 
     await array.forEach(store => {
-      geoCodeAsync(store).then(res => res && holderArray.push(res))
+      // geoCodeAsync(store).then(res => res && holderArray.push(res))
+      geoCodeAsync(store)
     })
-    // console.log(holderArray, 'holderArray2')
-    // return holderArray
   }
 
 
@@ -135,7 +132,7 @@ function MapsContainer(props) {
   async function geoCodeAsync(store) {
     let promise = new Promise((resolve, reject) => {
       geoCoderService.geocode({ address: store.address }, ((response) => {
-        const { location } = response ? response[0].geometry : { location: false }
+        const { location } = response ? response[0].geometry : false
 
         let coord = location && { lat: location.lat(), lng: location.lng(), name: store.name }
 
@@ -145,8 +142,11 @@ function MapsContainer(props) {
 
     let result = await promise
     if (result != undefined){
-      setState(prev => ({...prev, ...{markers: [...prev.markers, result]}}))
-      return result
+      if( markers.some(marker => marker.name === result.name)){
+        console.log('found a duplicate')
+      } else{
+        setState(prev => ({...prev, ...{markers: [...prev.markers, result]}}))
+      }
     }
   }
 
@@ -219,7 +219,6 @@ function MapsContainer(props) {
       return;
     }
     const filteredResults = [];
-    let newMarkers = []
     const marker = markers[0];
     const timeLimit = constraints[0].time;
     const markerLatLng = new mapsApi.LatLng(marker.lat, marker.lng);
@@ -275,22 +274,9 @@ function MapsContainer(props) {
               timeText,
             });
           }
-          // Finally, Add results to state
-          // console.log(filteredResults, 'filtered results')
-          // console.log(newMarkers, 'newMarkers')
-          // filteredResults.forEach(res => geoCode(res))
-          // const newMarkers = geoCode(filteredResults)
-          newMarkers = await geoCode(filteredResults)
-          console.log(newMarkers, 'new Markers line 280')
-          // REMOVE Duplicates
-          // setTheMarkersState(newMarkers)
-          if(i === responseLimit - 1){
-            setState(prev => ({ ...prev, ...{ searchResults: filteredResults, markers: newMarkers, renderMarkersNow: true } }))
-          } else {
-            setState(prev => ({ ...prev, ...{ searchResults: filteredResults, markers: newMarkers, renderMarkersNow: false } }))
-          }
-          
-
+    
+          await geoCode(filteredResults)
+          setState(prev => ({ ...prev, ...{ searchResults: filteredResults } }))
         }));
       }
     }));
