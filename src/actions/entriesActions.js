@@ -132,8 +132,17 @@ export const patchEntryInSubEntryTable = (entry) => {
 // -------***** PATCH FETCH REQUEST *****------------------*******************-------------
 
 export const patchEntry = (data, entryId, dispatch, type='') => {
-    console.log(type)
+    console.log(entryId, 'entry id')
+    console.log(data, 'entry data')
     dispatch(patchEntryRequest())
+    
+    // fetch(`http://localhost:3000/entries/${entryId}`, {
+    //     method: "PATCH",
+    //     headers: headers(),
+    //     body: JSON.stringify(data)
+
+    // })
+    
     fetch(`http://localhost:3000/entries/${entryId}`, {
         method: "PATCH",
         headers: headers(),

@@ -116,7 +116,7 @@ function EnhancedTableHead(props) {
                                 <span className={classes.visuallyHidden}>
                                     {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
                                 </span>
-                            ) : null}
+                            ) : null} 
                         </TableSortLabel>
                     </TableCell>
                 )) 

@@ -61,7 +61,7 @@ export const EntryForm = (props) => {
     }
 
 
-    const handleSubmit = (e) => {
+    const handleSubmit = (e) => { 
         e.preventDefault();
         
         if (state.edit) {
