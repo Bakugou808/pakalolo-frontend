@@ -27,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.text.secondary,
     height: 'auto'
   },
+  
 }));
 
 
@@ -107,9 +108,12 @@ function HomePage(props) {
             </Paper>
           </Grid>
           <Grid item xs={12} >
-          <Paper className={classes.paper}> <div>Store Locator </div>{location && <MapContainerWPlaces location={location} defaultLocation={defaultLocation} />}</Paper>
-
-            {/* <Paper className={classes.paper}> <div>Store Locator </div>{location && <MapContainer location={location} defaultLocation={defaultLocation} />}</Paper> */}
+          <Paper className={classes.paper}> 
+            <div>Store Locator </div>
+            <div >
+            {location && <MapContainerWPlaces location={location} defaultLocation={defaultLocation} />}
+            </div>
+            </Paper>
           </Grid>
           <Grid item xs={12} >
             <Paper className={classes.paper}>

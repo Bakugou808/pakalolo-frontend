@@ -47,11 +47,15 @@ const useStyles = makeStyles((theme) => ({
   },
   mapContainer: {
     height: '35rem',
-    width: '40rem'
+    width: '40rem',
+    display: 'block',
+    'margin-left':'auto',
+    'margin-right': 'auto',
   },
   searchBtn: {
     height: '30px'
-  }
+  },
+
 }));
 
 
@@ -167,8 +171,8 @@ function MapsContainer(props) {
     finalArr = Object.values(finalObj)
 
     return finalArr.map((marker, key) => {
-      const { name, lat, lng } = marker
-      return (<MapMarker key={key} name={name} lat={lat} lng={lng} />)
+      const { name, lat, lng, place_id } = marker
+      return (<MapMarker key={key} name={name} place_id={place_id} lat={lat} lng={lng} />)
     })
   }
 
@@ -177,13 +181,13 @@ function MapsContainer(props) {
   // With the constraints, find some places serving ice-cream
   const handleSearch = (() => {
     // const { markers, constraints, placesService, directionService, mapsApi } = state;
-
+    setState(prev => ({...prev, markers: []}))
     if (markers.length === 0) {
       message.warn('Add a constraint and try again!');
       return;
     }
     const filteredResults = [];
-    const newMarkers = markers;
+    const newMarkers = [markers[0]];
     const marker = markers[0];
     const timeLimit = constraints[0].time;
     const markerLatLng = new mapsApi.LatLng(marker.lat, marker.lng);
@@ -206,8 +210,9 @@ function MapsContainer(props) {
         const priceLevel = weedShop.price_level
         // Second, For each weedShop, grab info with place_id
         placesService.getDetails({ placeId: weedShop.place_id }, ((resp, status) => {
+          console.log(resp, 'resp line 213')
           if (status !== 'OK') {return }
-          const { business_status, formatted_address, formatted_phone_number, geometry, icon, name, opening_hours, photos, rating, reviews, user_ratings_total, website, url } = resp
+          const { business_status, formatted_address, formatted_phone_number, geometry, icon, name, opening_hours, photos, rating, reviews, user_ratings_total, website, url, place_id } = resp
           const coordinates = { lat: geometry.location.lat(), lng: geometry.location.lng() }
           let openNow = false
           let weekday_hours = opening_hours.weekday_text
@@ -223,6 +228,7 @@ function MapsContainer(props) {
             travelMode: 'DRIVING',
           }
           directionService.route(directionRequest, ((result, status) => {
+            
             // if so determine the duration of travel and push the data as an object into filteredResults
             if (status !== 'OK') { return }
             const travellingRoute = result.routes[0].legs[0]; // { duration: { text: 1mins, value: 600 } }
@@ -245,13 +251,14 @@ function MapsContainer(props) {
                 user_ratings_total,
                 website,
                 googleUrl,
+                place_id
               });
               // and while in the same if statement push the store's marker info as an object into the newMarkers
-              newMarkers.push({...coordinates, ...{name: name}})
+              newMarkers.push({...coordinates, ...{name: name, place_id: place_id}})
             }
             // set the state for both searchResults and markers
-            let filteredResults2 = filteredResults.sort((a, b) => {return parseInt(a.distanceText.split(' ')[0], 10) - parseInt(b.distanceText.split(' ')[0], 10)})
-            console.log(filteredResults2)
+            // let filteredResults2 = filteredResults.sort((a, b) => {return parseInt(a.distanceText.split(' ')[0], 10) - parseInt(b.distanceText.split(' ')[0], 10)})
+            // console.log(filteredResults2)
             setState(prev => ({ ...prev, ...{ searchResults: filteredResults, markers: newMarkers } }))
           }));
         }))
@@ -327,10 +334,10 @@ function MapsContainer(props) {
               {/* "d-flex flex-wrap" */}
               <div className={classes.nothing}>
                 {searchResults.map((result, key) => (
-                  <>
-                  <PlaceCard storeInfo={result} key={key} />
+                  <div id={result.place_id} >
+                  <PlaceCard storeInfo={result}  key={key} />
                   <br/>
-                  </>
+                  </div>
                 ))}
               </div>
             {/* </div> */}

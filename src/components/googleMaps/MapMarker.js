@@ -8,9 +8,9 @@ import IconButton from '@material-ui/core/IconButton';
 
 
 
-const MapMarker = (({ name, key }) => {
+const MapMarker = (({ name, place_id }) => {
   return (
-    <div key={key}>
+    <a href={`#${place_id}`}>
       <Tooltip title={name} aria-label={name} interactive >
         <IconButton aria-controls="simple-menu" aria-haspopup="true" >
           {name === 'Current Location' ? <RoomTwoToneIcon style={{ color: green[900] }} /> : <RoomTwoToneIcon style={{ color: green[500] }} />}
@@ -19,7 +19,7 @@ const MapMarker = (({ name, key }) => {
       {/* <span className="brand-red">{name}</span>
       {name === 'Current Location' ? <RoomTwoToneIcon style={{color: green[1000]}} /> : <RoomTwoToneIcon style={{color: green[500]}} />} */}
       {/* <RoomTwoToneIcon style={{color: green[500]}} /> */}
-    </div>
+    </a>
   );
 });
 

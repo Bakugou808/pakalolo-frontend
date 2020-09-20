@@ -58,9 +58,9 @@ const PlaceCard = (({ storeInfo, key }) => {
         <Paper className={classes.paper}>
           <Grid container spacing={5} >
             <Grid item>
-              <ButtonBase className={classes.image}>
+              <div className={classes.image}>
                 <img className={classes.img} alt="complex" src={photos[0].getUrl()} />
-              </ButtonBase>
+              </div>
               {/* <PhotosComponent photos={photos} /> */}
             </Grid>
             <Grid item xs={12} sm container>
