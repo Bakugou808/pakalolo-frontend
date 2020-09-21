@@ -442,29 +442,30 @@ function EntriesTable(props) {
 
 
     const handleAddEntryToSmokeList = (SL = null) => {
-
+        // debugger
         if (selectedSmokeList) {
-            collectionEntries.forEach((entry, index) => {
-                selected.forEach((ind) => {
-                    if (index === ind) {
+            // collectionEntries.forEach((entry, index) => {
+                selectedEntries.forEach((entry) => {
+                    // if (ent.id === entry.id) {
                         console.log(entry, 'inhandleentrytosmokelist')
                         let data = { entry_id: entry.id, smoke_list_id: selectedSmokeList.id }
                         onPostSmokeListEntry(data)
-                    }
+                    // }
                 })
-            })
-        } else if (SL != null) {
-            entriesForStrain.forEach((entry, index) => {
-                selected.forEach((ind) => {
-                    if (index === ind) {
+            // })
+        } else if (selectedSL != null) {
+            selectedEntries.forEach((entry, index) => {
+                // selected.forEach((ind) => {
+                //     if (index === ind) {
                         console.log(entry, 'inhandleentrytosmokelist')
                         let data = { entry_id: entry.id, smoke_list_id: SL.id }
                         onPostSmokeListEntry(data, 'entries page')
-                    }
-                })
+                //     }
+                // })
             })
         }
         setSelected([])
+        setSelectedSL(null)
     }
 
     const handleRowCount = () => {
