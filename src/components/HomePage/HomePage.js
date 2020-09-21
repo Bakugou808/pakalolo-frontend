@@ -109,9 +109,9 @@ function HomePage(props) {
           </Grid>
           <Grid item xs={12} >
           <Paper className={classes.paper}> 
-            <div>Store Locator </div>
-            <div >
-            {location && <MapContainerWPlaces location={location} defaultLocation={defaultLocation} />}
+            {/* <div>Store Locator </div> */}
+            <div id='map'>
+            {location && <MapContainerWPlaces  location={location} defaultLocation={defaultLocation} />}
             </div>
             </Paper>
           </Grid>

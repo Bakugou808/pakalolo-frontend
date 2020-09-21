@@ -19,10 +19,11 @@ const useStyles = makeStyles((theme) => ({
     margin: 'auto',
     maxWidth: 'auto',
   },
-  reviews:{
+  reviews: {
     display: 'block',
-    'margin-left':'auto',
+    'margin-left': 'auto',
     'margin-right': 'auto',
+    margin: '15px'
   },
   image: {
     width: 328,
@@ -76,7 +77,7 @@ const PlaceCard = (({ storeInfo, key }) => {
                       <ul>{formatted_phone_number}</ul>
                       <ul>
                         <Typography className={classes.link}>
-                          <Link href='#' onClick={() => handleRedirect(website)} variant="body2"  color='inherit'>
+                          <Link href='#' onClick={() => handleRedirect(website)} variant="body2" color='inherit'>
                             Visit Store Website
                           </Link>
                         </Typography>
@@ -101,7 +102,7 @@ const PlaceCard = (({ storeInfo, key }) => {
                     </div>
                   </Typography>
                 </Grid>
-                
+
                 {/* <Grid item>
                   <Typography variant="body2" style={{ cursor: 'pointer' }}>
                     Remove
@@ -113,13 +114,18 @@ const PlaceCard = (({ storeInfo, key }) => {
               </Grid> */}
             </Grid>
             <Grid item className={classes.reviews}>
-            <Typography variant="body2" color="textSecondary">
-                    <div >
-                      Reviews
-                      <br/>
-                          <ReviewsComponent reviews={reviews} />
-                    </div>                  
-            </Typography>
+              <Typography variant="body2" color="textSecondary">
+                <div >
+                  Reviews
+                      <br />
+                  <ReviewsComponent reviews={reviews} />
+                </div>
+                <a href={`#map`}>
+                <Typography variant="body2" color="textSecondary">
+                  Return To Map
+                </Typography>
+              </a>
+              </Typography>
             </Grid>
           </Grid>
         </Paper>

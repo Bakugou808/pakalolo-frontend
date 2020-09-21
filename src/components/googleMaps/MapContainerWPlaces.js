@@ -12,6 +12,8 @@ import { Button, Input, Divider, message } from 'antd';
 import TextField from '@material-ui/core/TextField';
 import { ContactSupportTwoTone } from '@material-ui/icons';
 import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+
 
 
 const API_KEY = 'AIzaSyAn899KmcxNfZ5RGR7o0KbaHhhRHJtjFEw'
@@ -28,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
   },
   nothing: {
 
-  },  
+  },
   paper: {
     display: 'flex',
     flexWrap: 'wrap',
@@ -49,12 +51,22 @@ const useStyles = makeStyles((theme) => ({
     height: '35rem',
     width: '40rem',
     display: 'block',
-    'margin-left':'auto',
+    'margin-left': 'auto',
     'margin-right': 'auto',
   },
   searchBtn: {
-    height: '30px'
+    height: '30px',
+    margin: '20px'
   },
+  slider: {
+    'max-width': '40rem',
+    display: 'block',
+    'margin-left': 'auto',
+    'margin-right': 'auto',
+  },
+  resultsDisplay: {
+    cursor: 'pointer'
+  }
 
 }));
 
@@ -65,7 +77,7 @@ function MapsContainer(props) {
   const classes = useStyles()
 
   const { location, defaultLocation } = props
-
+  const [showStores, setShowStores] = React.useState(false)
   const [state, setState] = React.useState({
     constraints: [{ name: '', time: 0 }],
     searchResults: [],
@@ -113,7 +125,7 @@ function MapsContainer(props) {
   // Update name for constraint with index === key
   const updateConstraintName = ((event, key) => {
     event.preventDefault();
-    
+
     const prevConstraints = state.constraints;
     const constraints = Object.assign([], prevConstraints);
     constraints[key].name = event.target.value;
@@ -153,9 +165,9 @@ function MapsContainer(props) {
 
   //   let result = await promise
   //   if (result != undefined) {
-      
+
   //     if (markers.some(marker => marker.name === result.name)) {
-        
+
   //     } else {
   //       setState(prev => ({ ...prev, ...{ markers: [...prev.markers, result] } }))
   //     }
@@ -181,7 +193,7 @@ function MapsContainer(props) {
   // With the constraints, find some places serving ice-cream
   const handleSearch = (() => {
     // const { markers, constraints, placesService, directionService, mapsApi } = state;
-    setState(prev => ({...prev, markers: []}))
+    setState(prev => ({ ...prev, markers: [] }))
     if (markers.length === 0) {
       message.warn('Add a constraint and try again!');
       return;
@@ -204,14 +216,14 @@ function MapsContainer(props) {
     placesService.textSearch(placesRequest, ((response) => {
       // Only look at the nearest top 5.
       const responseLimit = Math.min(10, response.length);
-      
+
       for (let i = 0; i < responseLimit; i++) {
         const weedShop = response[i];
         const priceLevel = weedShop.price_level
         // Second, For each weedShop, grab info with place_id
         placesService.getDetails({ placeId: weedShop.place_id }, ((resp, status) => {
           console.log(resp, 'resp line 213')
-          if (status !== 'OK') {return }
+          if (status !== 'OK') { return }
           const { business_status, formatted_address, formatted_phone_number, geometry, icon, name, opening_hours, photos, rating, reviews, user_ratings_total, website, url, place_id } = resp
           const coordinates = { lat: geometry.location.lat(), lng: geometry.location.lng() }
           let openNow = false
@@ -228,7 +240,7 @@ function MapsContainer(props) {
             travelMode: 'DRIVING',
           }
           directionService.route(directionRequest, ((result, status) => {
-            
+
             // if so determine the duration of travel and push the data as an object into filteredResults
             if (status !== 'OK') { return }
             const travellingRoute = result.routes[0].legs[0]; // { duration: { text: 1mins, value: 600 } }
@@ -254,12 +266,13 @@ function MapsContainer(props) {
                 place_id
               });
               // and while in the same if statement push the store's marker info as an object into the newMarkers
-              newMarkers.push({...coordinates, ...{name: name, place_id: place_id}})
+              newMarkers.push({ ...coordinates, ...{ name: name, place_id: place_id } })
             }
             // set the state for both searchResults and markers
             // let filteredResults2 = filteredResults.sort((a, b) => {return parseInt(a.distanceText.split(' ')[0], 10) - parseInt(b.distanceText.split(' ')[0], 10)})
             // console.log(filteredResults2)
             setState(prev => ({ ...prev, ...{ searchResults: filteredResults, markers: newMarkers } }))
+            setShowStores(true)
           }));
         }))
       }
@@ -287,7 +300,7 @@ function MapsContainer(props) {
                   </div>
                   < section className="" >
                     <span className="">Minutes away by car</span>
-                    <div className="">
+                    <div className={classes.slider}>
                       <Slider className="" value={time} min={0} max={60} onChange={(event, value) => updateConstraintTime(key, value, event)} valueLabelDisplay="auto" />
                     </div>
                   </section >
@@ -320,8 +333,9 @@ function MapsContainer(props) {
       </section>
 
       {/* Search Button */}
+      <div>
       <Button className={classes.searchBtn} type="primary" size="small" onClick={handleSearch}>Search!</Button>
-
+      </div>
       {/* Results section */}
       {(searchResults && searchResults.length > 0) ?
         <>
@@ -329,17 +343,24 @@ function MapsContainer(props) {
           <section className={classes.nothing}>
             {/* "d-flex flex-column justify-content-center" */}
             {/* <div className={classes.nothing}> */}
-              {/* "mb-4 fw-md" */}
-              <h1 className={classes.nothing}>Tadah! Cannabis Stores!</h1>
-              {/* "d-flex flex-wrap" */}
-              <div className={classes.nothing}>
-                {searchResults.map((result, key) => (
-                  <div id={result.place_id} >
-                  <PlaceCard storeInfo={result}  key={key} />
-                  <br/>
-                  </div>
-                ))}
+            {/* "mb-4 fw-md" */}
+            <h1 className={classes.nothing}>Tadah! Cannabis Stores!</h1>
+              <div className={classes.resultsDisplay}>
+              <Typography onClick={()=>setShowStores(prev => !prev)} variant="body2" color="textSecondary">
+                  {showStores ? 'Hide Results' : 'Show Results'}
+                </Typography>
               </div>
+            {/* "d-flex flex-wrap" */}
+            {showStores && 
+            <div className={classes.nothing}>
+              {searchResults.map((result, key) => (
+                <div id={result.place_id} >
+                  <PlaceCard storeInfo={result} key={key} />
+                  <br />
+                </div>
+              ))}
+            </div>
+            } 
             {/* </div> */}
           </section>
         </>
