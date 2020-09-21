@@ -96,7 +96,7 @@ function StrainPage(props) {
     const classes2 = useStyles2();
     const [value, setValue] = React.useState(0);
     const [comments, setComments] = useState(false)
-    const { collection, allComments, onPostLike, onDeleteLike, onPostTag } = props
+    const { collection, allComments, onPostLike, onDeleteLike, onPostTag, page } = props
     const [renderedComments, setRenderedComments] = useState([])
     const { strain } = collection
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -279,7 +279,7 @@ function StrainPage(props) {
                     </div>
                 </TabPanel>
                 <TabPanel value={value} index={1}>
-                    <Entries collection={collection} />
+                    <Entries collection={collection} pageEndPoint={page} />
                 </TabPanel>
                 {newTag &&
                     <Modal

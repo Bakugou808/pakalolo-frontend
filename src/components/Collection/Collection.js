@@ -54,7 +54,7 @@ const Collection = (props) => {
                             <CollectionTable history={props.history} />
                         </Grid>
                         <Grid item xs={12}>
-                            {props.selectedStrain && <StrainPage strain={props.selectedStrain} />}
+                            {props.selectedStrain && <StrainPage strain={props.selectedStrain} page='collection'/>}
                         </Grid>
                     </Grid>
                 </div>

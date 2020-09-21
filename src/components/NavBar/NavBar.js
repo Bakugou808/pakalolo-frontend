@@ -7,7 +7,8 @@ import Link from '@material-ui/core/Link';
 
 import { connect } from 'react-redux';
 import { signOutUser } from '../../actions/userActions'
-import { setEntriesForSmokeList } from '../../actions/smokeListActions'
+import { setEntriesForSmokeList, setSelectedSmokeList } from '../../actions/smokeListActions'
+import { setSelectedStrainsEntries } from '../../actions/entriesActions'
 
 import clsx from 'clsx';
 import Button from '@material-ui/core/Button';
@@ -57,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
 
 function NavBar(props) {
   const classes = useStyles();
-  const { onSetEntriesForSmokeList } = props
+  const { onSetEntriesForSmokeList, onSetSelectedStrainsEntries, onSetSelectedSmokeList } = props
   const onLogout = () => {
     const { onSignOutUser, user } = props
     onSignOutUser(user.id)
@@ -81,7 +82,13 @@ function NavBar(props) {
 
   const redirect = (path) => {
     console.log(path)
-    path === "collection" && onSetEntriesForSmokeList([])
+    const clearStates = () => {
+      onSetEntriesForSmokeList([]) 
+      onSetSelectedStrainsEntries([])
+      onSetSelectedSmokeList(null)
+    }
+    // path === "collection" && clearStates()
+    clearStates()
     props.history.push(`/${path}`)
   }
   
@@ -149,7 +156,9 @@ const mapStateToProps = (store) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     onSignOutUser: (userId) => dispatch(signOutUser(userId)),
-    onSetEntriesForSmokeList: (data) => dispatch(setEntriesForSmokeList(data))
+    onSetEntriesForSmokeList: (data) => dispatch(setEntriesForSmokeList(data)),
+    onSetSelectedStrainsEntries: (data) => dispatch(setSelectedStrainsEntries(data)),
+    onSetSelectedSmokeList: (data) => dispatch(setSelectedSmokeList(data))
   }
 }
 

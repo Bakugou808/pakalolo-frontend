@@ -291,7 +291,7 @@ const useStyles = makeStyles((theme) => ({
 
 function EntriesTable(props) {
     const classes = useStyles();
-    const { onSetEntry, entriesForStrain, collection, onEditEntry, onDeleteEntry, entriesPage, onFetchEntries, smokeListPage, onFetchCollection, collectionEntries, selectedSmokeList, onPostSmokeListEntry, onSetEntriesForSmokeList, selectedEntriesForSmokeList, onDeleteSmokeListEntry, totalCollection, subEntryTable, allEntries, selectedEntry, snackBarEntrySuccessDisplay, onCloseSnackBar, allSmokeLists, onFetchSmokeLists, tagEntries } = props
+    const { onSetEntry, entriesForStrain, collection, onEditEntry, onDeleteEntry, entriesPage, onFetchEntries, smokeListPage, onFetchCollection, collectionEntries, selectedSmokeList, onPostSmokeListEntry, onSetEntriesForSmokeList, selectedEntriesForSmokeList, onDeleteSmokeListEntry, totalCollection, subEntryTable, allEntries, selectedEntry, pageEndPoint, snackBarEntrySuccessDisplay, onCloseSnackBar, allSmokeLists, onFetchSmokeLists, tagEntries } = props
     const [open, setOpen] = React.useState({ 0: false });
     const [form, setForm] = React.useState(false);
     const [order, setOrder] = React.useState('asc');
@@ -441,8 +441,8 @@ function EntriesTable(props) {
     }
 
 
-    const handleAddEntryToSmokeList = (SL = null) => {
-        // debugger
+    const handleAddEntryToSmokeList = (smokeList) => {
+        
         if (selectedSmokeList) {
             // collectionEntries.forEach((entry, index) => {
                 selectedEntries.forEach((entry) => {
@@ -453,17 +453,17 @@ function EntriesTable(props) {
                     // }
                 })
             // })
-        } else if (selectedSL != null) {
+        } else if (smokeList != null ) {
             selectedEntries.forEach((entry, index) => {
                 // selected.forEach((ind) => {
                 //     if (index === ind) {
                         console.log(entry, 'inhandleentrytosmokelist')
-                        let data = { entry_id: entry.id, smoke_list_id: SL.id }
-                        onPostSmokeListEntry(data, 'entries page')
+                        let data = { entry_id: entry.id, smoke_list_id: smokeList.id }
+                        pageEndPoint === 'collection' ? onPostSmokeListEntry(data, pageEndPoint) :onPostSmokeListEntry(data, 'entries page')
                 //     }
                 // })
             })
-        }
+        } 
         setSelected([])
         setSelectedSL(null)
     }
@@ -635,8 +635,8 @@ function EntriesTable(props) {
                                         (entriesPage ? allEntries &&
                                             renderRows(allEntries)
                                             :
-                                            entriesForStrain &&
-                                            renderRows(entriesForStrain)
+                                            (smokeListPage ? renderRows(selectedEntriesForSmokeList) : (entriesForStrain && renderRows(entriesForStrain)))
+                                            
                                         )
                                     )
                                 }

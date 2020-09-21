@@ -37,13 +37,27 @@ const smokeListReducer = (state = initialState, action) => {
             }
         case 'POST_SMOKELISTENTRY_SUCCESS':
 
-            const dataSLE = [...state.selectedEntriesForSmokeList, action.smokeListEntry]
-            const sortedSLE = dataSLE.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
-            if (action.page != 'entries page') {
-            return {
-                ...state,
-                selectedEntriesForSmokeList: [...state.selectedEntriesForSmokeList, action.smokeListEntry]
-            }}
+            // const dataSLE = [...state.selectedEntriesForSmokeList, action.smokeListEntry]
+            // const sortedSLE = dataSLE.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
+            // const SSL = state.selectedSmokeList
+            // SSL.entries = sortedSLE
+            if (state.selectedSmokeList) {
+                const dataSLE = [...state.selectedEntriesForSmokeList, action.smokeListEntry]
+                const sortedSLE = dataSLE.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
+                const SSL = state.selectedSmokeList
+                SSL.entries = sortedSLE
+                return {
+                    ...state,
+                    selectedEntriesForSmokeList: [...state.selectedEntriesForSmokeList, action.smokeListEntry],
+                    selectedSmokeList: SSL
+                }
+            } 
+            // else if(action.page === 'entries page' || action.page === 'collection'){
+            //     return {
+            //         ...state,
+            //         selectedEntriesForSmokeList: [...state.selectedEntriesForSmokeList, action.smokeListEntry],
+            //     }
+            // }
         case 'POST_SMOKELISTENTRY_REQUEST':
             return {
                 ...state,
@@ -58,13 +72,23 @@ const smokeListReducer = (state = initialState, action) => {
 
         // DELETE SMOKE LIST ENTRY 
         case 'DELETE_SMOKELISTENTRY_SUCCESS':
-            const newDataSLE = state.selectedEntriesForSmokeList.filter(entry => entry.id != action.entryId)
-            const newSortedSLE = newDataSLE.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
+            // const newDataSLE = state.selectedSmokeList.entries.filter(entry => entry.id != action.entryId)
+            // const newSortedSLE = newDataSLE.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
+            // const newSSL = state.selectedSmokeList 
+            // newSSL.entries = newSortedSLE 
             // state.allSmokeLists.filter(smokeList => smokeList.id != action.smokeListId),
-            return {
-                ...state,
-                selectedEntriesForSmokeList: [...newSortedSLE]
-            }
+            if (state.selectedSmokeList){
+                const newDataSLE = state.selectedSmokeList.entries.filter(entry => entry.id != action.entryId)
+                const newSortedSLE = newDataSLE.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
+                const newSSL = state.selectedSmokeList 
+                newSSL.entries = newSortedSLE 
+                return {
+                    ...state,
+                    selectedEntriesForSmokeList: [...newSortedSLE],
+                    selectedSmokeList: newSSL
+                }
+            } 
+           
         case 'DELETE_SMOKELISTENTRY_REQUEST':
             return {
                 ...state,
