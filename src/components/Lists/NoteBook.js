@@ -31,17 +31,18 @@ const useStyles = makeStyles((theme) => ({
     },
     container: {
         display: 'flex',
+        width: '100%',
     },
     paper: {
         margin: theme.spacing(1),
         height: '2 in',
-        width: 'auto',
+        width: '100%',
 
     },
     paper2: {
         margin: theme.spacing(1),
         height: '2 in',
-        width: '100%',
+        width: 'auto',
     },
     svg: {
         width: 100,
@@ -56,33 +57,39 @@ const useStyles = makeStyles((theme) => ({
         padding: "30 px",
     },
     container2: {
-        display: 'inline-block',
+        display: 'block',
     },
     title: {
         position: 'relative',
         top: '50%',
-        transform: 'translateY(-30 %)',
-        'font-size': '30px'
+        // transform: 'translateY(-30 %)',
+        'font-size': '30px',
+        float: 'left',
+        // left: '10%',
+        width: 'inherit'
     },
     menuIcon: {
         float: "right",
         position: "relative",
-        // left: '95px',
-        // transform: 'translateX(90 %)',
+        // transform: 'translateY(-30 %)',
+        top: '50%',
+        // left: '10%'
 
-
-        // top: 0,
-        // width: '100px',
-        // bottom: 0,
-        // background: 'red',
-        // position: 'absolute',
     },
     description:{
         'font-size': '18px',
         position: 'relative',
-        'text-align': 'center',
-        
+        // 'text-align': 'center',
+        // margin: '20x',
+        top: '80%',
+        // transform: 'translateY(-30 %)',
 
+
+
+    },
+    table: {
+        width: 'inherit',
+        'padding-top': '20px'
     }
 
 }));
@@ -128,8 +135,9 @@ export const NoteBook = (props) => {
                 <div className={classes.container}>
                     <Grow in={checked}>
                         {/* <CssBaseline /> */}
-                        <Container maxWidth="md">
-                            <Typography component="div" style={{ backgroundColor: '#cfe8fc', height: '120vh', width: 'auto', overflow: 'hidden' }} >
+                        {/* <Container maxWidth="xl">
+                            <Typography component="div" style={{ backgroundColor: '#cfe8fc', height: '120vh', width: '100%', overflow: 'hidden' }} > */}
+                            <>
                                 <Grid
                                     container
                                     direction="column"
@@ -137,17 +145,18 @@ export const NoteBook = (props) => {
                                     alignItems="center"
                                     className={classes.grid}
                                 >
-                                    <Grid item xs={24}>
+                                    <Grid item xs={24} sm={12} lg={12}>
                                         <Paper className={classes.paper2}>
                                             <Container>
                                                 <Row >
                                                     <div className={classes.container2}>
                                                     <div className={classes.title}>{selectedSmokeList.title}</div>
-                                                    <div className={classes.menuIcon}><Tooltip interactive >
-                                                        <IconButton aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick} >
-                                                            <MoreVertIcon style={{ display: 'align-right' }} />
-                                                        </IconButton>
-                                                    </Tooltip>
+                                                    <div className={classes.menuIcon}>
+                                                        <Tooltip interactive >
+                                                            <IconButton title='Options' aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick} >
+                                                                <MoreVertIcon style={{ display: 'align-right' }} />
+                                                            </IconButton>
+                                                        </Tooltip>
                                                         <Menu
                                                             id="simple-menu"
                                                             anchorEl={anchorEl}
@@ -171,11 +180,11 @@ export const NoteBook = (props) => {
                                             <br></br>
                                         </Paper>
                                     </Grid>
-                                    <Grid item xs={24} md={20}>
+                                    <Grid item xs={24} md={20} className={classes.table}>
                                         <Entries smokeListPage={true} />
                                     </Grid>
                                 </Grid>
-                            </Typography>
+                            {/* </Typography> */}
                             <Modal
                                 size="lg"
                                 show={editSmokeList}
@@ -194,7 +203,8 @@ export const NoteBook = (props) => {
                                 </>
 
                             </Modal>
-                        </Container>
+                            </>
+                        {/* </Container> */}
                     </Grow>
                 </div>}
         </div>

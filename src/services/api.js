@@ -27,13 +27,10 @@ const signup = (data) => {
 }
 
 
-const getCurrentUser = () => {
-    // console.log("getting current user", headers);
-  
+const getCurrentUser = () => {  
     return fetch(API_ROOT('/current_user'), {
         headers: headers()
     }).then(res => {
-        // console.log(res)
         return res.json();
     })
 };

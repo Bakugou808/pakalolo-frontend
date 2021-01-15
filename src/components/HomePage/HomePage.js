@@ -1,21 +1,18 @@
-import React, { useState, useEffect } from 'react'
-import { connect } from 'react-redux';
-import { AuthHOC } from '../HOCs/AuthHOC'
-import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
-import Container from '@material-ui/core/Container';
-import { fetchAllTags, fetchAllStrainsWithTag } from '../../actions/tagActions'
-import Chip from '@material-ui/core/Chip';
-import EcoIcon from '@material-ui/icons/Eco';
-import MatchedStrainsTable from './MatchedStrainsTable'
-import CarouselComponent from './CarouselComponent'
-import MapContainer from '../googleMaps/MapContainer'
-import MapAutoComplete from '../googleMaps/MapAutoComplete'
-import MapContainerWPlaces from '../googleMaps/MapContainerWPlaces'
-
-
-
+import React, { useState, useEffect } from "react";
+import { connect } from "react-redux";
+import { AuthHOC } from "../HOCs/AuthHOC";
+import { makeStyles } from "@material-ui/core/styles";
+import Paper from "@material-ui/core/Paper";
+import Grid from "@material-ui/core/Grid";
+import Container from "@material-ui/core/Container";
+import { fetchAllTags, fetchAllStrainsWithTag } from "../../actions/tagActions";
+import Chip from "@material-ui/core/Chip";
+import EcoIcon from "@material-ui/icons/Eco";
+import MatchedStrainsTable from "./MatchedStrainsTable";
+import CarouselComponent from "./CarouselComponent";
+import MapContainer from "../googleMaps/MapContainer";
+import MapAutoComplete from "../googleMaps/MapAutoComplete";
+import MapContainerWPlaces from "../googleMaps/MapContainerWPlaces";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -23,99 +20,127 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     padding: theme.spacing(2),
-    textAlign: 'center',
+    textAlign: "center",
     color: theme.palette.text.secondary,
-    height: 'auto'
+    height: "auto",
   },
-  
 }));
 
-
 function HomePage(props) {
-  const { onFetchTags, tags, onFetchAllStrainsWithTag, matchedStrains, isGeolocationAvailable, isGeolocationEnabled, coords } = props
+  const {
+    onFetchTags,
+    tags,
+    onFetchAllStrainsWithTag,
+    matchedStrains,
+    isGeolocationAvailable,
+    isGeolocationEnabled,
+    coords,
+  } = props;
   const classes = useStyles();
-  const [showTable, setShowTable] = React.useState(false)
+  const [showTable, setShowTable] = React.useState(false);
 
   // google maps api things
-  const [location, setLocation] = React.useState(null)
+  const [location, setLocation] = React.useState(null);
   // default set to NYC
-  const [defaultLocation, setDefaultLocation] = React.useState({ lat: 40.7128, lng: -74.0060 })
-
+  const [defaultLocation, setDefaultLocation] = React.useState({
+    lat: 40.7128,
+    lng: -74.006,
+  });
 
   useEffect(() => {
-    onFetchTags(localStorage.userId)
+    onFetchTags(localStorage.userId);
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(getPosition);
     }
     function getPosition(position) {
-      console.log(position, 'setting location');
-      setLocation({ lat: position.coords.latitude, lng: position.coords.longitude })
+      console.log(position, "setting location");
+      setLocation({
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+      });
     }
-  }, [])
+  }, []);
 
   const renderTags = () => {
-    return tags.map(tagTitle => {
-      return (<>
-        <Chip
-          icon={<EcoIcon />}
-          label={tagTitle}
-          clickable
-          color="primary"
-          onClick={() => handleTagClick(tagTitle)}
-          variant="outlined"
-        />
-      </>)
-    })
-  }
+    return tags.map((tagTitle) => {
+      return (
+        <>
+          <Chip
+            icon={<EcoIcon />}
+            label={tagTitle}
+            clickable
+            color="primary"
+            onClick={() => handleTagClick(tagTitle)}
+            variant="outlined"
+          />
+        </>
+      );
+    });
+  };
 
   const handleTableOpen = () => {
-    setShowTable(true)
-  }
+    setShowTable(true);
+  };
 
   const handleTableClose = () => {
-    setShowTable(false)
-  }
-
+    setShowTable(false);
+  };
 
   const handleTagClick = (title) => {
-    onFetchAllStrainsWithTag(title, localStorage.userId)
-    handleTableOpen()
-  }
+    onFetchAllStrainsWithTag(title, localStorage.userId);
+    handleTableOpen();
+  };
 
   return (
-    <Container maxWidth='lg' >
-      <div className={classes.root}>
+    <Container className={"homeContainer"} maxWidth="lg">
+      <div className={"homeContainer"}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <Paper className={classes.paper}>{props.user && `Welcome to Pakalolo ${props.user.username}!`}  What are we smoking today?</Paper>
+            <Paper className={classes.paper}>
+              {props.user && `Welcome to Pakalolo ${props.user.username}!`} What
+              are we smoking today?
+            </Paper>
           </Grid>
-          <Grid item xs={12} >
+          <Grid item xs={12}>
             <Paper className={classes.paper}>
               <div>Tags</div>
-              {tags && renderTags()}</Paper>
-          </Grid>
-          {showTable && <Grid item xs={12} >
-            <Paper className={classes.paper}>
-              {(matchedStrains && showTable) && <MatchedStrainsTable handleTableClose={handleTableClose} collection={matchedStrains} />}
+              {tags && renderTags()}
             </Paper>
-          </Grid>}
-          <Grid item xs={12} >
-            <Paper className={classes.paper} >
+          </Grid>
+          {showTable && (
+            <Grid item xs={12}>
+              <Paper className={classes.paper}>
+                {matchedStrains && showTable && (
+                  <MatchedStrainsTable
+                    handleTableClose={handleTableClose}
+                    collection={matchedStrains}
+                  />
+                )}
+              </Paper>
+            </Grid>
+          )}
+          <Grid item xs={12}>
+            <Paper className={classes.paper}>
               <div>
                 <div>Articles</div>
                 <CarouselComponent />
               </div>
             </Paper>
           </Grid>
-          <Grid item xs={12} >
-          <Paper className={classes.paper}> 
-            {/* <div>Store Locator </div> */}
-            <div id='map'>
-            {location && <MapContainerWPlaces  location={location} defaultLocation={defaultLocation} />}
-            </div>
+          <Grid item xs={12}>
+            <Paper className={classes.paper}>
+              {/* <div>Store Locator </div> */}
+              <div id="map">
+                {location && (
+                  <MapContainerWPlaces
+                    location={location}
+                    defaultLocation={defaultLocation}
+                  />
+                )}
+              </div>
             </Paper>
           </Grid>
-          <Grid item xs={12} >
+          {/* <Grid item xs={12} >
             <Paper className={classes.paper}>
 
 
@@ -123,19 +148,21 @@ function HomePage(props) {
           </Grid>
           <Grid item xs={12} >
             <Paper className={classes.paper}></Paper>
-          </Grid>
+          </Grid> */}
         </Grid>
-      </div >
+      </div>
     </Container>
   );
 }
 
-{/* <div>
+{
+  /* <div>
 { props.user && `Welcome to Pakalolo ${props.user.username}!`}
 <br>
 </br>
 add top strains, click to see by tag. add recent smoke lists. add favorite vendors. add a suggestion. add articles. 
-</div> */}
+</div> */
+}
 
 const mapStateToProps = (store) => {
   return {
@@ -143,19 +170,18 @@ const mapStateToProps = (store) => {
     error: store.user.error,
     tags: store.tags.allTags,
     matchedStrains: store.tags.matchingStrains,
-
-  }
-}
+  };
+};
 
 const mapDispatchToProps = (dispatch) => {
   return {
     onFetchTags: (userId) => fetchAllTags(userId, dispatch),
-    onFetchAllStrainsWithTag: (tagTitle, userId) => fetchAllStrainsWithTag(tagTitle, dispatch, userId),
+    onFetchAllStrainsWithTag: (tagTitle, userId) =>
+      fetchAllStrainsWithTag(tagTitle, dispatch, userId),
 
-    // the above is for api/async calls 
+    // the above is for api/async calls
     // onChangeData: (newData) => dispatch(dataChangeAction(newData))   ---> this is for normal state changes, dispatch the outcome of an action creator, just to modify state
-  }
-}
+  };
+};
 
-
-export default AuthHOC(connect(mapStateToProps, mapDispatchToProps)(HomePage))
+export default AuthHOC(connect(mapStateToProps, mapDispatchToProps)(HomePage));

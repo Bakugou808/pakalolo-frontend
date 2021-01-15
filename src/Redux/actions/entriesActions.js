@@ -17,7 +17,7 @@ export const headers = () => {
 export const setEntryDisplay = (entry) => {
     return {
         type: 'SET_ENTRY_DISPLAY',
-        entry: entry 
+        entry: entry
     }
 }
 
@@ -59,7 +59,7 @@ export const postEntryRequest = () => {
 export const postEntrySuccess = (entry) => {
     return {
         type: 'POST_ENTRY_SUCCESS',
-        entry: entry, 
+        entry: entry,
     }
 }
 
@@ -131,19 +131,8 @@ export const patchEntryInSubEntryTable = (entry) => {
 
 // -------***** PATCH FETCH REQUEST *****------------------*******************-------------
 
-export const patchEntry = (data, entryId, dispatch, type='') => {
-    console.log(entryId, 'entry id', type, 'type')
-    console.log(data, 'entry data')
+export const patchEntry = (data, entryId, dispatch, type = '') => {
     dispatch(patchEntryRequest())
-    
-    // fetch(`http://localhost:3000/entries/${entryId}`, {
-    //     method: "PATCH",
-    //     headers: headers(),
-    //     body: JSON.stringify(data)
-
-    // })
-    console.log(`http://localhost:3000/entries/${entryId}`)
-    console.log(token(), 'token')
     fetch(`http://localhost:3000/entries/${entryId}`, {
         method: "PATCH",
         headers: headers(),
@@ -156,16 +145,48 @@ export const patchEntry = (data, entryId, dispatch, type='') => {
             } else {
                 dispatch(patchEntrySuccess(data))
                 dispatch(openSnackBarEntryAdded())
-                if (type === 'smokeList'){
+                if (type === 'smokeList') {
                     dispatch(patchEntryInSmokeList(data))
                     fetchCollection(localStorage.userId, dispatch)
-                } else if (type === 'subEntryTable'){
+                } else if (type === 'subEntryTable') {
                     dispatch(patchEntryInSubEntryTable(data))
                     dispatch(patchEntryInSmokeList(data))
                     fetchCollection(localStorage.userId, dispatch)
                 }
             }
         })
+}
+
+// thunk version 
+
+export const patchEntryThunk = (data, entryId, type = '') => {
+    return (dispatch) => {
+        dispatch(patchEntryRequest())
+        fetch(`http://localhost:3000/entries/${entryId}`, {
+            method: "PATCH",
+            headers: headers(),
+            body: JSON.stringify(data)
+
+        }).then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    dispatch(patchEntryFailure(data.error))
+                } else {
+                    dispatch(patchEntrySuccess(data))
+                    dispatch(openSnackBarEntryAdded())
+                    if (type === 'smokeList') {
+                        dispatch(patchEntryInSmokeList(data))
+                        fetchCollection(localStorage.userId, dispatch)
+                    } else if (type === 'subEntryTable') {
+                        dispatch(patchEntryInSubEntryTable(data))
+                        dispatch(patchEntryInSmokeList(data))
+                        fetchCollection(localStorage.userId, dispatch)
+                    }
+                }
+            })
+    }
+
+
 }
 
 // ----------DELETE ENTRY ACTIONS-------  *****************************
@@ -200,9 +221,9 @@ export const deleteEntry = (entryId, dispatch) => {
         method: 'DELETE',
         headers: headers(),
     })
-        .then(res=>res.json())
+        .then(res => res.json())
         .then(data => {
-            if (data.error){
+            if (data.error) {
                 dispatch(deleteEntryFailure(data.error))
             } else {
                 console.log('indelete success')
@@ -210,7 +231,7 @@ export const deleteEntry = (entryId, dispatch) => {
                 fetchCollection(localStorage.userId, dispatch)
 
             }
-        }) 
+        })
 }
 
 // -------***** ALL ENTRIES GET REQUEST ACTIONS *****------------------*******************-------------

@@ -781,6 +781,8 @@ const mapDispatchToProps = (dispatch) => ({
     onCloseSnackBar: () => dispatch(closeSnackBarEntryAdded()),
     onFetchSmokeLists: (userId) => fetchSmokeLists(userId, dispatch),
     // onSetSmokeListDisplay: (smokeList) => dispatch(setSmokeListDisplay(smokeList)),
+    // thunk version
+    onEditEntry: (entryData, entryId) =>patchEntry(entryData, entryId),
 })
 
 
