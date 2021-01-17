@@ -38,6 +38,7 @@ function HomePage(props) {
     isGeolocationAvailable,
     isGeolocationEnabled,
     coords,
+    tagError,
   } = props;
   const classes = useStyles();
   const [showTable, setShowTable] = React.useState(false);
@@ -107,7 +108,7 @@ function HomePage(props) {
           <Grid item xs={12}>
             <Paper className={classes.paper}>
               <div>Tags</div>
-              {tags && renderTags()}
+              {tags ? renderTags() : tagError}
             </Paper>
           </Grid>
           {showTable && (
@@ -172,6 +173,7 @@ const mapStateToProps = (store) => {
     user: store.user.data,
     error: store.user.error,
     tags: store.tags.allTags,
+    tagError: store.tags.error,
     matchedStrains: store.tags.matchingStrains,
   };
 };
