@@ -42,12 +42,21 @@ const renderActiveShape = (props, cannabinoids) => {
   const textAnchor = cos >= 0 ? "start" : "end";
   const color = randomColor();
   return (
-    // <ResponsiveContainer width={700} height="80%">
     <g>
-      <text x={cx} y={cy} dy={8} textAnchor="middle" fill={fill}>
+      <text
+        x={cx}
+        y={cy + 150}
+        dy={8}
+        textAnchor="middle"
+        width={100}
+        verticalAnchor="start"
+        fill={fill}
+        scaleToFit="true"
+      >
         {payload.name}
       </text>
       <Sector
+        className="sectorCss"
         cx={cx}
         cy={cy}
         innerRadius={innerRadius}
@@ -57,6 +66,7 @@ const renderActiveShape = (props, cannabinoids) => {
         fill={fill}
       />
       <Sector
+        className="sectorCss"
         cx={cx}
         cy={cy}
         startAngle={startAngle}
@@ -91,7 +101,6 @@ const renderActiveShape = (props, cannabinoids) => {
           : `(${(percent * 100).toFixed(2)}%) of Total Terpenes`}
       </text>
     </g>
-    // </ResponsiveContainer>
   );
 };
 
@@ -121,81 +130,43 @@ export default class ChemChart extends PureComponent {
   render() {
     const { cannabinoids } = this.props;
     return (
-      <PieChart width={900} height={400}>
-        {/* className={} */}
-        <Pie
-          activeIndex={this.state.activeIndex}
-          activeShape={(props) => renderActiveShape(props, cannabinoids)}
-          data={this.data()}
-          cx={200}
-          cy={200}
-          innerRadius={70}
-          outerRadius={90}
-          legendType="rect"
-          fill="#00C49F"
-          dataKey="value"
-          onMouseEnter={this.onPieEnter}
-        />
-        <Legend horizontalAlign="left" height={36} data={this.data()} />
-      </PieChart>
+      <div className="chartCont">
+        <ResponsiveContainer
+          width={"100%"}
+          height={"50%"}
+          aspect={1.5 / 1}
+          className="respCont"
+        >
+          <PieChart width={800} height={400}>
+            <Pie
+              width={"100%"}
+              height={"50%"}
+              activeIndex={this.state.activeIndex}
+              activeShape={(props) => renderActiveShape(props, cannabinoids)}
+              data={this.data()}
+              cx={400}
+              cy={250}
+              innerRadius={70}
+              outerRadius={90}
+              legendType="rect"
+              fill="#00C49F"
+              dataKey="value"
+              onMouseEnter={this.onPieEnter}
+              // layout="vertical"
+              // align="left"
+              // margin={{ top: 0, left: 100, right: 0, bottom: 0 }}
+            />
+            <Legend
+              horizontalAlign="left"
+              // verticalAlign="right"
+              height={36}
+              data={this.data()}
+            />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
     );
   }
 }
 
-// import React, { PureComponent } from 'react';
-// import {
-//     PieChart, Pie, Sector, Cell,
-// } from 'recharts';
-
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
-
-// const RADIAN = Math.PI / 180;
-// const renderCustomizedLabel = ({
-//     cx, cy, midAngle, innerRadius, outerRadius, percent, index,
-// }) => {
-//     const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-//     const x = cx + radius * Math.cos(-midAngle * RADIAN);
-//     const y = cy + radius * Math.sin(-midAngle * RADIAN);
-
-//     return (
-//         <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
-//             {`${(percent * 100).toFixed(0)}%`}
-//         </text>
-//     );
-// };
-
-// export default class ChemChart extends PureComponent {
-//     static jsfiddleUrl = 'https://jsfiddle.net/alidingling/c9pL8k61/';
-
-//     data = () => {
-//         const { data } = this.props
-//         const data2 = []
-
-//         for (const kV in data) {
-//             let row = { name: kV, value: data[kV] }
-//             data2.push(row)
-//         }
-//         return data2
-//     }
-
-//     render() {
-//         return (
-//             <PieChart width={400} height={400}>
-//                 <Pie
-//                     data={this.data()}
-//                     cx={200}
-//                     cy={200}
-//                     labelLine={false}
-//                     label={renderCustomizedLabel}
-//                     outerRadius={80}
-//                     fill="#8884d8"
-//                     dataKey="value"
-//                 >
-//                     {
-//                         this.data().map((entry, index) => <Cell key={`cell-${index}`} fill={`#${randomColor()}`} />)
-//                     }
-//                 </Pie>
-//             </PieChart>
-//         );
-//     }
-// }

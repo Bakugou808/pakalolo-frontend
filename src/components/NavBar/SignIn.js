@@ -1,30 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import { fetchUser } from '../../actions/userActions'
-import { connect } from 'react-redux';
+import React, { useState, useEffect } from "react";
+import { fetchUser } from "../../Redux/actions/userActions";
+import { connect } from "react-redux";
 
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import Link from '@material-ui/core/Link';
-import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
+import Avatar from "@material-ui/core/Avatar";
+import Button from "@material-ui/core/Button";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import TextField from "@material-ui/core/TextField";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Checkbox from "@material-ui/core/Checkbox";
+import Link from "@material-ui/core/Link";
+import Grid from "@material-ui/core/Grid";
+import Box from "@material-ui/core/Box";
+import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
+import Typography from "@material-ui/core/Typography";
+import { makeStyles } from "@material-ui/core/styles";
+import Container from "@material-ui/core/Container";
 
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
+      {"Copyright © "}
       <Link color="inherit" href="https://material-ui.com/">
         Your Website
-      </Link>{' '}
+      </Link>{" "}
       {new Date().getFullYear()}
-      {'.'}
+      {"."}
     </Typography>
   );
 }
@@ -32,16 +32,16 @@ function Copyright() {
 const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(8),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
   avatar: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
   },
   form: {
-    width: '100%', // Fix IE 11 issue.
+    width: "100%", // Fix IE 11 issue.
     marginTop: theme.spacing(1),
   },
   submit: {
@@ -51,30 +51,31 @@ const useStyles = makeStyles((theme) => ({
 
 function SignIn(props) {
   const classes = useStyles();
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleSubmit = (e) => {
-      e.preventDefault()
-      let data = {username, password}
-      props.onFetchUser(data, props.history)
-  }
+    e.preventDefault();
+    let data = { username, password };
+    props.onFetchUser(data, props.history);
+  };
 
   const handleChange = (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
-        switch (e.target.name) {
-            case 'username':
-                return setUsername(e.target.value)
-            case 'password':
-                return setPassword(e.target.value)
-        }
-  }
-  
-  
+    switch (e.target.name) {
+      case "username":
+        return setUsername(e.target.value);
+      case "password":
+        return setPassword(e.target.value);
+    }
+  };
+
   return (
     <Container component="main" maxWidth="xs">
-        {props.error ? alert(`Sorry, that Login didn't work, try again...`) : null}
+      {props.error
+        ? alert(`Sorry, that Login didn't work, try again...`)
+        : null}
       <CssBaseline />
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
@@ -145,21 +146,20 @@ function SignIn(props) {
   );
 }
 
-
 const mapStateToProps = (store) => {
-    return {
-      user: store.user.data,
-      error: store.user.error
-    }
-  }
-  
-  const mapDispatchToProps = (dispatch) => {
-    return {
-      onFetchUser: (userSignInData, history)=> fetchUser(userSignInData, history, dispatch), 
-      // the above is for api/async calls 
-      // onChangeData: (newData) => dispatch(dataChangeAction(newData))   ---> this is for normal state changes, dispatch the outcome of an action creator, just to modify state
-    }
-  }
-  
-  
-  export default connect(mapStateToProps, mapDispatchToProps)(SignIn)
+  return {
+    user: store.user.data,
+    error: store.user.error,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onFetchUser: (userSignInData, history) =>
+      fetchUser(userSignInData, history, dispatch),
+    // the above is for api/async calls
+    // onChangeData: (newData) => dispatch(dataChangeAction(newData))   ---> this is for normal state changes, dispatch the outcome of an action creator, just to modify state
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignIn);

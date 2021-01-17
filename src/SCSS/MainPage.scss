@@ -1,0 +1,62 @@
+.mainPageContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.homeContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 90vw;
+}
+
+.sectorChart {
+}
+
+.chemChart {
+}
+
+.progressBarCont {
+  margin-top: 200px;
+  width: 75%;
+}
+
+.linearProgressBar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loadingMsg {
+  color: green;
+  margin-bottom: 15px;
+  font-style: italic;
+  font-size: medium;
+}
+
+.text1 {
+  border: mediumorchid;
+}
+.text2 {
+  border: mediumpurple;
+}
+
+.chartCont {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50%;
+  width: 100%;
+}
+
+.respCont {
+  border: mediumpurple;
+}
+
+.sectorCss {
+}
+
+.recharts-surface {
+  min-width: 999 !important;
+}

@@ -5,7 +5,10 @@ import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import Container from "@material-ui/core/Container";
-import { fetchAllTags, fetchAllStrainsWithTag } from "../../actions/tagActions";
+import {
+  fetchAllTags,
+  fetchAllStrainsWithTag,
+} from "../../Redux/actions/tagActions";
 import Chip from "@material-ui/core/Chip";
 import EcoIcon from "@material-ui/icons/Eco";
 import MatchedStrainsTable from "./MatchedStrainsTable";
@@ -92,8 +95,8 @@ function HomePage(props) {
   };
 
   return (
-    <Container className={"homeContainer"} maxWidth="lg">
-      <div className={"homeContainer"}>
+    <Container maxWidth="lg">
+      <div className={classes.root}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <Paper className={classes.paper}>

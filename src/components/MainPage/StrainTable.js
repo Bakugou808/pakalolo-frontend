@@ -38,33 +38,10 @@ import {
   postStrainToCollection,
   setStrainDisplay,
   closeSnackBarAddedToCollection,
-} from "../../actions/collectionActions";
-import { setSelectedStrainsEntries } from "../../actions/entriesActions";
+} from "../../Redux/actions/collectionActions";
+import { setSelectedStrainsEntries } from "../../Redux/actions/entriesActions";
 
 // add pagination within the menu to only display the first 20-30 strains
-
-const useRowStyles = makeStyles((theme) => ({
-  root: {
-    "& > *": {
-      borderBottom: "unset",
-    },
-  },
-  search: {
-    margin: "2 in",
-    display: "inline",
-  },
-  divRoot: {
-    flexGrow: 1,
-  },
-  fab: {
-    margin: theme.spacing(2),
-    // width: '15px',
-    // height: '15px'
-  },
-  grid: {
-    minWidth: "80vw",
-  },
-}));
 
 function Row(props) {
   const {
@@ -128,7 +105,7 @@ function Row(props) {
             ? row.strain.genus.toUpperCase()
             : row.genus.toUpperCase()}
         </TableCell>
-        <TableCell align="right">
+        <TableCell className={classes.flavorList} align="right">
           {collection ? row.strain.flavorList : row.flavorList}
         </TableCell>
       </TableRow>
@@ -358,8 +335,12 @@ function CollapsibleTable(props) {
                     <TableRow>
                       <TableCell />
                       <TableCell>Strain</TableCell>
-                      <TableCell align="right">Type</TableCell>
-                      <TableCell align="right">Flavors</TableCell>
+                      <TableCell className={classes.typeCol} align="right">
+                        Type
+                      </TableCell>
+                      <TableCell className={classes.flavorCol} align="right">
+                        Flavors
+                      </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>{displayed && renderStrains()}</TableBody>
@@ -399,3 +380,35 @@ const mapDispatchToProps = (dispatch) => ({
   onSetSelectedStrainsEntries: (entries) => dispatch(setSelectedStrainsEntries),
 });
 export default connect(mapStateToProps, mapDispatchToProps)(CollapsibleTable);
+
+const useRowStyles = makeStyles((theme) => ({
+  root: {
+    "& > *": {
+      borderBottom: "unset",
+    },
+  },
+  search: {
+    margin: "2 in",
+    display: "inline",
+  },
+  divRoot: {
+    flexGrow: 1,
+  },
+  fab: {
+    margin: theme.spacing(2),
+    // width: '15px',
+    // height: '15px'
+  },
+  grid: {
+    minWidth: "80vw",
+  },
+  flavorList: {
+    paddingRight: "30px",
+  },
+  flavorCol: {
+    paddingRight: "75px",
+  },
+  typeCol: {
+    paddingRight: "34px",
+  },
+}));

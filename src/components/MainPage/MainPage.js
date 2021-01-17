@@ -1,9 +1,10 @@
 import { connect } from "react-redux";
-import { fetchCurrentUser } from "../../actions/authActions";
+import { fetchCurrentUser } from "../../Redux/actions/authActions";
 
 import React, { Component } from "react";
 import StrainTable from "./StrainTable";
-import { fetchStrains } from "../../actions/strainActions";
+import { fetchStrains } from "../../Redux/actions/strainActions";
+import LinearProgressBar from "./LinearProgressBar";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
@@ -22,10 +23,13 @@ class MainPage extends Component {
   render() {
     return (
       <div className="mainPageContainer">
-        <CssBaseline />
-        <div>
-          {this.props.strains && <StrainTable strains={this.props.strains} />}
-        </div>
+        {this.props.fetching ? (
+          <LinearProgressBar />
+        ) : (
+          <div>
+            {this.props.strains && <StrainTable strains={this.props.strains} />}
+          </div>
+        )}
       </div>
     );
   }
@@ -34,6 +38,7 @@ class MainPage extends Component {
 const mapStateToProps = (store) => {
   return {
     strains: store.strains.allStrains,
+    fetching: store.strains.fetching,
   };
 };
 
