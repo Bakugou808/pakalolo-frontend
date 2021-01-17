@@ -302,18 +302,6 @@ function CollapsibleTable(props) {
               onChange={handleSearch}
               floatingLabelFixed
             />
-            <FormGroup>
-              <FormControlLabel
-                control={
-                  <GreenSwitch
-                    checked={showTable}
-                    onChange={handleChange}
-                    name="table"
-                  />
-                }
-                label="Hide/Show Table"
-              />
-            </FormGroup>
           </div>
         </Grid>
 

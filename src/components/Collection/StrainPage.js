@@ -63,6 +63,9 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
+    chip: {
+      marginLeft: "15px",
+    },
   },
 }));
 
@@ -84,6 +87,9 @@ const useStyles2 = makeStyles((theme) => ({
   },
   modal: {
     overflow: "auto",
+  },
+  chip: {
+    marginLeft: "15px",
   },
 }));
 
@@ -224,8 +230,9 @@ function StrainPage(props) {
           aria-label="simple tabs example"
         >
           <Tab label="Description" {...a11yProps(0)} />
-          <Tab label="Entries" {...a11yProps(1)} />
-          {/* <Tab label="Terpene Profile" {...a11yProps(2)} /> */}
+          <Tab label="Cannabinoid Profile" {...a11yProps(1)} />
+          <Tab label="Terpene Profile" {...a11yProps(2)} />
+          <Tab label="Entries" {...a11yProps(3)} />
         </Tabs>
       </AppBar>
       {/* Tab 1: Strain Description*/}
@@ -237,6 +244,7 @@ function StrainPage(props) {
                 <Paper className={classes2.root}>
                   {`${strain.name}: Strain Details`}
                   <Chip
+                    className={classes2.chip}
                     label={`${totalLikes} Likes`}
                     clickable
                     onClick={liked ? handleUnlike : handleLike}
@@ -262,19 +270,7 @@ function StrainPage(props) {
                   </Menu>
                 </Paper>
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <Paper className={classes2.paper}>
-                  <ChemChart
-                    data={strain.cannabinoidList}
-                    cannabinoids={true}
-                  />
-                </Paper>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Paper className={classes2.paper}>
-                  <ChemChart data={strain.terpeneList} cannabinoids={false} />
-                </Paper>
-              </Grid>
+
               <Grid item xs={12}>
                 <Paper className={classes2.paper}>{strain.description}</Paper>
               </Grid>
@@ -319,6 +315,16 @@ function StrainPage(props) {
         </div>
       </TabPanel>
       <TabPanel value={value} index={1}>
+        <Paper className={classes2.paper}>
+          <ChemChart data={strain.cannabinoidList} cannabinoids={true} />
+        </Paper>
+      </TabPanel>
+      <TabPanel value={value} index={2}>
+        <Paper className={classes2.paper}>
+          <ChemChart data={strain.terpeneList} cannabinoids={false} />
+        </Paper>
+      </TabPanel>
+      <TabPanel value={value} index={3}>
         <Entries collection={collection} pageEndPoint={page} />
       </TabPanel>
       {newTag && (
