@@ -163,6 +163,9 @@ function SignUp(props) {
             </Link>
           </Grid>
         </form>
+        <div className="loginError">
+          {props.error ? `Sorry. ${props.error}, try again...` : null}
+        </div>
       </div>
       <Box mt={5}>
         <Copyright />

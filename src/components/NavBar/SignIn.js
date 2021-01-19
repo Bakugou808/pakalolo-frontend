@@ -73,9 +73,6 @@ function SignIn(props) {
 
   return (
     <Container component="main" maxWidth="xs">
-      {props.error
-        ? alert(`Sorry, that Login didn't work, try again...`)
-        : null}
       <CssBaseline />
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
@@ -131,6 +128,9 @@ function SignIn(props) {
             </Link>
           </Grid>
         </form>
+        <div className="loginError">
+          {props.error ? `Sorry. ${props.error}, try again...` : null}
+        </div>
       </div>
       <Box mt={8}>
         <Copyright />
