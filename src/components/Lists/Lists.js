@@ -58,6 +58,9 @@ const useStyles = makeStyles((theme) => ({
   fullList: {
     width: "auto",
   },
+  icon: {
+    color: "white",
+  },
 }));
 
 export const Lists = (props) => {
@@ -157,7 +160,7 @@ export const Lists = (props) => {
         >
           <Tooltip title="View Lists" aria-label="view lists" interactive>
             <Fab color="primary" className={classes.fab}>
-              <ListAltIcon />
+              <ListAltIcon className={classes.icon} />
             </Fab>
           </Tooltip>
         </motion.div>
