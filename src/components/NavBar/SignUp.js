@@ -21,7 +21,7 @@ function Copyright() {
     <Typography variant="body2" color="primary" align="center">
       {"Copyright © "}
       <Link color="primary" href="https://material-ui.com/">
-        Pakalolo V1
+        Paka-lolo V1
       </Link>{" "}
       {new Date().getFullYear()}
       {"."}

@@ -149,7 +149,7 @@ function NavBar(props) {
           </IconButton>
           <Typography variant="h6" className={classes.title}>
             <Link href="/" color="inherit">
-              Pakalolo
+              Paka-lolo
             </Link>
           </Typography>
           {
