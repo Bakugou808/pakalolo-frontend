@@ -82,3 +82,19 @@
 .tagTitle {
   margin-bottom: 10px;
 }
+.loginSignupCont {
+  display: flex;
+  justify-content: space-between;
+  margin: 9px;
+  margin-top: 15px;
+  margin-bottom: 50px;
+}
+
+.loginLink {
+  cursor: pointer;
+  color: #1faa00;
+}
+
+.loginLink:hover {
+  color: #64dd17;
+}

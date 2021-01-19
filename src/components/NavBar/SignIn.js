@@ -18,10 +18,10 @@ import Container from "@material-ui/core/Container";
 
 function Copyright() {
   return (
-    <Typography variant="body2" color="textSecondary" align="center">
+    <Typography variant="body2" color="primary" align="center">
       {"Copyright © "}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
+      <Link color="primary" href="https://material-ui.com/">
+        Pakalolo V1
       </Link>{" "}
       {new Date().getFullYear()}
       {"."}
@@ -125,17 +125,10 @@ function SignIn(props) {
           >
             Sign In
           </Button>
-          <Grid container>
-            <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password?
-              </Link>
-            </Grid>
-            <Grid item>
-              <Link href="signup" variant="body2">
-                {"Don't have an account? Sign Up"}
-              </Link>
-            </Grid>
+          <Grid container justify="center">
+            <Link href="signup" variant="body2">
+              {"Don't have an account? Sign Up"}
+            </Link>
           </Grid>
         </form>
       </div>

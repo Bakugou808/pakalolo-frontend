@@ -152,20 +152,26 @@ function NavBar(props) {
               Pakalolo
             </Link>
           </Typography>
-          {props.auth ? (
-            <Typography variant="subtitle1" className={classes.login}>
-              <Link className={classes.link} onClick={onLogout} color="inherit">
-                <ExitToAppIcon />
-              </Link>
-            </Typography>
-          ) : (
-            <Typography variant="subtitle1" className={classes.login}>
-              <Link href="/signin" color="inherit">
-                Sign In
-              </Link>
-            </Typography>
-          )}
-          {/* <Button color="inherit">Login</Button> */}
+          {
+            props.auth && (
+              <Typography variant="subtitle1" className={classes.login}>
+                <Link
+                  className={classes.link}
+                  onClick={onLogout}
+                  color="inherit"
+                >
+                  <ExitToAppIcon />
+                </Link>
+              </Typography>
+            )
+            // : (
+            //   <Typography variant="subtitle1" className={classes.login}>
+            //     <Link href="/signin" color="inherit">
+            //       Sign In
+            //     </Link>
+            //   </Typography>
+            // )}
+          }
         </Toolbar>
       </AppBar>
       <Drawer

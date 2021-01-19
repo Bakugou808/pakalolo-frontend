@@ -20,6 +20,10 @@ class MainPage extends Component {
     onFetchStrains();
   }
 
+  handleRedirect = (path) => {
+    this.props.history.push(path);
+  };
+
   render() {
     return (
       <div className="mainPageContainer">
@@ -28,6 +32,22 @@ class MainPage extends Component {
         ) : (
           <div>
             {this.props.strains && <StrainTable strains={this.props.strains} />}
+            {!this.props.auth && (
+              <div className="loginSignupCont">
+                <div
+                  className="loginLink"
+                  onClick={() => this.handleRedirect("signup")}
+                >
+                  Sign Up
+                </div>
+                <div
+                  className="loginLink"
+                  onClick={() => this.handleRedirect("signin")}
+                >
+                  Login
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -39,6 +59,7 @@ const mapStateToProps = (store) => {
   return {
     strains: store.strains.allStrains,
     fetching: store.strains.fetching,
+    auth: store.authorized.data,
   };
 };
 
