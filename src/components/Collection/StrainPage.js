@@ -66,15 +66,18 @@ const useStyles = makeStyles((theme) => ({
     chip: {
       marginLeft: "15px",
     },
+    padding: "20px",
   },
 }));
 
 const useStyles2 = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
+    margin: "10px",
+    color: theme.palette.text.secondary,
   },
   paper: {
-    padding: theme.spacing(2),
+    // padding: theme.spacing(2),
     textAlign: "center",
     color: theme.palette.text.secondary,
     width: "100%",
