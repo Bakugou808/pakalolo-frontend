@@ -30,22 +30,23 @@ import Divider from "@material-ui/core/Divider";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
   },
   menuButton: {
-    marginRight: theme.spacing(2),
+    padding: "0px",
   },
   title: {
     flexGrow: 1,
   },
-  login: {
-    "& > * + *": {
-      marginLeft: theme.spacing(2),
-    },
-  },
+  // login: {
+  //   "& > * + *": {
+  //     marginLeft: theme.spacing(2),
+  //   },
+  // },
   list: {
     width: 250,
   },
@@ -54,6 +55,12 @@ const useStyles = makeStyles((theme) => ({
   },
   link: {
     cursor: "pointer",
+  },
+  nav: {
+    height: "50px",
+    display: "flex",
+    justifyContent: "center",
+    color: "white",
   },
 }));
 
@@ -129,7 +136,7 @@ function NavBar(props) {
 
   return (
     <div className={classes.root}>
-      <AppBar position="static">
+      <AppBar className={classes.nav} position="static">
         <Toolbar>
           <IconButton
             edge="start"
@@ -148,7 +155,7 @@ function NavBar(props) {
           {props.auth ? (
             <Typography variant="subtitle1" className={classes.login}>
               <Link className={classes.link} onClick={onLogout} color="inherit">
-                Sign Out
+                <ExitToAppIcon />
               </Link>
             </Typography>
           ) : (

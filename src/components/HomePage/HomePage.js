@@ -20,6 +20,8 @@ import MapContainerWPlaces from "../googleMaps/MapContainerWPlaces";
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
+    marginTop: "30px",
+    marginBottom: "70px",
   },
   paper: {
     padding: theme.spacing(2),
@@ -107,7 +109,7 @@ function HomePage(props) {
           </Grid>
           <Grid item xs={12}>
             <Paper className={classes.paper}>
-              <div>Tags</div>
+              <div className="tagTitle">Tags</div>
               {tags ? renderTags() : tagError}
             </Paper>
           </Grid>
@@ -126,7 +128,7 @@ function HomePage(props) {
           <Grid item xs={12}>
             <Paper className={classes.paper}>
               <div>
-                <div>Articles</div>
+                <div className="tagTitle">Articles</div>
                 <CarouselComponent />
               </div>
             </Paper>
