@@ -12,7 +12,6 @@ import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 
 export const AuthHOC = (WrappedComponent) => {
-  console.log(WrappedComponent);
   class AuthHOC extends React.Component {
     state = {
       authorized: false,

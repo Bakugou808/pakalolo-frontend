@@ -96,7 +96,6 @@ function NavBar(props) {
   };
 
   const redirect = (path) => {
-    console.log(path);
     const clearStates = () => {
       onSetEntriesForSmokeList([]);
       onSetSelectedStrainsEntries([]);

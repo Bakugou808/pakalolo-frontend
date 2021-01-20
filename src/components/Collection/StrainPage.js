@@ -156,8 +156,7 @@ function StrainPage(props) {
   };
 
   const handleLike = () => {
-    console.log("liked strain");
-    let data = {
+=    let data = {
       likeable_type: "Strain",
       likeable_id: strain.id,
       user_id: localStorage.userId,

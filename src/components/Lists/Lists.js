@@ -102,7 +102,6 @@ export const Lists = (props) => {
   };
 
   const handleSmokeList = (smokeList) => {
-    console.log(smokeList, "was selected from menu");
     setShowForm(false);
     onSetSmokeListDisplay(smokeList);
     onSetEntriesForSmokeList([]);

@@ -151,7 +151,7 @@ export const deleteVendorFailure = (error) => {
 
 export const deleteVendor = (vendorId, dispatch) => {
   dispatch(deleteVendorRequest());
-  console.log(vendorId);
+
   fetch(`https://pakalolo-api.herokuapp.com/vendors/${vendorId}`, {
     method: "DELETE",
     headers: headers(),
@@ -201,7 +201,6 @@ export const fetchVendors = (userId, dispatch) => {
       if (data.error) {
         dispatch(fetchVendorsFailure(data.error));
       } else {
-        console.log(data);
         dispatch(fetchVendorsSuccess(data));
       }
     });

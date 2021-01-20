@@ -101,7 +101,6 @@ export const fetchUser = (data, history, dispatch) => {
   })
     .then((res) => res.json())
     .then((data) => {
-      console.log(data);
       if (data.error) {
         dispatch(fetchUserFailure(data.error));
       } else {

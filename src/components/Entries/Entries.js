@@ -475,7 +475,6 @@ function EntriesTable(props) {
   };
 
   const handleDelete = () => {
-    console.log("in entry delete");
     if (smokeListPage) {
       selectedEntries.forEach((entry, index) => {
         let data = { smoke_list_id: selectedSmokeList.id, entry_id: entry.id };
@@ -521,7 +520,7 @@ function EntriesTable(props) {
       // collectionEntries.forEach((entry, index) => {
       selectedEntries.forEach((entry) => {
         // if (ent.id === entry.id) {
-        console.log(entry, "inhandleentrytosmokelist");
+
         let data = { entry_id: entry.id, smoke_list_id: selectedSmokeList.id };
         onPostSmokeListEntry(data);
         // }
@@ -531,7 +530,7 @@ function EntriesTable(props) {
       selectedEntries.forEach((entry, index) => {
         // selected.forEach((ind) => {
         //     if (index === ind) {
-        console.log(entry, "inhandleentrytosmokelist");
+
         let data = { entry_id: entry.id, smoke_list_id: smokeList.id };
         pageEndPoint === "collection"
           ? onPostSmokeListEntry(data, pageEndPoint)

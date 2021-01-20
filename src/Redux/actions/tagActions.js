@@ -120,7 +120,7 @@ export const deleteTagFailure = (error) => {
 
 export const deleteTag = (tag, dispatch) => {
   dispatch(deleteTagRequest());
-  console.log(tag);
+
   fetch(`https://pakalolo-api.herokuapp.com/tags/${tag}`, {
     method: "DELETE",
     headers: headers(),
@@ -130,8 +130,6 @@ export const deleteTag = (tag, dispatch) => {
       if (data.error) {
         dispatch(deleteTagFailure(data.error));
       } else {
-        console.log("indelete success", data);
-
         dispatch(deleteTagSuccess(data));
       }
     });
@@ -170,8 +168,6 @@ export const fetchAllTags = (userId, dispatch) => {
       if (data.error) {
         dispatch(fetchTagsFailure(data.error));
       } else {
-        console.log("infetch success", data);
-
         dispatch(fetchTagsSuccess(data));
       }
     });
@@ -212,8 +208,6 @@ export const fetchAllStrainsWithTag = (title, dispatch, userId) => {
       if (data.error) {
         dispatch(fetchStrainsWithTagFailure(data.error));
       } else {
-        console.log("infetch success", data);
-
         dispatch(fetchStrainsWithTagSuccess(data));
       }
     });

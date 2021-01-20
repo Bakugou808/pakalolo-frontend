@@ -59,7 +59,6 @@ function HomePage(props) {
       navigator.geolocation.getCurrentPosition(getPosition);
     }
     function getPosition(position) {
-      console.log(position, "setting location");
       setLocation({
         lat: position.coords.latitude,
         lng: position.coords.longitude,

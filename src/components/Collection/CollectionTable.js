@@ -176,7 +176,6 @@ function CollectionTable(props) {
   }, [collection]);
 
   const redirect = (path) => {
-    console.log(path);
     props.history.push(`/${path}`);
   };
 

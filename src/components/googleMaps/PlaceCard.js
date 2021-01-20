@@ -1,14 +1,12 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
-import ButtonBase from '@material-ui/core/ButtonBase';
-import { ReviewsComponent } from './ReviewsComponent';
-import Link from '@material-ui/core/Link';
-import PhotosComponent from './PhotosComponent'
-
-
+import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
+import Typography from "@material-ui/core/Typography";
+import ButtonBase from "@material-ui/core/ButtonBase";
+import { ReviewsComponent } from "./ReviewsComponent";
+import Link from "@material-ui/core/Link";
+import PhotosComponent from "./PhotosComponent";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -16,51 +14,68 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     padding: theme.spacing(2),
-    margin: 'auto',
-    maxWidth: 'auto',
+    margin: "auto",
+    maxWidth: "auto",
   },
   reviews: {
-    display: 'block',
-    'margin-left': 'auto',
-    'margin-right': 'auto',
-    margin: '15px'
+    display: "block",
+    "margin-left": "auto",
+    "margin-right": "auto",
+    margin: "15px",
   },
   image: {
     width: 328,
     height: 328,
   },
   img: {
-    margin: 'auto',
-    display: 'block',
-    maxWidth: '100%',
-    maxHeight: '100%',
+    margin: "auto",
+    display: "block",
+    maxWidth: "100%",
+    maxHeight: "100%",
   },
   link: {
-    '& > * + *': {
+    "& > * + *": {
       marginLeft: theme.spacing(2),
     },
   },
 }));
 
 // TODO: info is bad naming.
-const PlaceCard = (({ storeInfo, key }) => {
-  const classes = useStyles()
-  const { address, distanceText, name, openNow, rating, timeText, photos, reviews, business_status, formatted_phone_number, user_ratings_total, website, googleUrl, weekday_hours } = storeInfo;
+const PlaceCard = ({ storeInfo, key }) => {
+  const classes = useStyles();
+  const {
+    address,
+    distanceText,
+    name,
+    openNow,
+    rating,
+    timeText,
+    photos,
+    reviews,
+    business_status,
+    formatted_phone_number,
+    user_ratings_total,
+    website,
+    googleUrl,
+    weekday_hours,
+  } = storeInfo;
 
   const handleRedirect = (url) => {
-    console.log(url)
-    window.open(url)
-  }
-
+    window.open(url);
+  };
 
   return (
     <div key={key} className={classes.root}>
       <div className={classes.root}>
         <Paper className={classes.paper}>
-          <Grid container spacing={5} >
+          <Grid container spacing={5}>
             <Grid item>
               <div className={classes.image}>
-                <img className={classes.img} alt="complex" src={photos[0].getUrl()} />
+                <img
+                  className={classes.img}
+                  alt="complex"
+                  src={photos[0].getUrl()}
+                />
               </div>
               {/* <PhotosComponent photos={photos} /> */}
             </Grid>
@@ -72,33 +87,47 @@ const PlaceCard = (({ storeInfo, key }) => {
                   </Typography> */}
                   <Typography variant="body2" gutterBottom>
                     <div>
-                      <ul><h3>{name}</h3></ul>
+                      <ul>
+                        <h3>{name}</h3>
+                      </ul>
                       <ul>{address}</ul>
                       <ul>{formatted_phone_number}</ul>
                       <ul>
                         <Typography className={classes.link}>
-                          <Link href='#' onClick={() => handleRedirect(website)} variant="body2" color='inherit'>
+                          <Link
+                            href="#"
+                            onClick={() => handleRedirect(website)}
+                            variant="body2"
+                            color="inherit"
+                          >
                             Visit Store Website
                           </Link>
                         </Typography>
                         {/* <div onClick={() => handleRedirect(website)}>Visit Store Website</div> */}
                       </ul>
-                      <ul>Distance: {distanceText} Travel Time: {timeText}</ul>
-                      <ul>{openNow ? 'Open Now' : 'Closed'}</ul>
+                      <ul>
+                        Distance: {distanceText} Travel Time: {timeText}
+                      </ul>
+                      <ul>{openNow ? "Open Now" : "Closed"}</ul>
                       <ul>
                         {/* <div onClick={() => handleRedirect(googleUrl)}>Get Directions</div> */}
                         <Typography className={classes.link}>
-                          <Link href='#' onClick={() => handleRedirect(googleUrl)} variant="body2" color='inherit'>
+                          <Link
+                            href="#"
+                            onClick={() => handleRedirect(googleUrl)}
+                            variant="body2"
+                            color="inherit"
+                          >
                             Get Directions
                           </Link>
                         </Typography>
                       </ul>
-                      <ul>Rating: {rating}/5
+                      <ul>
+                        Rating: {rating}/5
                         <Typography variant="body2" color="textSecondary">
                           {user_ratings_total} Votes
                         </Typography>
                       </ul>
-
                     </div>
                   </Typography>
                 </Grid>
@@ -115,16 +144,16 @@ const PlaceCard = (({ storeInfo, key }) => {
             </Grid>
             <Grid item className={classes.reviews}>
               <Typography variant="body2" color="textSecondary">
-                <div >
+                <div>
                   Reviews
-                      <br />
+                  <br />
                   <ReviewsComponent reviews={reviews} />
                 </div>
                 <a href={`#map`}>
-                <Typography variant="body2" color="textSecondary">
-                  Return To Map
-                </Typography>
-              </a>
+                  <Typography variant="body2" color="textSecondary">
+                    Return To Map
+                  </Typography>
+                </a>
               </Typography>
             </Grid>
           </Grid>
@@ -132,6 +161,6 @@ const PlaceCard = (({ storeInfo, key }) => {
       </div>
     </div>
   );
-});
+};
 
 export default PlaceCard;

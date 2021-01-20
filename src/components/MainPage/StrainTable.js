@@ -69,7 +69,6 @@ function Row(props) {
   };
 
   const handleAddStrainToCollection = () => {
-    console.log("adding strain");
     setAddedStrain(row);
     handleClose();
     let data = { strain_id: row.id, user_id: parseInt(localStorage.userId) };
@@ -77,7 +76,6 @@ function Row(props) {
   };
 
   const handleAddStrainToStrainList = () => {
-    console.log("adding strain");
     handleClose();
   };
 

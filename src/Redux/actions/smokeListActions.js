@@ -172,7 +172,7 @@ export const deleteSmokeListFailure = (error) => {
 
 export const deleteSmokeList = (smokeListId, dispatch) => {
   dispatch(deleteSmokeListRequest());
-  console.log(smokeListId);
+
   fetch(`https://pakalolo-api.herokuapp.com/smoke_lists/${smokeListId}`, {
     method: "DELETE",
     headers: headers(),
@@ -182,7 +182,6 @@ export const deleteSmokeList = (smokeListId, dispatch) => {
       if (data.error) {
         dispatch(deleteSmokeListFailure(data.error));
       } else {
-        console.log("indelete success");
         dispatch(deleteSmokeListSuccess(data));
         dispatch(setNoteBookDisplay(false));
       }
@@ -224,7 +223,6 @@ export const fetchSmokeLists = (userId, dispatch) => {
       if (data.error) {
         dispatch(fetchSmokeListsFailure(data.error));
       } else {
-        console.log(data);
         dispatch(fetchSmokeListsSuccess(data));
       }
     });
@@ -301,7 +299,7 @@ export const deleteSmokeListEntryFailure = (error) => {
 
 export const deleteSmokeListEntry = (entryData, dispatch) => {
   dispatch(deleteSmokeListEntryRequest());
-  console.log(entryData);
+
   fetch(`https://pakalolo-api.herokuapp.com/smoke_lists_entry/delete`, {
     method: "POST",
     headers: headers(),
@@ -312,7 +310,6 @@ export const deleteSmokeListEntry = (entryData, dispatch) => {
       if (data.error) {
         dispatch(deleteSmokeListEntryFailure(data.error));
       } else {
-        console.log("indelete success");
         dispatch(deleteSmokeListEntrySuccess(data));
       }
     });

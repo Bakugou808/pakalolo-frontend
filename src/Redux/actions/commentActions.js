@@ -152,7 +152,7 @@ export const deleteCommentFailure = (error) => {
 
 export const deleteComment = (commentId, dispatch) => {
   dispatch(deleteCommentRequest());
-  console.log(commentId);
+
   fetch(`https://pakalolo-api.herokuapp.com/comments/${commentId}`, {
     method: "DELETE",
     headers: headers(),
@@ -162,7 +162,6 @@ export const deleteComment = (commentId, dispatch) => {
       if (data.error) {
         dispatch(deleteCommentFailure(data.error));
       } else {
-        console.log("indelete success");
         dispatch(deleteCommentSuccess(data));
       }
     });
@@ -207,7 +206,6 @@ export const fetchComments = (referenceId, type, dispatch) => {
       if (data.error) {
         dispatch(fetchCommentsFailure(data.error));
       } else {
-        console.log(data);
         dispatch(fetchCommentsSuccess(data));
       }
     });

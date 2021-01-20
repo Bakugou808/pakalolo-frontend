@@ -8,37 +8,6 @@ export const headers = () => {
   };
 };
 
-// -------***** UI Actions *****------------------*******************-------------
-
-// export const setLikeDisplay = (like) => {
-//     return {
-//         type: 'SET_LIKE_DISPLAY',
-//         like: like
-//     }
-// }
-
-// export const openSnackBarEntryAdded = () => {
-//     return {
-//         type: 'DISPLAY_SNACKBAR_ADD_SUCCESS_LIKE',
-//         payload: true
-//     }
-// }
-
-// export const closeSnackBarEntryAdded = () => {
-//     return {
-//         type: 'CLOSE_DISPLAY_SNACKBAR_ADD_SUCCESS_LIKE',
-//         payload: false
-//     }
-// }
-
-// export const setSelectedStrainsEntries = (likes) => {
-//     return {
-//         type: 'SET_SELECTED_STRAINS_LIKES',
-//         likes: likes
-//     }
-// }
-
-// -------***** POST Actions *****------------------*******************-------------
 // -------***** POST Actions *****------------------*******************-------------
 
 export const postLikeRequest = () => {
@@ -124,7 +93,6 @@ export const patchLike = (data, likeId, dispatch) => {
 };
 
 // ----------DELETE ENTRY ACTIONS-------  *****************************
-// ----------DELETE ENTRY ACTIONS-------  *****************************
 
 export const deleteLikeRequest = () => {
   return {
@@ -150,7 +118,7 @@ export const deleteLikeFailure = (error) => {
 
 export const deleteLike = (data, dispatch) => {
   dispatch(deleteLikeRequest());
-  console.log(data);
+
   fetch(`https://pakalolo-api.herokuapp.com/delete_like`, {
     method: "POST",
     headers: headers(),
@@ -161,14 +129,11 @@ export const deleteLike = (data, dispatch) => {
       if (data.error) {
         dispatch(deleteLikeFailure(data.error));
       } else {
-        console.log("indelete success", data);
-
         // dispatch(deleteLikeSuccess(data))
       }
     });
 };
 
-// -------***** ALL COMMENTS GET REQUEST ACTIONS *****------------------*******************-------------
 // -------***** ALL COMMENTS GET REQUEST ACTIONS *****------------------*******************-------------
 
 export const fetchLikesRequest = () => {
@@ -190,20 +155,3 @@ export const fetchLikesFailure = (error) => {
     error: error,
   };
 };
-
-// -------***** GET ALL COMMENTS FETCH REQUEST FUNCTION *****------------------*******************-------------
-
-// export const fetchLikes = (referenceId, dispatch) => {
-//     dispatch(fetchLikesRequest())
-//     fetch(`https://pakalolo-api.herokuapp.com/users_likes/${userId}`, {
-//         headers: headers()
-//     }).then(res => res.json())
-//         .then(data => {
-//             if (data.error) {
-//                 dispatch(fetchLikesFailure(data.error))
-//             } else {
-//                 console.log(data)
-//                 dispatch(fetchLikesSuccess(data))
-//             }
-//         })
-// }

@@ -206,7 +206,7 @@ export const deleteEntryFailure = (error) => {
 
 export const deleteEntry = (entryId, dispatch) => {
   dispatch(deleteEntryRequest());
-  console.log(entryId);
+
   fetch(`https://pakalolo-api.herokuapp.com/entries/${entryId}`, {
     method: "DELETE",
     headers: headers(),
@@ -216,7 +216,6 @@ export const deleteEntry = (entryId, dispatch) => {
       if (data.error) {
         dispatch(deleteEntryFailure(data.error));
       } else {
-        console.log("indelete success");
         dispatch(deleteEntrySuccess(data));
         fetchCollection(localStorage.userId, dispatch);
       }

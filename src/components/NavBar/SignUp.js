@@ -59,9 +59,7 @@ function SignUp(props) {
   const handleSubmit = (e) => {
     e.preventDefault();
     let formData = { username, password, password_confirmation };
-    // password === passwordConfirmation ? setError(false) : setError(true)
-    // console.log(error)
-    // !error && console.log(formData, "send api call")
+
     if (password === password_confirmation && username.length > 3) {
       setError(false);
       submitForm(formData);
@@ -71,7 +69,6 @@ function SignUp(props) {
   };
 
   const submitForm = (formData) => {
-    console.log(formData, "send api call");
     props.onSignUpUser(formData, props.history);
   };
 

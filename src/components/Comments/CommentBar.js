@@ -28,7 +28,6 @@ const CommentBar = (props) => {
       e.target.id === "comment"
         ? setComment(e.target.value)
         : setRating(e.target.value);
-      console.log(comment, rating);
     }
   };
 
@@ -43,7 +42,6 @@ const CommentBar = (props) => {
       likes: [],
       comments: [],
     };
-    console.log("submitting comment", data);
 
     onPostComment(data);
     setLeaveComment(false);

@@ -15,7 +15,7 @@ import Lists from "./components/Lists/Lists";
 import EntriesContainer from "./components/Entries/EntriesContainer";
 import Vendors from "./components/Vendors/Vendors";
 
-LogRocket.init("cvf7db/pakalolo");
+// LogRocket.init("cvf7db/pakalolo");
 
 function App() {
   return (
