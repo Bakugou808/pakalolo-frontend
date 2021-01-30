@@ -66,7 +66,7 @@ export const postCommentFailure = (error) => {
 export const postComment = (data, dispatch) => {
   dispatch(postCommentRequest());
 
-  fetch(`https://pakalolo-api.herokuapp.com/comments`, {
+  fetch(`http://localhost:3000/comments`, {
     method: "POST",
     headers: headers(),
     body: JSON.stringify(data),
@@ -109,7 +109,7 @@ export const patchCommentFailure = (error) => {
 
 export const patchComment = (data, commentId, dispatch) => {
   dispatch(patchCommentRequest());
-  fetch(`https://pakalolo-api.herokuapp.com/comments/${commentId}`, {
+  fetch(`http://localhost:3000/comments/${commentId}`, {
     method: "PATCH",
     headers: headers(),
     body: JSON.stringify(data),
@@ -153,7 +153,7 @@ export const deleteCommentFailure = (error) => {
 export const deleteComment = (commentId, dispatch) => {
   dispatch(deleteCommentRequest());
 
-  fetch(`https://pakalolo-api.herokuapp.com/comments/${commentId}`, {
+  fetch(`http://localhost:3000/comments/${commentId}`, {
     method: "DELETE",
     headers: headers(),
   })
@@ -195,12 +195,9 @@ export const fetchCommentsFailure = (error) => {
 export const fetchComments = (referenceId, type, dispatch) => {
   dispatch(fetchCommentsRequest());
 
-  fetch(
-    `https://pakalolo-api.herokuapp.com/all_comments/${type}/${referenceId}`,
-    {
-      headers: headers(),
-    }
-  )
+  fetch(`http://localhost:3000/all_comments/${type}/${referenceId}`, {
+    headers: headers(),
+  })
     .then((res) => res.json())
     .then((data) => {
       if (data.error) {

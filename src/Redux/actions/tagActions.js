@@ -35,7 +35,7 @@ export const postTagFailure = (error) => {
 
 export const postTag = (data, dispatch) => {
   dispatch(postTagRequest());
-  fetch(`https://pakalolo-api.herokuapp.com/tags`, {
+  fetch(`http://localhost:3000/tags`, {
     method: "POST",
     headers: headers(),
     body: JSON.stringify(data),
@@ -78,7 +78,7 @@ export const patchTagFailure = (error) => {
 
 export const patchTag = (data, tagId, dispatch) => {
   dispatch(patchTagRequest());
-  fetch(`https://pakalolo-api.herokuapp.com/tags/${tagId}`, {
+  fetch(`http://localhost:3000/tags/${tagId}`, {
     method: "PATCH",
     headers: headers(),
     body: JSON.stringify(data),
@@ -121,7 +121,7 @@ export const deleteTagFailure = (error) => {
 export const deleteTag = (tag, dispatch) => {
   dispatch(deleteTagRequest());
 
-  fetch(`https://pakalolo-api.herokuapp.com/tags/${tag}`, {
+  fetch(`http://localhost:3000/tags/${tag}`, {
     method: "DELETE",
     headers: headers(),
   })
@@ -160,7 +160,7 @@ export const fetchTagsFailure = (error) => {
 
 export const fetchAllTags = (userId, dispatch) => {
   dispatch(fetchTagsRequest());
-  fetch(`https://pakalolo-api.herokuapp.com/tags/users_tags/${userId}`, {
+  fetch(`http://localhost:3000/tags/users_tags/${userId}`, {
     headers: headers(),
   })
     .then((res) => res.json())
@@ -197,12 +197,9 @@ export const fetchStrainsWithTagFailure = (error) => {
 
 export const fetchAllStrainsWithTag = (title, dispatch, userId) => {
   dispatch(fetchStrainsWithTagRequest());
-  fetch(
-    `https://pakalolo-api.herokuapp.com/tags/strains_with_tag/${title}/${userId}`,
-    {
-      headers: headers(),
-    }
-  )
+  fetch(`http://localhost:3000/tags/strains_with_tag/${title}/${userId}`, {
+    headers: headers(),
+  })
     .then((res) => res.json())
     .then((data) => {
       if (data.error) {

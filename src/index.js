@@ -11,7 +11,7 @@ import logger from "redux-logger";
 import rootReducer from "./Redux/reducers/index";
 import { createMuiTheme } from "@material-ui/core/styles";
 import { ThemeProvider } from "@material-ui/styles";
-// import thunk from 'redux-thunk'
+import thunk from "redux-thunk";
 
 const theme = createMuiTheme({
   palette: {
@@ -36,9 +36,9 @@ const theme = createMuiTheme({
 let store = createStore(
   rootReducer,
   compose(
-    applyMiddleware(logger)
-    // applyMiddleware(logger, thunk),
-    // window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+    // applyMiddleware(logger)
+    applyMiddleware(logger, thunk),
+    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
   )
 );
 

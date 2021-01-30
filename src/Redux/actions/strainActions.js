@@ -22,8 +22,6 @@ export const fetchStrainsFailure = (error) => {
   };
 };
 
-
-
 // ----------SELECT STRAIN FOR VIEW-------  *****************************
 
 export const selectStrain = (strain) => {
@@ -39,7 +37,7 @@ export const selectStrain = (strain) => {
 
 export const fetchStrains = (dispatch) => {
   dispatch(fetchStrainsRequest());
-  fetch(`https://pakalolo-api.herokuapp.com/strains`)
+  fetch(`http://localhost:3000/strains`)
     .then((res) => res.json())
     .then((data) => {
       if (data.error) {
@@ -49,5 +47,3 @@ export const fetchStrains = (dispatch) => {
       }
     });
 };
-
-
