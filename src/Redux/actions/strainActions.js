@@ -22,27 +22,7 @@ export const fetchStrainsFailure = (error) => {
   };
 };
 
-// ----------FETCH ALL Strain REQUEST-------  *****************************
 
-// export const fetchServiceRequest = () => {
-//     return {
-//         type: 'FETCH_SERVICE_REQUEST'
-//     }
-// }
-
-// export const fetchServiceSuccess = (service) => {
-//     return {
-//         type: 'FETCH_SERVICE_SUCCESS',
-//         service: service,
-//     }
-// }
-
-// export const fetchServiceFailure = (error) => {
-//     return {
-//         type: 'FETCH_SERVICE_FAILURE',
-//         error: error,
-//     }
-// }
 
 // ----------SELECT STRAIN FOR VIEW-------  *****************************
 
@@ -55,7 +35,7 @@ export const selectStrain = (strain) => {
 
 // --------API CALLS---------  *********************************************************************************************************************************
 
-// --------FETCH ALL SERVICES---------  ********************************
+// --------FETCH ALL STRAINS---------  ********************************
 
 export const fetchStrains = (dispatch) => {
   dispatch(fetchStrainsRequest());
@@ -70,18 +50,4 @@ export const fetchStrains = (dispatch) => {
     });
 };
 
-// --------FETCH SINGLE SERVICE---------  ********************************
 
-// export const fetchService = (serviceId, dispatch) => {
-//     dispatch(fetchServiceRequest())
-//     fetch(`https://localhost:3000/services/${serviceId}`)
-//         .then(res=>res.json())
-//         .then(data => {
-//             if (data.error){
-//                 dispatch(fetchServiceFailure(data.error))
-//             } else {
-//                 dispatch(fetchServiceSuccess(data))
-//                 dispatch(setGigsForService(data.gigs))
-//             }
-//         })
-// }
