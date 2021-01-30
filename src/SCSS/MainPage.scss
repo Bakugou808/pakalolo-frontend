@@ -105,3 +105,40 @@
   width: 60%;
   margin-bottom: 0px;
 }
+
+.welcomeContainer {
+  background: darkseagreen;
+  opacity: 0.9;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.entryList {
+  width: fit-content;
+}
+
+.welcomeText {
+  width: 75%;
+}
+
+.entryListCont {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.welcomePrompt {
+  margin: 30px;
+  display: inherit;
+}
+
+.welcomeBtns {
+  align-content: center;
+  margin: 30px;
+  display: grid;
+  justify-items: center;
+  row-gap: 10px;
+}

@@ -47,30 +47,29 @@ class MainPage extends Component {
             ) : this.state.showTable ? (
               this.props.strains && <StrainTable strains={this.props.strains} />
             ) : (
-              <div>
-                <div className="loginSignupCont">
-                  <div
-                    className="loginLink"
-                    onClick={() => this.handleRedirect("signup")}
-                  >
-                    Sign Up
+              <div className="welcomeContainer">
+                <div className="welcomeText">
+                  <div className="loginSignupCont">
+                    <div
+                      className="loginLink"
+                      onClick={() => this.handleRedirect("signup")}
+                    >
+                      Sign Up
+                    </div>
+                    <div
+                      className="loginLink"
+                      onClick={() => this.handleRedirect("signin")}
+                    >
+                      Login
+                    </div>
                   </div>
-                  <div
-                    className="loginLink"
-                    onClick={() => this.handleRedirect("signin")}
-                  >
-                    Login
-                  </div>
-                </div>
-
-                <div>
                   <h3>Welcome to Paka-lolo! </h3>
                   <p>
                     We're here to let you learn and track your favorite strains.
                     Many cannabis users are either uneducated about their
-                    cannabis options, or are inundated with all the options,
-                    that its hard to keep track of what works and what falls
-                    flat. Paka-lolo is here to help fix that.
+                    cannabis options, or are inundated with all the options that
+                    its hard to keep track of what works and what falls flat.
+                    Paka-lolo is here to help fix that.
                   </p>
                   <p>
                     With Paka-lolo you can search for stains, read about its
@@ -80,11 +79,13 @@ class MainPage extends Component {
                     can write an Entry.
                   </p>
                   <p>An "Entry" includes:</p>
-                  <ul>
-                    <li>A description of your experience</li>
-                    <li>A rating of the strain</li>
-                    <li>A rating of the Vendor you bought it from</li>
-                  </ul>
+                  <div className="entryListCont">
+                    <ul className="entryList">
+                      <li>A description of your experience</li>
+                      <li>A rating of the strain</li>
+                      <li>A rating of the Vendor you bought it from</li>
+                    </ul>
+                  </div>
                   <p>
                     The goal is to help you keep track of what actually works
                     for your unique biochemistry and improve your ability to
@@ -95,9 +96,23 @@ class MainPage extends Component {
                     If you'd rather just learn about the strains, you can still
                     access the database to browse. This site is here to educate!
                   </p>
+                  <div>
+                    <h4 className="welcomePrompt">
+                      Would you like to make an account?
+                    </h4>
+                    <div className="welcomeBtns">
+                      <button onClick={this.goToSignUp}>Yes!</button>
+                      <button onClick={this.goToLogIn}>
+                        I have an account. Take me to login!
+                      </button>
+                      <button onClick={this.showSearchPage}>
+                        No thanks, take me to the search page!
+                      </button>
+                    </div>
+                  </div>
                 </div>
 
-                <div>
+                {/* <div>
                   <h4>Would you like to make an account?</h4>
                   <div>
                     <button onClick={this.goToSignUp}>Yes!</button>
@@ -108,7 +123,7 @@ class MainPage extends Component {
                       No thanks, take me to the search page!
                     </button>
                   </div>
-                </div>
+                </div> */}
               </div>
             )}
           </div>
