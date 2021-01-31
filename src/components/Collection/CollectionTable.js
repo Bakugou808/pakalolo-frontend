@@ -190,7 +190,7 @@ function CollectionTable(props) {
       >
         <Grid item xs={6} sm={3}></Grid>
         <Grid item xs={12}>
-          <div className={classes.block}>
+          <div tourId="c1" className={classes.block}>
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"

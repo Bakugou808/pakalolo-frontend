@@ -1,5 +1,6 @@
 const initialState = {
-  homePage1: false,
+  home1: false,
+  collection1: false,
 };
 
 const tourReducer = (state = initialState, action) => {

@@ -9,13 +9,21 @@ import {
   fetchAllTags,
   fetchAllStrainsWithTag,
 } from "../../Redux/actions/tagActions";
-import Chip from "@material-ui/core/Chip";
+import { Button, Chip } from "@material-ui/core";
 import EcoIcon from "@material-ui/icons/Eco";
 import MatchedStrainsTable from "./MatchedStrainsTable";
 import CarouselComponent from "./CarouselComponent";
 import MapContainer from "../googleMaps/MapContainer";
 import MapAutoComplete from "../googleMaps/MapAutoComplete";
 import MapContainerWPlaces from "../googleMaps/MapContainerWPlaces";
+// * ReactTour Imports
+import Tour from "reactour";
+// * action Imports
+import {
+  endTour,
+  activateTour,
+  deactivateTour,
+} from "../../Redux/actions/tourActions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -41,9 +49,16 @@ function HomePage(props) {
     isGeolocationEnabled,
     coords,
     tagError,
+    tourOn,
+    onEndTour,
+    onActivateTour,
+    onDeactivateTour,
   } = props;
+
   const classes = useStyles();
   const [showTable, setShowTable] = React.useState(false);
+  // *tour state
+  const [takeTour, setTakeTour] = useState(true);
 
   // google maps api things
   const [location, setLocation] = React.useState(null);
@@ -96,8 +111,28 @@ function HomePage(props) {
     handleTableOpen();
   };
 
+  const openTour = () => {
+    onActivateTour("home1");
+  };
+
   return (
     <Container maxWidth="lg">
+      {takeTour && (
+        <div className="tourNotification">
+          <div>Take a Tour?</div>
+          <Button onClick={openTour}>Yes</Button>
+          <Button onClick={() => setTakeTour(false)}>No Thanks</Button>
+        </div>
+      )}
+      <Tour
+        onRequestClose={() => onEndTour()}
+        steps={HOME_STEPS}
+        isOpen={tourOn}
+        maskClassName="mask"
+        className="helper"
+        rounded={5}
+        accentColor={accentColor}
+      />
       <div className={classes.root}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
@@ -107,7 +142,7 @@ function HomePage(props) {
             </Paper>
           </Grid>
           <Grid item xs={12}>
-            <Paper className={classes.paper}>
+            <Paper stepID="h1" className={classes.paper}>
               <div className="tagTitle">Tags</div>
               {tags ? renderTags() : tagError}
             </Paper>
@@ -126,7 +161,7 @@ function HomePage(props) {
           )}
           <Grid item xs={12}>
             <Paper className={classes.paper}>
-              <div>
+              <div stepID="h2">
                 <div className="tagTitle">Articles</div>
                 <CarouselComponent />
               </div>
@@ -176,6 +211,7 @@ const mapStateToProps = (store) => {
     tags: store.tags.allTags,
     tagError: store.tags.error,
     matchedStrains: store.tags.matchingStrains,
+    tourOn: store.tour.home1,
   };
 };
 
@@ -184,10 +220,38 @@ const mapDispatchToProps = (dispatch) => {
     onFetchTags: (userId) => fetchAllTags(userId, dispatch),
     onFetchAllStrainsWithTag: (tagTitle, userId) =>
       fetchAllStrainsWithTag(tagTitle, dispatch, userId),
-
+    onEndTour: () => dispatch(endTour()),
+    onActivateTour: (tourId) => dispatch(activateTour(tourId)),
+    onDeactivateTour: (tourId) => dispatch(deactivateTour(tourId)),
     // the above is for api/async calls
     // onChangeData: (newData) => dispatch(dataChangeAction(newData))   ---> this is for normal state changes, dispatch the outcome of an action creator, just to modify state
   };
 };
 
 export default AuthHOC(connect(mapStateToProps, mapDispatchToProps)(HomePage));
+
+const accentColor = "#ff5722";
+
+const HOME_STEPS = [
+  {
+    selector: '[stepId = "h1"]',
+    content: () => (
+      <div>
+        This sections holds your tags. As you add strains to your Collection,
+        you can add tags. Once they're added they will appear in this section.
+        Click on the tag and it will open a table with all the matching strains.
+      </div>
+    ),
+    position: "right",
+  },
+  {
+    selector: '[stepId = "h2"]',
+    content: () => (
+      <div>
+        This section has some useful articles to get you familiar with some of
+        the different aspects of cannabis.
+      </div>
+    ),
+    position: "right",
+  },
+];
