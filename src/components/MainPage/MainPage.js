@@ -45,7 +45,7 @@ class MainPage extends Component {
           <div className="mainPageStrainTableCont">
             {this.props.auth ? (
               this.props.strains && <StrainTable strains={this.props.strains} />
-            ) : (
+            ) : this.state.showTable ? (
               this.props.strains && (
                 <div>
                   <div className="loginSignupCont">
@@ -120,11 +120,13 @@ class MainPage extends Component {
                       Would you like to make an account?
                     </h4>
                     <div className="welcomeBtns">
-                      <Button onClick={this.goToSignUp}>Yes!</Button>
-                      <Button onClick={this.goToLogIn}>
+                      <Button className="mainBtn" onClick={this.goToSignUp}>
+                        Yes!
+                      </Button>
+                      <Button className="mainBtn" onClick={this.goToLogIn}>
                         I have an account. Take me to login!
                       </Button>
-                      <Button onClick={this.showSearchPage}>
+                      <Button className="mainBtn" onClick={this.showSearchPage}>
                         No thanks, take me to the search page!
                       </Button>
                     </div>
