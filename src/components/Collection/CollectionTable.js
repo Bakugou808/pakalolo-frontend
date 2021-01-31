@@ -32,6 +32,12 @@ import AddIcon from "@material-ui/icons/Add";
 
 import { setStrainDisplay } from "../../Redux/actions/collectionActions";
 import { setSelectedStrainsEntries } from "../../Redux/actions/entriesActions";
+// * action Imports
+import {
+  endTour,
+  activateTour,
+  deactivateTour,
+} from "../../Redux/actions/tourActions";
 
 // add pagination within the menu to only display the first 20-30 strains
 
@@ -102,6 +108,10 @@ function CollectionTable(props) {
     onSetStrain,
     onSetSelectedStrainsEntries,
     onFetchComments,
+    tourOn,
+    onEndTour,
+    onActivateTour,
+    onDeactivateTour,
   } = props;
   const [query, setQuery] = useState("");
   const [columnToQuery, setColumnToQuery] = useState("name");
@@ -111,6 +121,8 @@ function CollectionTable(props) {
 
   const [selected, setSelected] = React.useState([]);
   const [dense, setDense] = React.useState(false);
+  // *tour state
+  const [takeTour, setTakeTour] = useState(true);
 
   const [displayed, setDisplay] = useState([]);
   const classes = useRowStyles();
@@ -258,6 +270,7 @@ function CollectionTable(props) {
 }
 const mapStateToProps = (store) => ({
   collection: store.collection.totalCollection,
+  tourOn: store.tour.collection1,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -265,6 +278,35 @@ const mapDispatchToProps = (dispatch) => ({
   onSetSelectedStrainsEntries: (entries) =>
     dispatch(setSelectedStrainsEntries(entries)),
   onFetchComments: (strainId, type) => fetchComments(strainId, type, dispatch),
+  onEndTour: () => dispatch(endTour()),
+  onActivateTour: (tourId) => dispatch(activateTour(tourId)),
+  onDeactivateTour: (tourId) => dispatch(deactivateTour(tourId)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CollectionTable);
+
+const accentColor = "#ff5722";
+
+const HOME_STEPS = [
+  {
+    selector: '[stepId = "h1"]',
+    content: () => (
+      <div>
+        This sections holds your tags. As you add strains to your Collection,
+        you can add tags. Once they're added they will appear in this section.
+        Click on the tag and it will open a table with all the matching strains.
+      </div>
+    ),
+    position: "right",
+  },
+  {
+    selector: '[stepId = "h2"]',
+    content: () => (
+      <div>
+        This section has some useful articles to get you familiar with some of
+        the different aspects of cannabis.
+      </div>
+    ),
+    position: "right",
+  },
+];

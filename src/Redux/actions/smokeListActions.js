@@ -86,7 +86,7 @@ export const postSmokeListFailure = (error) => {
 
 export const postSmokeList = (data, dispatch) => {
   dispatch(postSmokeListRequest());
-  fetch(`http://localhost:3000/smoke_lists`, {
+  fetch(`https://pakalolo-api.herokuapp.com/smoke_lists`, {
     method: "POST",
     headers: headers(),
     body: JSON.stringify(data),
@@ -129,7 +129,7 @@ export const patchSmokeListFailure = (error) => {
 
 export const patchSmokeList = (data, smokeListId, dispatch) => {
   dispatch(patchSmokeListRequest());
-  fetch(`http://localhost:3000/smoke_lists/${smokeListId}`, {
+  fetch(`https://pakalolo-api.herokuapp.com/smoke_lists/${smokeListId}`, {
     method: "PATCH",
     headers: headers(),
     body: JSON.stringify(data),
@@ -173,7 +173,7 @@ export const deleteSmokeListFailure = (error) => {
 export const deleteSmokeList = (smokeListId, dispatch) => {
   dispatch(deleteSmokeListRequest());
 
-  fetch(`http://localhost:3000/smoke_lists/${smokeListId}`, {
+  fetch(`https://pakalolo-api.herokuapp.com/smoke_lists/${smokeListId}`, {
     method: "DELETE",
     headers: headers(),
   })
@@ -215,7 +215,7 @@ export const fetchSmokeListsFailure = (error) => {
 
 export const fetchSmokeLists = (userId, dispatch) => {
   dispatch(fetchSmokeListsRequest());
-  fetch(`http://localhost:3000/users_smokeLists/${userId}`, {
+  fetch(`https://pakalolo-api.herokuapp.com/users_smokeLists/${userId}`, {
     headers: headers(),
   })
     .then((res) => res.json())
@@ -256,7 +256,7 @@ export const postSmokeListEntryFailure = (error) => {
 
 export const postSmokeListEntry = (data, dispatch, page = null) => {
   dispatch(postSmokeListEntryRequest());
-  fetch(`http://localhost:3000/smoke_lists/new_entry`, {
+  fetch(`https://pakalolo-api.herokuapp.com/smoke_lists/new_entry`, {
     method: "POST",
     headers: headers(),
     body: JSON.stringify(data),
@@ -300,7 +300,7 @@ export const deleteSmokeListEntryFailure = (error) => {
 export const deleteSmokeListEntry = (entryData, dispatch) => {
   dispatch(deleteSmokeListEntryRequest());
 
-  fetch(`http://localhost:3000/smoke_lists_entry/delete`, {
+  fetch(`https://pakalolo-api.herokuapp.com/smoke_lists_entry/delete`, {
     method: "POST",
     headers: headers(),
     body: JSON.stringify(entryData),

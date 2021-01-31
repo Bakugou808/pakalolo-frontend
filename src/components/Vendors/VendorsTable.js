@@ -41,7 +41,7 @@ function VendorsTable(props) {
   useEffect(() => {
     const fetchData = async () => {
       const result = await fetch(
-        `http://localhost:3000/users_vendors/${userId}`,
+        `https://pakalolo-api.herokuapp.com/users_vendors/${userId}`,
         {
           headers: headers(),
         }
