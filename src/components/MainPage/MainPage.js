@@ -43,24 +43,28 @@ class MainPage extends Component {
           <LinearProgressBar />
         ) : (
           <div className="mainPageStrainTableCont">
-            <div className="loginSignupCont">
-              <div
-                className="loginLink"
-                onClick={() => this.handleRedirect("signup")}
-              >
-                Sign Up
-              </div>
-              <div
-                className="loginLink"
-                onClick={() => this.handleRedirect("signin")}
-              >
-                Login
-              </div>
-            </div>
             {this.props.auth ? (
               this.props.strains && <StrainTable strains={this.props.strains} />
-            ) : this.state.showTable ? (
-              this.props.strains && <StrainTable strains={this.props.strains} />
+            ) : (
+              this.props.strains && (
+                <div>
+                  <div className="loginSignupCont">
+                    <div
+                      className="loginLink"
+                      onClick={() => this.handleRedirect("signup")}
+                    >
+                      Sign Up
+                    </div>
+                    <div
+                      className="loginLink"
+                      onClick={() => this.handleRedirect("signin")}
+                    >
+                      Login
+                    </div>
+                  </div>
+                  <StrainTable strains={this.props.strains} />
+                </div>
+              )
             ) : (
               <div className="welcomeContainer">
                 <div className="welcomeText">
