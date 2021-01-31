@@ -5,9 +5,9 @@ import React, { Component } from "react";
 import StrainTable from "./StrainTable";
 import { fetchStrains } from "../../Redux/actions/strainActions";
 import LinearProgressBar from "./LinearProgressBar";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Typography from "@material-ui/core/Typography";
-import Container from "@material-ui/core/Container";
+// import CssBaseline from "@material-ui/core/CssBaseline";
+// import Typography from "@material-ui/core/Typography";
+import { Container, Button, Typography, CssBaseline } from "@material-ui/core";
 
 class MainPage extends Component {
   state = {
@@ -27,6 +27,7 @@ class MainPage extends Component {
   goToSignUp = () => {
     this.props.history.push("signup");
   };
+
   goToLogIn = () => {
     this.props.history.push("signin");
   };
@@ -42,6 +43,20 @@ class MainPage extends Component {
           <LinearProgressBar />
         ) : (
           <div className="mainPageStrainTableCont">
+            <div className="loginSignupCont">
+              <div
+                className="loginLink"
+                onClick={() => this.handleRedirect("signup")}
+              >
+                Sign Up
+              </div>
+              <div
+                className="loginLink"
+                onClick={() => this.handleRedirect("signin")}
+              >
+                Login
+              </div>
+            </div>
             {this.props.auth ? (
               this.props.strains && <StrainTable strains={this.props.strains} />
             ) : this.state.showTable ? (
@@ -101,29 +116,16 @@ class MainPage extends Component {
                       Would you like to make an account?
                     </h4>
                     <div className="welcomeBtns">
-                      <button onClick={this.goToSignUp}>Yes!</button>
-                      <button onClick={this.goToLogIn}>
+                      <Button onClick={this.goToSignUp}>Yes!</Button>
+                      <Button onClick={this.goToLogIn}>
                         I have an account. Take me to login!
-                      </button>
-                      <button onClick={this.showSearchPage}>
+                      </Button>
+                      <Button onClick={this.showSearchPage}>
                         No thanks, take me to the search page!
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 </div>
-
-                {/* <div>
-                  <h4>Would you like to make an account?</h4>
-                  <div>
-                    <button onClick={this.goToSignUp}>Yes!</button>
-                    <button onClick={this.goToLogIn}>
-                      I have an account. Take me to login!
-                    </button>
-                    <button onClick={this.showSearchPage}>
-                      No thanks, take me to the search page!
-                    </button>
-                  </div>
-                </div> */}
               </div>
             )}
           </div>
