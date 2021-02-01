@@ -35,11 +35,10 @@ const theme = createMuiTheme({
 
 let store = createStore(
   rootReducer,
-  compose(
-    // applyMiddleware(logger)
-    applyMiddleware(logger, thunk),
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-  )
+  compose()
+  // applyMiddleware(logger)
+  // applyMiddleware(logger, thunk),
+  // window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );
 
 ReactDOM.render(
