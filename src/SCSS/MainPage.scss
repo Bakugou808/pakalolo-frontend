@@ -8,7 +8,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 90vw;
 }
 
 .sectorChart {
@@ -156,4 +155,22 @@
 
 .mainBtn {
   background-color: mediumspringgreen;
+}
+.entryTitle {
+  margin-bottom: 10px;
+}
+
+.entryTableCont {
+
+}
+
+.headerContList {
+  display: grid;
+
+}
+
+.titleCont {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

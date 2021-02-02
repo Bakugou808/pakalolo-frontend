@@ -44,6 +44,10 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
     height: "2 in",
     width: "auto",
+    padding: "25px",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
   svg: {
     width: 100,
@@ -58,7 +62,9 @@ const useStyles = makeStyles((theme) => ({
     padding: "30 px",
   },
   container2: {
-    display: "block",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
   title: {
     position: "relative",
@@ -68,6 +74,7 @@ const useStyles = makeStyles((theme) => ({
     float: "left",
     // left: '10%',
     width: "inherit",
+    marginBottom: "6px",
   },
   menuIcon: {
     float: "right",
@@ -140,9 +147,9 @@ export const NoteBook = (props) => {
               >
                 <Grid item xs={24} sm={12} lg={12}>
                   <Paper className={classes.paper2}>
-                    <Container>
-                      <Row>
-                        <div className={classes.container2}>
+                    <div className={"headerContList"}>
+                      <div>
+                        <div className={"titleCont"}>
                           <div className={classes.title}>
                             {selectedSmokeList.title}
                           </div>
@@ -175,15 +182,15 @@ export const NoteBook = (props) => {
                             </Menu>
                           </div>
                         </div>
-                      </Row>
-                      <Row>
-                        <div className={classes.container2}>
+                      </div>
+                      <div>
+                        <div className={"titleCont"}>
                           <div className={classes.description}>
                             {selectedSmokeList.description}
                           </div>
                         </div>
-                      </Row>
-                    </Container>
+                      </div>
+                    </div>
                     <br></br>
                   </Paper>
                 </Grid>

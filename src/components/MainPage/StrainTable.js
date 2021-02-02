@@ -40,6 +40,7 @@ import {
   closeSnackBarAddedToCollection,
 } from "../../Redux/actions/collectionActions";
 import { setSelectedStrainsEntries } from "../../Redux/actions/entriesActions";
+import { truncateSync } from "fs";
 
 // add pagination within the menu to only display the first 20-30 strains
 
@@ -54,6 +55,7 @@ function Row(props) {
     onSetSelectedStrainsEntries,
     subEntryTable,
     setAddedStrain,
+    setChangeClass,
   } = props;
   const [open, setOpen] = React.useState(false);
   const classes = useRowStyles();
@@ -62,6 +64,12 @@ function Row(props) {
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
+  };
+
+  const handleOpen = () => {
+    setOpen(!open);
+    // setChangeClass(true);
+    // console.log("clicked open");
   };
 
   const handleClose = () => {
@@ -87,11 +95,7 @@ function Row(props) {
     <React.Fragment>
       <TableRow className={classes.root}>
         <TableCell>
-          <IconButton
-            aria-label="expand row"
-            size="small"
-            onClick={() => setOpen(!open)}
-          >
+          <IconButton aria-label="expand row" size="small" onClick={handleOpen}>
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
@@ -110,18 +114,18 @@ function Row(props) {
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box margin={1}>
+            <div className="entryTableCont">
               <Typography variant="h6" gutterBottom component="span">
                 <div>
-                  {collection
-                    ? `${row.strain.name}: Entries`
-                    : `${row.name}: Strain Details`}
-                  {/* {`${row.name}: Strain Details`} */}
+                  {collection ? (
+                    <div className="entryTitle">{row.strain.name}: Entries</div>
+                  ) : (
+                    <div className="entryTitle">{row.name}: Strain Details</div>
+                  )}
 
                   {user && auth && !subEntryTable && (
                     <>
                       <Tooltip title="Add" aria-label="Add" interactive>
-                        {/* <Fab color="primary" className={classes.fab}> */}
                         <IconButton
                           aria-controls="simple-menu"
                           aria-haspopup="true"
@@ -129,7 +133,6 @@ function Row(props) {
                         >
                           <MoreVertIcon style={{ display: "align-right" }} />
                         </IconButton>
-                        {/* </Fab> */}
                       </Tooltip>
                       <Menu
                         id="simple-menu"
@@ -156,7 +159,7 @@ function Row(props) {
                 <StrainCard strain={row} />
               )}
               {/* <StrainCard strain={row} /> */}
-            </Box>
+            </div>
           </Collapse>
         </TableCell>
       </TableRow>
@@ -184,6 +187,7 @@ function CollapsibleTable(props) {
   const [displayed, setDisplay] = useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [changeClass, setChangeClass] = useState(false);
 
   const classes = useRowStyles();
 
@@ -231,6 +235,7 @@ function CollapsibleTable(props) {
           user={user}
           auth={auth}
           subEntryTable={subEntryTable}
+          setChangeClass={setChangeClass}
         />
       ));
   };
@@ -271,14 +276,14 @@ function CollapsibleTable(props) {
   return (
     <div className="homeContainer">
       <Grid
-        className={classes.grid}
+        className={classes.grid2}
         container
         spacing={3}
         direction="column"
         justify="space-between"
         alignItems="stretch"
       >
-        <Grid item xs={6} sm={3}></Grid>
+        <Grid item xs={6}></Grid>
         <Grid item xs={12}>
           <div className={classes.search}>
             <Select
@@ -385,8 +390,11 @@ const useRowStyles = makeStyles((theme) => ({
     // width: '15px',
     // height: '15px'
   },
-  grid: {
-    minWidth: "80vw",
+  grid1: {
+    width: "100%",
+  },
+  grid2: {
+    width: "inherit",
   },
   flavorList: {
     paddingRight: "30px",
