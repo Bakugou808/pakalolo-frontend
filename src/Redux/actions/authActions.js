@@ -32,7 +32,7 @@ export const fetchCurrentUserFailure = (error) => {
 
 export const fetchCurrentUser = (dispatch) => {
   dispatch(fetchCurrentUserRequest());
-  fetch(`http://localhost:3000/current_user`, {
+  fetch(`https://pakalolo-api.herokuapp.com/current_user`, {
     headers: headers(),
   })
     .then((res) => res.json())

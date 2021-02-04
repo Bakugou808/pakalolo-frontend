@@ -34,7 +34,7 @@ export const postLikeFailure = (error) => {
 
 export const postLike = (data, dispatch, type) => {
   dispatch(postLikeRequest());
-  fetch(`http://localhost:3000/likes`, {
+  fetch(`https://pakalolo-api.herokuapp.com/likes`, {
     method: "POST",
     headers: headers(),
     body: JSON.stringify(data),
@@ -77,7 +77,7 @@ export const patchLikeFailure = (error) => {
 
 export const patchLike = (data, likeId, dispatch) => {
   dispatch(patchLikeRequest());
-  fetch(`http://localhost:3000/likes/${likeId}`, {
+  fetch(`https://pakalolo-api.herokuapp.com/likes/${likeId}`, {
     method: "PATCH",
     headers: headers(),
     body: JSON.stringify(data),
@@ -119,7 +119,7 @@ export const deleteLikeFailure = (error) => {
 export const deleteLike = (data, dispatch) => {
   dispatch(deleteLikeRequest());
 
-  fetch(`http://localhost:3000/delete_like`, {
+  fetch(`https://pakalolo-api.herokuapp.com/delete_like`, {
     method: "POST",
     headers: headers(),
     body: JSON.stringify(data),

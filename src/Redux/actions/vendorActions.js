@@ -65,7 +65,7 @@ export const postVendorFailure = (error) => {
 
 export const postVendor = (data, dispatch) => {
   dispatch(postVendorRequest());
-  fetch(`http://localhost:3000/vendors`, {
+  fetch(`https://pakalolo-api.herokuapp.com/vendors`, {
     method: "POST",
     headers: headers(),
     body: JSON.stringify(data),
@@ -108,7 +108,7 @@ export const patchVendorFailure = (error) => {
 
 export const patchVendor = (data, vendorId, dispatch) => {
   dispatch(patchVendorRequest());
-  fetch(`http://localhost:3000/vendors/${vendorId}`, {
+  fetch(`https://pakalolo-api.herokuapp.com/vendors/${vendorId}`, {
     method: "PATCH",
     headers: headers(),
     body: JSON.stringify(data),
@@ -152,7 +152,7 @@ export const deleteVendorFailure = (error) => {
 export const deleteVendor = (vendorId, dispatch) => {
   dispatch(deleteVendorRequest());
 
-  fetch(`http://localhost:3000/vendors/${vendorId}`, {
+  fetch(`https://pakalolo-api.herokuapp.com/vendors/${vendorId}`, {
     method: "DELETE",
     headers: headers(),
   })
@@ -193,7 +193,7 @@ export const fetchVendorsFailure = (error) => {
 
 export const fetchVendors = (userId, dispatch) => {
   dispatch(fetchVendorsRequest());
-  fetch(`http://localhost:3000/users_vendors/${userId}`, {
+  fetch(`https://pakalolo-api.herokuapp.com/users_vendors/${userId}`, {
     headers: headers(),
   })
     .then((res) => res.json())

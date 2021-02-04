@@ -71,7 +71,7 @@ export const signOutUser = (userId) => {
 
 export const signUpUser = (data, history, dispatch) => {
   dispatch(signUpUserRequest());
-  fetch(`http://localhost:3000/users`, {
+  fetch(`https://pakalolo-api.herokuapp.com/users`, {
     method: "POST",
     headers: headers(),
     body: JSON.stringify(data),
@@ -94,7 +94,7 @@ export const signUpUser = (data, history, dispatch) => {
 
 export const fetchUser = (data, history, dispatch) => {
   dispatch(fetchUserRequest());
-  fetch(`http://localhost:3000/login`, {
+  fetch(`https://pakalolo-api.herokuapp.com/login`, {
     method: "POST",
     headers: headers(),
     body: JSON.stringify(data),
