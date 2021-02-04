@@ -68,6 +68,8 @@ export const Lists = (props) => {
   const [openList, setOpenList] = React.useState(false);
   const [showForm, setShowForm] = React.useState(false);
   const {
+    history,
+    match,
     allSmokeLists,
     onFetchSmokeLists,
     onSetSmokeListDisplay,
@@ -189,7 +191,7 @@ export const Lists = (props) => {
               {showForm ? (
                 <ListForm setForm={setShowForm} />
               ) : (
-                showNotebook && <Notebook />
+                showNotebook && <Notebook match={match} />
               )}
             </Grid>
             <Grid></Grid>

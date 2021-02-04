@@ -109,6 +109,7 @@ export const NoteBook = (props) => {
     onSetSelectedStrainsEntries,
     onDeleteSmokeList,
     onSetNotebook,
+    match,
   } = props;
 
   const handleChange = () => {

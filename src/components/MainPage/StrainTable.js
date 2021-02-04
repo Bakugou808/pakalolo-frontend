@@ -116,7 +116,7 @@ function Row(props) {
           <Collapse in={open} timeout="auto" unmountOnExit>
             <div className="entryTableCont">
               <Typography variant="h6" gutterBottom component="span">
-                <div>
+                <div className="headerCont">
                   {collection ? (
                     <div className="entryTitle">{row.strain.name}: Entries</div>
                   ) : (
@@ -179,7 +179,9 @@ function CollapsibleTable(props) {
     collection,
     onSetSelectedStrainsEntries,
     subEntryTable,
+    listPage,
   } = props;
+
   const [query, setQuery] = useState("");
   const [columnToQuery, setColumnToQuery] = useState("name");
   const [showTable, setShowTable] = useState(true);
@@ -274,9 +276,9 @@ function CollapsibleTable(props) {
   }, [collection, strains]);
 
   return (
-    <div className="homeContainer">
+    <div className={listPage ? "homeContainer2" : "homeContainer"}>
       <Grid
-        className={classes.grid2}
+        className={listPage ? classes.grid2 : classes.grid1}
         container
         spacing={3}
         direction="column"

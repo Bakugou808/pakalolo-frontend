@@ -780,7 +780,7 @@ function EntriesTable(props) {
                   </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                  <AddEntryToList />
+                  <AddEntryToList listPage={true} />
                 </Modal.Body>
               </>
             )
