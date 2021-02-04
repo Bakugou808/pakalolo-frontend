@@ -17,6 +17,7 @@ const CommentBar = (props) => {
     onPostComment,
     setComments,
     setSubComments,
+    comments,
   } = props;
 
   const handleChange = (e) => {
@@ -46,7 +47,9 @@ const CommentBar = (props) => {
     onPostComment(data);
     setLeaveComment(false);
     type === "Strain"
-      ? setComments((prev) => [...prev, data])
+      ? comments
+        ? setComments((prev) => [...prev, data])
+        : setComments([data])
       : setSubComments((prev) => [...prev, data]);
   };
 

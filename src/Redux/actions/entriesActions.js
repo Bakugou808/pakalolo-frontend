@@ -67,7 +67,7 @@ export const postEntryFailure = (error) => {
 
 export const postEntry = (data, dispatch) => {
   dispatch(postEntryRequest());
-  fetch(`https://pakalolo-api.herokuapp.com/entries`, {
+  fetch(`http://localhost:3000/entries`, {
     method: "POST",
     headers: headers(),
     body: JSON.stringify(data),
@@ -125,7 +125,7 @@ export const patchEntryInSubEntryTable = (entry) => {
 
 export const patchEntry = (data, entryId, dispatch, type = "") => {
   dispatch(patchEntryRequest());
-  fetch(`https://pakalolo-api.herokuapp.com/entries/${entryId}`, {
+  fetch(`http://localhost:3000/entries/${entryId}`, {
     method: "PATCH",
     headers: headers(),
     body: JSON.stringify(data),
@@ -154,7 +154,7 @@ export const patchEntry = (data, entryId, dispatch, type = "") => {
 export const patchEntryThunk = (data, entryId, type = "") => {
   return (dispatch) => {
     dispatch(patchEntryRequest());
-    fetch(`https://pakalolo-api.herokuapp.com/entries/${entryId}`, {
+    fetch(`http://localhost:3000/entries/${entryId}`, {
       method: "PATCH",
       headers: headers(),
       body: JSON.stringify(data),
@@ -207,7 +207,7 @@ export const deleteEntryFailure = (error) => {
 export const deleteEntry = (entryId, dispatch) => {
   dispatch(deleteEntryRequest());
 
-  fetch(`https://pakalolo-api.herokuapp.com/entries/${entryId}`, {
+  fetch(`http://localhost:3000/entries/${entryId}`, {
     method: "DELETE",
     headers: headers(),
   })
@@ -256,7 +256,7 @@ export const setEntriesForSmokeList = (entries) => {
 
 export const fetchEntries = (userId, dispatch, smokeListPage) => {
   dispatch(fetchEntriesRequest());
-  fetch(`https://pakalolo-api.herokuapp.com/users_entries/${userId}`, {
+  fetch(`http://localhost:3000/users_entries/${userId}`, {
     headers: headers(),
   })
     .then((res) => res.json())

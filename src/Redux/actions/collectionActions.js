@@ -57,7 +57,7 @@ export const postStrainToCollectionFailure = (error) => {
 
 export const postStrainToCollection = (data, dispatch) => {
   dispatch(postStrainToCollectionRequest());
-  fetch(`https://pakalolo-api.herokuapp.com/collections`, {
+  fetch(`http://localhost:3000/collections`, {
     method: "POST",
     headers: headers(),
     body: JSON.stringify(data),
@@ -99,7 +99,7 @@ export const fetchCollectionFailure = (error) => {
 
 export const fetchCollection = (userId, dispatch) => {
   dispatch(fetchCollectionRequest());
-  fetch(`https://pakalolo-api.herokuapp.com/users_collection/${userId}`, {
+  fetch(`http://localhost:3000/users_collection/${userId}`, {
     headers: headers(),
   })
     .then((res) => res.json())

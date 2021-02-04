@@ -17,7 +17,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Box from "@material-ui/core/Box";
 import Collapse from "@material-ui/core/Collapse";
 import { postLike, deleteLike } from "../../Redux/actions/likeActions";
-
+import { deleteComment } from "../../Redux/actions/commentActions";
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -45,13 +45,21 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Comment = ({ comment, onPostLike, onDeleteLike }) => {
+const Comment = ({
+  comment,
+  onPostLike,
+  onDeleteLike,
+  onDeleteComment,
+  userId,
+  username,
+}) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [open, setOpen] = React.useState(false);
   const [liked, setLiked] = React.useState(false);
   const [totalLikes, setTotalLikes] = React.useState(0);
   const [subComments, setSubComments] = React.useState([]);
+  const [authDelete, setAuthDelete] = React.useState(false);
 
   useEffect(() => {
     comment.likes.forEach(
@@ -59,7 +67,13 @@ const Comment = ({ comment, onPostLike, onDeleteLike }) => {
     );
     setTotalLikes(comment.likes.length);
     comment.comments.length > 0 && setSubComments(comment.comments);
-  }, []);
+    comment.user && checkCommenter();
+  }, [comment]);
+
+  const checkCommenter = () => {
+    (comment.user.id === userId || username === "Janu") && setAuthDelete(true);
+  };
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -94,6 +108,10 @@ const Comment = ({ comment, onPostLike, onDeleteLike }) => {
     onDeleteLike(data);
     setLiked(false);
     setTotalLikes((prev) => prev - 1);
+  };
+
+  const handleDeleteComment = () => {
+    onDeleteComment(comment.id);
   };
 
   const renderSubComments = (subComments) => {
@@ -145,6 +163,13 @@ const Comment = ({ comment, onPostLike, onDeleteLike }) => {
                 clickable
                 onClick={handleReply}
               />
+              {authDelete && (
+                <Chip
+                  label={`Delete Comment`}
+                  clickable
+                  onClick={handleDeleteComment}
+                />
+              )}
             </>
           </Col>
         </Row>
@@ -168,11 +193,15 @@ const Comment = ({ comment, onPostLike, onDeleteLike }) => {
   );
 };
 
-const mapStateToProps = (store) => ({});
+const mapStateToProps = (store) => ({
+  userId: store.user.data.id,
+  username: store.user.data.username,
+});
 
 const mapDispatchToProps = (dispatch) => ({
   onPostLike: (data) => postLike(data, dispatch),
   onDeleteLike: (data) => deleteLike(data, dispatch),
+  onDeleteComment: (commentId) => deleteComment(commentId, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Comment);
