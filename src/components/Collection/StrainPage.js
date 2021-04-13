@@ -87,6 +87,9 @@ const useStyles2 = makeStyles((theme) => ({
     textAlign: "center",
     color: theme.palette.text.secondary,
     cursor: "pointer",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
   modal: {
     overflow: "auto",
@@ -298,7 +301,12 @@ function StrainPage(props) {
               </Grid>
               <Grid item xs={12}>
                 <Paper className={classes2.paper}>
-                  Tags: {collection.tags ? renderTags() : "No Tags"}
+                  Tags:{" "}
+                  {collection.tags ? (
+                    <div className="tags"> {renderTags()} </div>
+                  ) : (
+                    "No Tags"
+                  )}
                 </Paper>
               </Grid>
               <Grid item xs={12}>

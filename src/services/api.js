@@ -1,4 +1,5 @@
 const API_ROOT = (path) => `https://pakalolo-api.herokuapp.com${path}`;
+// https://pakalolo-api.herokuapp.com
 // http://localhost:3000
 
 const token = () => localStorage.getItem("token");

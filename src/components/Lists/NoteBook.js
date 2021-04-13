@@ -175,10 +175,10 @@ export const NoteBook = (props) => {
                               onClose={handleClose}
                             >
                               <MenuItem onClick={handleDeleteSmokeList}>
-                                Delete Smoke List
+                                Delete Strain List
                               </MenuItem>
                               <MenuItem onClick={() => setEditSmokeList(true)}>
-                                Edit Smoke List
+                                Edit Strain List
                               </MenuItem>
                             </Menu>
                           </div>

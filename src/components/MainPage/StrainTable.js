@@ -28,6 +28,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import MenuItem from "@material-ui/core/MenuItem";
 import Fab from "@material-ui/core/Fab";
 import IconButton from "@material-ui/core/IconButton";
+import PlaylistAddIcon from "@material-ui/icons/PlaylistAdd";
 import Menu from "@material-ui/core/Menu";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import Snackbar from "@material-ui/core/Snackbar";
@@ -64,6 +65,7 @@ function Row(props) {
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
+    handleAddStrainToCollection();
   };
 
   const handleOpen = () => {
@@ -125,16 +127,21 @@ function Row(props) {
 
                   {user && auth && !subEntryTable && (
                     <>
-                      <Tooltip title="Add" aria-label="Add" interactive>
-                        <IconButton
+                      <Tooltip
+                        title="Add to Collection"
+                        aria-label="Add"
+                        interactive
+                      >
+                        <PlaylistAddIcon
+                          className="addToCollection"
                           aria-controls="simple-menu"
                           aria-haspopup="true"
                           onClick={handleClick}
                         >
                           <MoreVertIcon style={{ display: "align-right" }} />
-                        </IconButton>
+                        </PlaylistAddIcon>
                       </Tooltip>
-                      <Menu
+                      {/* <Menu
                         id="simple-menu"
                         anchorEl={anchorEl}
                         keepMounted
@@ -144,7 +151,7 @@ function Row(props) {
                         <MenuItem onClick={handleAddStrainToCollection}>
                           Add To Collection
                         </MenuItem>
-                      </Menu>
+                      </Menu> */}
                     </>
                   )}
                 </div>

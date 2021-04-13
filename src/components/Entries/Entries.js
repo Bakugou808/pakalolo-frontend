@@ -253,7 +253,7 @@ const EnhancedTableToolbar = (props) => {
           id="tableTitle"
           component="span"
         >
-          {smokeListPage ? "Smoke List" : "Entries"}
+          {smokeListPage ? "Strain List" : "Entries"}
         </Typography>
       )}
 
@@ -266,7 +266,7 @@ const EnhancedTableToolbar = (props) => {
               </IconButton>
             </Tooltip>
             {!smokeListPage && (
-              <Tooltip title="Add To Smoke List">
+              <Tooltip title="Add To Strain List">
                 <IconButton aria-label="addToSmokeList">
                   <AddIcon onClick={checkSelectedSmokeList} />
                 </IconButton>
@@ -286,7 +286,7 @@ const EnhancedTableToolbar = (props) => {
               </IconButton>
             </Tooltip>
             {!smokeListPage && (
-              <Tooltip title="Add To Smoke List">
+              <Tooltip title="Add To Strain List">
                 <IconButton aria-label="addToSmokeList">
                   <AddIcon onClick={checkSelectedSmokeList} />
                 </IconButton>
@@ -776,7 +776,7 @@ function EntriesTable(props) {
               <>
                 <Modal.Header closeButton>
                   <Modal.Title id="example-modal-sizes-title-lg">
-                    Add Entry To Smoke List
+                    Add Entry To Strain List
                   </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>

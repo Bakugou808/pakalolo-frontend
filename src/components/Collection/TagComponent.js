@@ -5,6 +5,7 @@ import Menu from "@material-ui/core/Menu";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import MenuItem from "@material-ui/core/MenuItem";
 import { connect } from "react-redux";
+import EcoIcon from "@material-ui/icons/Eco";
 
 const TagComponent = ({ tag, onDeleteTag, handleForm, setTags }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -29,7 +30,15 @@ const TagComponent = ({ tag, onDeleteTag, handleForm, setTags }) => {
 
   return (
     <div>
-      <Chip label={`${tag.title}`} clickable onClick={handleClick} />
+      <Chip
+        className="tags"
+        icon={<EcoIcon />}
+        label={`${tag.title}`}
+        clickable
+        color="primary"
+        variant="outlined"
+        onClick={handleClick}
+      />
       <Menu
         id="simple-menu"
         anchorEl={anchorEl}

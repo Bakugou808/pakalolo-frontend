@@ -17,10 +17,19 @@
   justify-content: center;
 }
 
-.sectorChart {
+
+.addToCollection{
+  margin-left: 20px;
+  color: yellowgreen
 }
 
-.chemChart {
+.addToCollection:hover{
+  color: greenyellow
+}
+.tags {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .progressBarCont {

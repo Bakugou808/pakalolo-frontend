@@ -32,6 +32,7 @@ export const fetchCurrentUserFailure = (error) => {
 
 export const fetchCurrentUser = (dispatch) => {
   dispatch(fetchCurrentUserRequest());
+  console.log(token());
   fetch(`https://pakalolo-api.herokuapp.com/current_user`, {
     headers: headers(),
   })

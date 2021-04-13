@@ -207,7 +207,12 @@ function ScrollableTabsButtonAuto(props) {
               </Grid>
               <Grid item xs={12}>
                 <Paper className={classes.paper}>
-                  Tags: {collection.tags ? renderStrainTags() : "No Tags"}
+                  Tags:{" "}
+                  {collection.tags ? (
+                    <div className="tags">{renderStrainTags()} </div>
+                  ) : (
+                    "No Tags"
+                  )}
                 </Paper>
               </Grid>
               {/* <Grid item xs={12} >
